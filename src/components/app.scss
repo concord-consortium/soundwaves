@@ -1,13 +1,55 @@
+$margin: 10px;
+
 #app {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #242424;
-  background-color: #dfdfdf;
+  font-size: 16px;
+
+  .header {
+    color: #fff;
+    background-color: #103360;
+    padding: $margin;
+    font-size: 26px;
+    line-height: 26px;
+
+    display: flex;
+    align-items: center;
+
+    svg {
+      width: 120px;
+      padding: 3px;
+      margin-right: 10px;
+
+      path, circle {
+        fill: #fff;
+      }
+    }
+  }
+
+  .sound-picker, .playback, .zoom-controls {
+    margin: $margin;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+  }
+
+  .playback {
+    margin-top: 20px;
+
+    & > * {
+      margin-right: 10px;
+    }
+    input[type='range'] {
+      width: 80px;
+    }
+  }
+
+  .sound-wave-container {
+    padding: $margin;
+  }
+
+  .zoom-controls {
+    button {
+      margin: 10px;
+    }
+  }
 }
 
