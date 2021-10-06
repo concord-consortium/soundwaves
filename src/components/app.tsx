@@ -68,12 +68,13 @@ export const App = () => {
       audioContext.current.resume();
     }
     if (playing && audioContext.current && audioBuffer.current && gainNode.current && audioAnalyser.current) {
-      // It's weird, but audio source can be started only ONCE in its lifetime. Otherwise, it throws an error.
+      // Audio source can be started only ONCE in its lifetime. Otherwise, it throws an error.
       // So, each time user is trying to play a sound, it needs to be recreated.
       audioSource.current = audioContext.current.createBufferSource();
       audioSource.current.buffer = audioBuffer.current;
       audioSource.current.playbackRate.value = playbackRate;
       audioSource.current.onended = () => {
+        measureProgress(); // one last call to measure progress to ensure that the current progress is saved precisely.
         setPlaying(false);
       };
 
@@ -146,16 +147,18 @@ export const App = () => {
           data={soundWaveData}
           volume={volume}
           playbackProgress={playbackProgress}
-          reduceDataNTimes={Math.max(1, 128 / zoom)}
+          drawingStep={Math.max(1, 128 / zoom)} // draw every Nth data point, based on the current zoom level
           zoom={zoom}
+          zoomedInView={true}
         />
         <SoundWave
           width={600} height={60}
           data={soundWaveData}
           volume={volume}
           playbackProgress={playbackProgress}
-          reduceDataNTimes={64}
-          zoom={1}
+          drawingStep={64} // draw every 64th data point
+          zoom={zoom}
+          zoomedInView={false}
         />
       </div>
       <div className="zoom-controls">
