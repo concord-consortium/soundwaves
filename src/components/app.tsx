@@ -68,8 +68,10 @@ export const App = () => {
       audioContext.current.resume();
     }
     if (playing && audioContext.current && audioBuffer.current && gainNode.current && audioAnalyser.current) {
-      // Audio source can be started only ONCE in its lifetime. Otherwise, it throws an error.
-      // So, each time user is trying to play a sound, it needs to be recreated.
+      // > An AudioBufferSourceNode can only be played once; after each call to start(), you have to create a new node
+      // > if you want to play the same sound again. Fortunately, these nodes are very inexpensive to create, and the
+      // > actual AudioBuffers can be reused for multiple plays of the sound.
+      // Source: https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode
       audioSource.current = audioContext.current.createBufferSource();
       audioSource.current.buffer = audioBuffer.current;
       audioSource.current.playbackRate.value = playbackRate;
