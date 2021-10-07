@@ -1,8 +1,8 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { SoundWave } from "./sound-wave";
-import MiddleCSound from "../assets/middle-c.ogg";
-import C2Sound from "../assets/c2.ogg";
-import BabyCrySound from "../assets/baby-cry.ogg";
+import MiddleCSound from "../assets/middle-c.mp3";
+import C2Sound from "../assets/c2.mp3";
+import BabyCrySound from "../assets/baby-cry.mp3";
 import BSCSLogo from "../assets/bscs-logo.svg";
 import { normalizeData } from "../utils/audio";
 import "./app.scss";
@@ -127,6 +127,8 @@ export const App = () => {
     setPlaybackRate(Math.max(1 / 128, playbackRate * 0.5));
   };
 
+  const handleProgressUpdate = (newProgress: number) => setPlaybackProgress(newProgress);
+
   return (
     <div className="app">
       <div className="header"><BSCSLogo /> Sounds are waves</div>
@@ -159,6 +161,8 @@ export const App = () => {
           drawingStep={64} // draw every 64th data point
           zoom={zoom}
           zoomedInView={false}
+          interactive={!playing}
+          onProgressUpdate={handleProgressUpdate}
         />
       </div>
       <div className="zoom-controls">

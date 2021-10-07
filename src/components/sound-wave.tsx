@@ -10,11 +10,15 @@ interface ISoundWaveProps {
   drawingStep: number;
   zoom: number;
   zoomedInView: boolean;
+  interactive?: boolean;
+  onProgressUpdate?: (newProgress: number) => void;
 }
 
 interface IDrawHelperProps extends ISoundWaveProps {
   ctx: CanvasRenderingContext2D;
 }
+
+const ZOOM_AREA_INTERACTION_MARGIN = 15;
 
 const getWaveAmplitudeY = (props: ISoundWaveProps, index: number) => {
   const { data, volume, height } = props;
@@ -29,6 +33,14 @@ const getCurrentDataPointIdx = (props: ISoundWaveProps) => {
   // In this case, it's necessary to divide value by X, use Math.floor, and multiply by X
   // to ensure that possible index values are only multiplies of X.
   return Math.max(0, Math.floor(data.length * playbackProgress / drawingStep) * drawingStep);
+};
+
+const getCurrentDataPointX = (props: ISoundWaveProps) => {
+  const { width, data, zoomedInView, zoom  } = props;
+  const actualZoom = zoomedInView ? zoom : 1;
+  const segmentWidth = width / data.length * actualZoom;
+  const currentDataPointIdx = getCurrentDataPointIdx(props);
+  return currentDataPointIdx * segmentWidth;
 };
 
 const drawBackground = (props: IDrawHelperProps) => {
@@ -80,9 +92,10 @@ const drawZoomAreaMarker = (props: IDrawHelperProps) => {
   ctx.strokeRect(x * segmentWidth, 0, markerWidth, height);
 };
 
-
 export const SoundWave = (props: ISoundWaveProps) => {
-  const { width, height, data, volume, playbackProgress, drawingStep, zoom, zoomedInView } = props;
+  const {
+    width, height, data, volume, playbackProgress, drawingStep, zoom, zoomedInView, interactive, onProgressUpdate
+  } = props;
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -110,9 +123,61 @@ export const SoundWave = (props: ISoundWaveProps) => {
     }
   }, [width, height, data, volume, playbackProgress, drawingStep, zoom, zoomedInView]);
 
+  const getRelativeMouseX = (e: { clientX: number }) => {
+    return e.clientX - (canvasRef.current?.offsetLeft || 0);
+  };
+
+  const isDragging = useRef(false);
+
+  const handlePointerDown = (downEvent: React.PointerEvent) => {
+    const startPointerX = getRelativeMouseX(downEvent);
+    const currentPointX = getCurrentDataPointX(props);
+    const zoomAreaX1 = currentPointX - ZOOM_AREA_INTERACTION_MARGIN;
+    const zoomAreaX2 = getCurrentDataPointX(props) + width / zoom + ZOOM_AREA_INTERACTION_MARGIN;
+
+    if (startPointerX >= zoomAreaX1 && startPointerX <= zoomAreaX2) {
+      isDragging.current = true;
+      document.body.style.cursor = "grab";
+      const offset = startPointerX - currentPointX;
+
+      const handleDragging = (moveEvent: PointerEvent) => {
+        const pointerX = getRelativeMouseX(moveEvent);
+        onProgressUpdate?.(Math.max(0, Math.min(1, (pointerX - offset) / width)));
+      };
+
+      const handleDragEnd = () => {
+        document.removeEventListener("pointermove", handleDragging);
+        document.removeEventListener("pointerup", handleDragEnd);
+        isDragging.current = false;
+        document.body.style.cursor = "default";
+      };
+
+      document.addEventListener<"pointermove">("pointermove", handleDragging);
+      document.addEventListener<"pointerup">("pointerup", handleDragEnd);
+    }
+  };
+
+  const handleHoverEffect = (moveEvent: React.PointerEvent) => {
+    const pointerX = getRelativeMouseX(moveEvent);
+    const zoomAreaX1 = getCurrentDataPointX(props) - ZOOM_AREA_INTERACTION_MARGIN;
+    const zoomAreaX2 = getCurrentDataPointX(props) + width / zoom + ZOOM_AREA_INTERACTION_MARGIN;
+
+    if (!isDragging.current && canvasRef.current) {
+      if (pointerX >= zoomAreaX1 && pointerX <= zoomAreaX2) {
+        canvasRef.current.style.cursor = "grab";
+      } else {
+        canvasRef.current.style.cursor = "default";
+      }
+    }
+  };
+
   return (
-    <div className="sound-wave">
-      <canvas ref={canvasRef} />
+    <div className={`sound-wave ${interactive ? "interactive" : ""}`}>
+      <canvas
+        ref={canvasRef}
+        onPointerMove={interactive ? handleHoverEffect : undefined}
+        onPointerDown={interactive ? handlePointerDown : undefined}
+      />
     </div>
   );
 };
