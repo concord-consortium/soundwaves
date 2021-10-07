@@ -67,7 +67,7 @@ module.exports = (env, argv) => {
           type: 'asset'
         },
         {
-          test: /\.ogg/,
+          test: /\.mp3/,
           type: 'asset/resource'
         },
         { // disable svgo optimization for files ending in .nosvgo.svg
@@ -117,7 +117,9 @@ module.exports = (env, argv) => {
       warningsFilter: /export .* was not found in/
     },
     plugins: [
-      new ESLintPlugin(),
+      new ESLintPlugin({
+        extensions: ['ts', 'tsx', 'js'],
+      }),
       new MiniCssExtractPlugin({
         filename: devMode ? "assets/[name].css" : "assets/[name].[contenthash].css"
       }),
