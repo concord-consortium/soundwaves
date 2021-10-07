@@ -40,7 +40,7 @@ export const App = () => {
       setPlaying(false);
     }
     if (!window.fetch) {
-      // Not implemented in JSON / jest env. Need to add mock if we ever want to test that.
+      // Not implemented in node / jest env. Need to add mock if we ever want to test that.
     }
     const response = await window.fetch(sounds[soundName]);
     const soundArrayBuffer = await response.arrayBuffer();
