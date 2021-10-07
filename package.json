@@ -19,7 +19,7 @@
     ],
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-      "\\.(css|less|sass)$": "identity-obj-proxy"
+      "\\.(css|less|sass|scss|ogg|mp3)$": "identity-obj-proxy"
     },
     "moduleFileExtensions": [
       "ts",
@@ -81,6 +81,7 @@
     "@typescript-eslint/eslint-plugin": "^4.32.0",
     "@typescript-eslint/parser": "^4.32.0",
     "autoprefixer": "^10.3.6",
+    "canvas": "^2.8.0",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.3.0",
