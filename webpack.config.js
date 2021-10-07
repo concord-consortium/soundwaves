@@ -117,9 +117,9 @@ module.exports = (env, argv) => {
       warningsFilter: /export .* was not found in/
     },
     plugins: [
-      new ESLintPlugin({
-        extensions: ['ts', 'tsx', 'js'],
-      }),
+      // new ESLintPlugin({
+      //   extensions: ['ts', 'tsx', 'js'],
+      // }),
       new MiniCssExtractPlugin({
         filename: devMode ? "assets/[name].css" : "assets/[name].[contenthash].css"
       }),
