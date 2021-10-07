@@ -167,7 +167,7 @@ export const App = () => {
         <button onClick={handleZoomOut}>Zoom Out</button>
       </div>
       <div className="zoom-controls">
-        Playback Rate: { playbackRate >= 1 ?  playbackRate : `1/${Math.round(1/playbackRate)}` }x
+        Playback Rate: { playbackRate >= 1 ? playbackRate : `1/${Math.round(1/playbackRate)}` }x
         <button onClick={handleFasterPlayback}>Speed up</button>
         <button onClick={handleSlowerPlayback}>Slow down</button>
       </div>
