@@ -5,6 +5,7 @@ import C2Sound from "../assets/c2.mp3";
 import BabyCrySound from "../assets/baby-cry.mp3";
 import BSCSLogo from "../assets/bscs-logo.svg";
 import { normalizeData } from "../utils/audio";
+import { useAutoWidth } from "../hooks/use-auto-width";
 import "./app.scss";
 
 type SoundName = "middle-c" | "c2" | "baby-cry";
@@ -15,6 +16,8 @@ const sounds: Record<SoundName, string> = {
   "baby-cry": BabyCrySound
 };
 
+const GRAPH_MARGIN = 10; // px;
+
 export const App = () => {
   const [selectedSound, setSelectedSound] = useState<SoundName>("middle-c");
   const [playing, setPlaying] = useState<boolean>(false);
@@ -23,6 +26,7 @@ export const App = () => {
   const [playbackProgress, setPlaybackProgress] = useState<number>(0);
   const [playbackRate, setPlaybackRate] = useState<number>(1);
   const [soundWaveData, setSoundWaveData] = useState<Float32Array>(new Float32Array(0));
+  const [graphWidth, setGraphWidth] = useState<number>(100);
 
   const audioContext = useRef<AudioContext>();
   const audioAnalyser = useRef<AnalyserNode>();
@@ -32,6 +36,10 @@ export const App = () => {
   const playingRef = useRef<boolean>();
   playingRef.current = playing;
 
+  useAutoWidth({
+    container: document.body,
+    onWidthChange: (newWidth) => setGraphWidth(newWidth - 2 * GRAPH_MARGIN)
+  });
 
   const setupAudioContext = async (soundName: SoundName) => {
     if (audioSource.current && audioContext.current) {
@@ -147,7 +155,7 @@ export const App = () => {
       </div>
       <div className="sound-wave-container">
         <SoundWave
-          width={600} height={200}
+          width={graphWidth} height={200}
           data={soundWaveData}
           volume={volume}
           playbackProgress={playbackProgress}
@@ -156,7 +164,7 @@ export const App = () => {
           zoomedInView={true}
         />
         <SoundWave
-          width={600} height={60}
+          width={graphWidth} height={60}
           data={soundWaveData}
           volume={volume}
           playbackProgress={playbackProgress}

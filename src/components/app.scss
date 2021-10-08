@@ -2,6 +2,7 @@ $margin: 10px;
 
 #app {
   font-size: 16px;
+  overflow: hidden;
 
   .header {
     color: #fff;
@@ -43,7 +44,7 @@ $margin: 10px;
   }
 
   .sound-wave-container {
-    padding: $margin;
+    margin: $margin;
   }
 
   .zoom-controls {
