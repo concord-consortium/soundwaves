@@ -1,6 +1,6 @@
 import { RefObject, useEffect } from "react";
 import { ISoundWaveProps } from "../types";
-import { getCurrentSampleIdx, getCurrentAmplitudeY } from "../utils/sound-wave-helpers";
+import { getCurrentSampleIdx, getCurrentAmplitudeY, getZoomedInViewPointsCount, getPointsCount } from "../utils/sound-wave-helpers";
 
 export interface IDrawHelperProps extends ISoundWaveProps {
   ctx: CanvasRenderingContext2D;
@@ -13,16 +13,17 @@ const drawBackground = (props: IDrawHelperProps) => {
 };
 
 const drawSoundWaveLine = (props: IDrawHelperProps) => {
-  const { ctx, width, drawingStep, data, zoomedInView, zoom } = props;
-  const actualZoom = zoomedInView ? zoom : 1;
-  const segmentWidth = width / data.length * actualZoom;
+  const { ctx, width, drawingStep, zoomedInView } = props;
   const currentDataPointIdx = getCurrentSampleIdx(props);
-  const startIdx = zoomedInView ? currentDataPointIdx : 0;
-  const stopIdx = startIdx + data.length / actualZoom;
-  const pointsCount = stopIdx - startIdx;
+  const zoomedInViewPointsCount = getZoomedInViewPointsCount(props);
+  const pointsCount = getPointsCount(props);
+  // It ensures that the current data point is exactly in the middle of the zoomed in view.
+  const zoomedInViewPadding = Math.round(zoomedInViewPointsCount * 0.5);
+  const xScale = width / pointsCount;
+  const startIdx = zoomedInView ? currentDataPointIdx - zoomedInViewPadding : -zoomedInViewPadding;
 
   for (let i = 0; i < pointsCount; i += drawingStep) {
-    ctx.lineTo(i * segmentWidth, getCurrentAmplitudeY(props, i + startIdx));
+    ctx.lineTo(i * xScale, getCurrentAmplitudeY(props, i + startIdx));
   }
 
   ctx.strokeStyle = "#999";
@@ -31,9 +32,9 @@ const drawSoundWaveLine = (props: IDrawHelperProps) => {
 
 // Used only in the zoomed in view.
 const drawProgressMarker = (props: IDrawHelperProps) => {
-  const { ctx, height } = props;
+  const { ctx, height, width } = props;
   // Marker is always at the left edge. Probably it's going to change.
-  const markerX = 0;
+  const markerX = Math.round(width * 0.5);
   const markerY = getCurrentAmplitudeY(props, getCurrentSampleIdx(props));
 
   ctx.fillStyle = "red";
@@ -45,14 +46,18 @@ const drawProgressMarker = (props: IDrawHelperProps) => {
 
 // Used only in the zoomed out view.
 const drawZoomAreaMarker = (props: IDrawHelperProps) => {
-  const { ctx, width, height, data, zoom } = props;
+  const { ctx, width, height } = props;
   const x = getCurrentSampleIdx(props);
-  const segmentWidth = width / data.length;
-  const markerWidth = width / zoom;
+  const zoomedInViewPointsCount = getZoomedInViewPointsCount(props);
+  const pointsCount = getPointsCount(props);
+  const xScale = width / pointsCount;
+  const markerWidth = (zoomedInViewPointsCount / pointsCount) * width;
 
   ctx.strokeStyle = "#333";
   ctx.lineWidth = 2;
-  ctx.strokeRect(x * segmentWidth, 0, markerWidth, height);
+  ctx.strokeRect(x * xScale, 0, markerWidth, height);
+  ctx.fillStyle = "rgba(255,0,0,0.5)";
+  ctx.fillRect(x * xScale + 0.5 * markerWidth, 0, 1, height); // line
 };
 
 export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, props: ISoundWaveProps) => {
