@@ -4,6 +4,7 @@ const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 const os = require('os');
 
 module.exports = (env, argv) => {
@@ -29,16 +30,6 @@ module.exports = (env, argv) => {
     performance: { hints: false },
     module: {
       rules: [
-        {
-          test: /\.tsx?$/,
-          enforce: 'pre',
-          use: [
-            {
-              loader: 'eslint-loader',
-              options: {}
-            }
-          ]
-        },
         {
           test: /\.tsx?$/,
           loader: 'ts-loader'
@@ -76,7 +67,7 @@ module.exports = (env, argv) => {
           type: 'asset'
         },
         {
-          test: /\.ogg/,
+          test: /\.mp3/,
           type: 'asset/resource'
         },
         { // disable svgo optimization for files ending in .nosvgo.svg
@@ -126,6 +117,9 @@ module.exports = (env, argv) => {
       warningsFilter: /export .* was not found in/
     },
     plugins: [
+      // new ESLintPlugin({
+      //   extensions: ['ts', 'tsx', 'js'],
+      // }),
       new MiniCssExtractPlugin({
         filename: devMode ? "assets/[name].css" : "assets/[name].[contenthash].css"
       }),

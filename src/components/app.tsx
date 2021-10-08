@@ -1,8 +1,8 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { SoundWave } from "./sound-wave";
-import MiddleCSound from "../assets/middle-c.ogg";
-import C2Sound from "../assets/c2.ogg";
-import BabyCrySound from "../assets/baby-cry.ogg";
+import MiddleCSound from "../assets/middle-c.mp3";
+import C2Sound from "../assets/c2.mp3";
+import BabyCrySound from "../assets/baby-cry.mp3";
 import BSCSLogo from "../assets/bscs-logo.svg";
 import { normalizeData } from "../utils/audio";
 import "./app.scss";
@@ -68,8 +68,10 @@ export const App = () => {
       audioContext.current.resume();
     }
     if (playing && audioContext.current && audioBuffer.current && gainNode.current && audioAnalyser.current) {
-      // Audio source can be started only ONCE in its lifetime. Otherwise, it throws an error.
-      // So, each time user is trying to play a sound, it needs to be recreated.
+      // > An AudioBufferSourceNode can only be played once; after each call to start(), you have to create a new node
+      // > if you want to play the same sound again. Fortunately, these nodes are very inexpensive to create, and the
+      // > actual AudioBuffers can be reused for multiple plays of the sound.
+      // Source: https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode
       audioSource.current = audioContext.current.createBufferSource();
       audioSource.current.buffer = audioBuffer.current;
       audioSource.current.playbackRate.value = playbackRate;
@@ -127,6 +129,8 @@ export const App = () => {
     setPlaybackRate(Math.max(1 / 128, playbackRate * 0.5));
   };
 
+  const handleProgressUpdate = (newProgress: number) => setPlaybackProgress(newProgress);
+
   return (
     <div className="app">
       <div className="header"><BSCSLogo /> Sounds are waves</div>
@@ -159,6 +163,8 @@ export const App = () => {
           drawingStep={64} // draw every 64th data point
           zoom={zoom}
           zoomedInView={false}
+          interactive={!playing}
+          onProgressUpdate={handleProgressUpdate}
         />
       </div>
       <div className="zoom-controls">

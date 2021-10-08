@@ -2,5 +2,9 @@
   canvas {
     border: 1px solid #434343;
   }
+
+  &.interactive canvas {
+    touch-action: none; // Important! Otherwise, zoom area dragging would cause page scrolling.
+  }
 }
 
