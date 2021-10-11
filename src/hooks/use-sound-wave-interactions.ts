@@ -2,7 +2,8 @@ import { RefObject, useRef } from "react";
 import { ISoundWaveProps } from "../types";
 import { getCurrentSampleX } from "../utils/sound-wave-helpers";
 
-const ZOOM_AREA_INTERACTION_MARGIN = 15;
+// Padding is necessary, as the zoom box might become almost a line for high zoom levels.
+const ZOOM_AREA_INTERACTION_MARGIN = 20; // px
 
 export const useSoundWaveInteractions = (canvasRef: RefObject<HTMLCanvasElement>, props: ISoundWaveProps) => {
   const { width, zoom, onProgressUpdate } = props;
