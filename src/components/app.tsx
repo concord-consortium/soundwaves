@@ -39,7 +39,6 @@ export const App = () => {
   const [graphWidth, setGraphWidth] = useState<number>(100);
 
   const audioContext = useRef<AudioContext>();
-  const audioAnalyser = useRef<AnalyserNode>();
   const audioSource = useRef<AudioBufferSourceNode>();
   const audioBuffer = useRef<AudioBuffer>();
   const gainNode = useRef<GainNode>();
@@ -64,7 +63,6 @@ export const App = () => {
     const soundArrayBuffer = await response.arrayBuffer();
     audioContext.current = new AudioContext();
     audioBuffer.current = await audioContext.current.decodeAudioData(soundArrayBuffer);
-    audioAnalyser.current = audioContext.current.createAnalyser();
     gainNode.current = audioContext.current.createGain();
 
     setPlaybackProgress(0);
@@ -81,11 +79,25 @@ export const App = () => {
     }
   }, [volume]);
 
-  useEffect(() => {
+  const handleSoundChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedSound(event.currentTarget.value as SoundName);
+  };
+
+  const handleVolumeChange = (value: number) => {
+    setVolume(value);
+  };
+
+  const handlePlay = () => {
+    setPlaying(!playing);
+    // It needs to be updated immediately so #measureProgress works correctly.
+    playingRef.current = !playing;
+
+    // Audio playback needs to be initiated by user action like tap or click. It can't be done asynchronously
+    // in `useEffect` callback. This was causing issues on iOS Safari.
     if (audioContext.current?.state === "suspended") {
       audioContext.current.resume();
     }
-    if (playing && audioContext.current && audioBuffer.current && gainNode.current && audioAnalyser.current) {
+    if (playingRef.current && audioContext.current && audioBuffer.current && gainNode.current) {
       // > An AudioBufferSourceNode can only be played once; after each call to start(), you have to create a new node
       // > if you want to play the same sound again. Fortunately, these nodes are very inexpensive to create, and the
       // > actual AudioBuffers can be reused for multiple plays of the sound.
@@ -100,9 +112,8 @@ export const App = () => {
 
       audioSource.current
         .connect(gainNode.current)
-        .connect(audioAnalyser.current)
         .connect(audioContext.current.destination);
-        audioSource.current?.start();
+        audioSource.current?.start(0, 0);
 
       const startTime = audioContext.current.currentTime;
 
@@ -116,18 +127,6 @@ export const App = () => {
     } else {
       audioSource.current?.stop();
     }
-  }, [playing, playbackRate]);
-
-  const handleSoundChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSound(event.currentTarget.value as SoundName);
-  };
-
-  const handleVolumeChange = (value: number) => {
-    setVolume(value);
-  };
-
-  const handlePlay = () => {
-    setPlaying(!playing);
   };
 
   const handleZoomIn = () => {
