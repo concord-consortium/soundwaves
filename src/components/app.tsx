@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { SoundWave } from "./sound-wave";
 import MiddleCSound from "../assets/middle-c.mp3";
 import C2Sound from "../assets/c2.mp3";
@@ -38,7 +38,7 @@ export const App = () => {
 
   useAutoWidth({
     container: document.body,
-    onWidthChange: (newWidth) => setGraphWidth(newWidth - 2 * GRAPH_MARGIN)
+    onWidthChange: useCallback((newWidth) => setGraphWidth(newWidth - 2 * GRAPH_MARGIN), [])
   });
 
   const setupAudioContext = async (soundName: SoundName) => {
