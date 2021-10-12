@@ -25,14 +25,15 @@ export const useAutoWidth = ({ container, onWidthChange }: IConfig) => {
       }
     });
 
-    // Set overflow=hidden style to make sure that scrollWidth reports correct value. See: https://www.pivotaltracker.com/story/show/174256088
-    const prevOverflowStyle = container.style.overflow;
-    container.style.overflow = "hidden";
+    // Set overflowX=hidden style to make sure that scrollWidth reports correct value.
+    // See: https://www.pivotaltracker.com/story/show/174256088
+    const prevOverflowStyle = container.style.overflowX;
+    container.style.overflowX = "hidden";
     observer.observe(container);
     // Cleanup function.
     return () => {
       observer.disconnect();
-      container.style.overflow = prevOverflowStyle;
+      container.style.overflowX = prevOverflowStyle;
       observer.observe(container);
     };
   }, [container, onWidthChange]);

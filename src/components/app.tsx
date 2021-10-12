@@ -25,7 +25,7 @@ const sounds: Record<SoundName, string> = {
   "baby-cry": BabyCrySound
 };
 
-const GRAPH_MARGIN = 10; // px;
+const GRAPH_MARGIN = 20; // px;
 const ZOOM_BUTTONS_WIDTH = 130; // px, it should match width of zoom-buttons-container defined in CSS file
 
 export const App = () => {
