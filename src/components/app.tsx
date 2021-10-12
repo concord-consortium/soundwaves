@@ -11,7 +11,6 @@ import MicIcon from "../assets/icons/mic_black_48dp.svg";
 import LabelsIcon from "../assets/icons/sell_black_48dp.svg";
 import PlusIcon from "../assets/icons/add_black_48dp.svg";
 import MinusIcon from "../assets/icons/remove_black_48dp.svg";
-import { normalizeData } from "../utils/audio";
 import { useAutoWidth } from "../hooks/use-auto-width";
 import Slider from "rc-slider";
 import "./app.scss";
@@ -35,12 +34,11 @@ export const App = () => {
   const [zoom, setZoom] = useState<number>(16);
   const [playbackProgress, setPlaybackProgress] = useState<number>(0);
   const [playbackRate, setPlaybackRate] = useState<number>(1);
-  const [soundWaveData, setSoundWaveData] = useState<Float32Array>(new Float32Array(0));
   const [graphWidth, setGraphWidth] = useState<number>(100);
+  const [audioBuffer, setAudioBuffer] = useState<AudioBuffer>();
 
   const audioContext = useRef<AudioContext>();
   const audioSource = useRef<AudioBufferSourceNode>();
-  const audioBuffer = useRef<AudioBuffer>();
   const gainNode = useRef<GainNode>();
   const playingRef = useRef<boolean>();
   playingRef.current = playing;
@@ -62,11 +60,10 @@ export const App = () => {
     const response = await window.fetch(sounds[soundName]);
     const soundArrayBuffer = await response.arrayBuffer();
     audioContext.current = new AudioContext();
-    audioBuffer.current = await audioContext.current.decodeAudioData(soundArrayBuffer);
     gainNode.current = audioContext.current.createGain();
 
+    setAudioBuffer(await audioContext.current.decodeAudioData(soundArrayBuffer));
     setPlaybackProgress(0);
-    setSoundWaveData(normalizeData(audioBuffer.current.getChannelData(0)));
   };
 
   useEffect(() => {
@@ -97,13 +94,13 @@ export const App = () => {
     if (audioContext.current?.state === "suspended") {
       audioContext.current.resume();
     }
-    if (playingRef.current && audioContext.current && audioBuffer.current && gainNode.current) {
+    if (playingRef.current && audioContext.current && gainNode.current && audioBuffer) {
       // > An AudioBufferSourceNode can only be played once; after each call to start(), you have to create a new node
       // > if you want to play the same sound again. Fortunately, these nodes are very inexpensive to create, and the
       // > actual AudioBuffers can be reused for multiple plays of the sound.
       // Source: https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode
       audioSource.current = audioContext.current.createBufferSource();
-      audioSource.current.buffer = audioBuffer.current;
+      audioSource.current.buffer = audioBuffer;
       audioSource.current.playbackRate.value = playbackRate;
       audioSource.current.onended = () => {
         measureProgress(); // one last call to measure progress to ensure that the current progress is saved precisely.
@@ -118,8 +115,8 @@ export const App = () => {
       const startTime = audioContext.current.currentTime;
 
       const measureProgress = () => {
-        if (playingRef.current && audioContext.current && audioBuffer.current) {
-          setPlaybackProgress(playbackRate * (audioContext.current.currentTime - startTime) / audioBuffer.current.duration);
+        if (playingRef.current && audioContext.current && audioBuffer) {
+          setPlaybackProgress(playbackRate * (audioContext.current.currentTime - startTime) / audioBuffer.duration);
           requestAnimationFrame(measureProgress);
         }
       };
@@ -130,7 +127,7 @@ export const App = () => {
   };
 
   const handleZoomIn = () => {
-    setZoom(Math.min(512, zoom * 2));
+    setZoom(Math.min(2048, zoom * 2));
   };
 
   const handleZoomOut = () => {
@@ -175,20 +172,18 @@ export const App = () => {
       <div className="sound-wave-container">
         <SoundWave
           width={graphWidth} height={200}
-          data={soundWaveData}
+          audioBuffer={audioBuffer}
           volume={volume}
           playbackProgress={playbackProgress}
-          drawingStep={Math.max(1, 128 / zoom)} // draw every Nth data point, based on the current zoom level
           zoom={zoom}
           zoomedInView={true}
         />
         <div className="zoomed-out-graph">
           <SoundWave
             width={graphWidth - ZOOM_BUTTONS_WIDTH} height={60}
-            data={soundWaveData}
+            audioBuffer={audioBuffer}
             volume={volume}
             playbackProgress={playbackProgress}
-            drawingStep={64} // draw every 64th data point
             zoom={zoom}
             zoomedInView={false}
             interactive={!playing}

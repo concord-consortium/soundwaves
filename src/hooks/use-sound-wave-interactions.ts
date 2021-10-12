@@ -1,13 +1,16 @@
 import { RefObject, useRef } from "react";
-import { ISoundWaveProps } from "../types";
+import { ISoundWaveProps, ISoundWavePropsWithData } from "../types";
 import { getCurrentSampleX, getPointsCount, getZoomedInViewPointsCount } from "../utils/sound-wave-helpers";
 
 // Padding is necessary, as the zoom box might become almost a line for high zoom levels.
 const ZOOM_AREA_INTERACTION_MARGIN = 30; // px
 
-export const useSoundWaveInteractions = (canvasRef: RefObject<HTMLCanvasElement>, props: ISoundWaveProps) => {
+export const useSoundWaveInteractions = (canvasRef: RefObject<HTMLCanvasElement>, data: Float32Array, props: ISoundWaveProps) => {
   const { width, zoom, onProgressUpdate } = props;
   const isDraggingActive = useRef(false);
+
+  // Just to keep things simple, provide one props object to all the helpers.
+  const propsWithData: ISoundWavePropsWithData = { ...props, data };
 
   const getRelativeMouseX = (e: { clientX: number }) => {
     return e.clientX - (canvasRef.current?.offsetLeft || 0);
@@ -15,11 +18,11 @@ export const useSoundWaveInteractions = (canvasRef: RefObject<HTMLCanvasElement>
 
   const handlePointerDown = (downEvent: React.PointerEvent) => {
     const startPointerX = getRelativeMouseX(downEvent);
-    const currentPointX = getCurrentSampleX(props);
+    const currentPointX = getCurrentSampleX(propsWithData);
     const zoomAreaX1 = currentPointX - ZOOM_AREA_INTERACTION_MARGIN;
-    const zoomAreaX2 = getCurrentSampleX(props) + width / zoom + ZOOM_AREA_INTERACTION_MARGIN;
-    const zoomedInViewPointsCount = getZoomedInViewPointsCount(props);
-    const pointsCount = getPointsCount(props);
+    const zoomAreaX2 = getCurrentSampleX(propsWithData) + width / zoom + ZOOM_AREA_INTERACTION_MARGIN;
+    const zoomedInViewPointsCount = getZoomedInViewPointsCount(propsWithData);
+    const pointsCount = getPointsCount(propsWithData);
     const zoomedInViewPadding = width * zoomedInViewPointsCount / pointsCount;
 
     if (startPointerX >= zoomAreaX1 && startPointerX <= zoomAreaX2) {
@@ -46,8 +49,8 @@ export const useSoundWaveInteractions = (canvasRef: RefObject<HTMLCanvasElement>
 
   const handlePointerMove = (moveEvent: React.PointerEvent) => {
     const pointerX = getRelativeMouseX(moveEvent);
-    const zoomAreaX1 = getCurrentSampleX(props) - ZOOM_AREA_INTERACTION_MARGIN;
-    const zoomAreaX2 = getCurrentSampleX(props) + width / zoom + ZOOM_AREA_INTERACTION_MARGIN;
+    const zoomAreaX1 = getCurrentSampleX(propsWithData) - ZOOM_AREA_INTERACTION_MARGIN;
+    const zoomAreaX2 = getCurrentSampleX(propsWithData) + width / zoom + ZOOM_AREA_INTERACTION_MARGIN;
 
     if (!isDraggingActive.current && canvasRef.current) {
       if (pointerX >= zoomAreaX1 && pointerX <= zoomAreaX2) {

@@ -4,6 +4,7 @@ import { getCurrentSampleIdx, getCurrentAmplitudeY, getZoomedInViewPointsCount, 
 
 export interface IDrawHelperProps extends ISoundWaveProps {
   ctx: CanvasRenderingContext2D;
+  data: Float32Array;
 }
 
 const drawBackground = (props: IDrawHelperProps) => {
@@ -12,7 +13,7 @@ const drawBackground = (props: IDrawHelperProps) => {
 };
 
 const drawSoundWaveLine = (props: IDrawHelperProps) => {
-  const { ctx, width, drawingStep, zoomedInView } = props;
+  const { ctx, width, zoomedInView } = props;
   const currentDataPointIdx = getCurrentSampleIdx(props);
   const zoomedInViewPointsCount = getZoomedInViewPointsCount(props);
   const pointsCount = getPointsCount(props);
@@ -21,7 +22,7 @@ const drawSoundWaveLine = (props: IDrawHelperProps) => {
   const xScale = width / pointsCount;
   const startIdx = zoomedInView ? currentDataPointIdx - zoomedInViewPadding : -zoomedInViewPadding;
 
-  for (let i = 0; i < pointsCount; i += drawingStep) {
+  for (let i = 0; i < pointsCount; i += 1) {
     ctx.lineTo(i * xScale, getCurrentAmplitudeY(props, i + startIdx));
   }
 
@@ -59,8 +60,8 @@ const drawZoomAreaMarker = (props: IDrawHelperProps) => {
   ctx.fillRect(x * xScale + 0.5 * markerWidth, 0, 1, height); // line
 };
 
-export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, props: ISoundWaveProps) => {
-  const { width, height, data, volume, playbackProgress, drawingStep, zoom, zoomedInView } = props;
+export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, data: Float32Array, props: ISoundWaveProps) => {
+  const { width, height, volume, playbackProgress, zoom, zoomedInView } = props;
 
   useEffect(() => {
     if (!canvasRef.current) {
@@ -75,7 +76,7 @@ export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, p
     }
     // Just to keep things simple, provide one props object to all the helpers.
     const drawHelperProps: IDrawHelperProps = {
-      ctx, width, height, data, volume, playbackProgress, drawingStep, zoom, zoomedInView
+      ctx, width, height, data, volume, playbackProgress, zoom, zoomedInView
     };
 
     drawBackground(drawHelperProps);
@@ -85,5 +86,5 @@ export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, p
     } else {
       drawZoomAreaMarker(drawHelperProps);
     }
-  }, [canvasRef, width, height, data, volume, playbackProgress, drawingStep, zoom, zoomedInView]);
+  }, [canvasRef, width, height, data, volume, playbackProgress, zoom, zoomedInView]);
 };
