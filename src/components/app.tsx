@@ -168,9 +168,9 @@ export const App = () => {
             value={volume}
             onChange={handleVolumeChange}
           />
-          <MicIcon className="button" />
+          <MicIcon className="button disabled" />
         </div>
-        <LabelsIcon className="button" />
+        <LabelsIcon className="button disabled" />
       </div>
       <div className="sound-wave-container">
         <SoundWave
