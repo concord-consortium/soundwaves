@@ -4,9 +4,18 @@ import MiddleCSound from "../assets/middle-c.mp3";
 import C2Sound from "../assets/c2.mp3";
 import BabyCrySound from "../assets/baby-cry.mp3";
 import BSCSLogo from "../assets/bscs-logo.svg";
+import PlayIcon from "../assets/icons/play_circle_outline_black_48dp.svg";
+import PauseIcon from "../assets/icons/pause_circle_outline_black_48dp.svg";
+import VolumeIcon from "../assets/icons/volume_up_black_48dp.svg";
+import MicIcon from "../assets/icons/mic_black_48dp.svg";
+import LabelsIcon from "../assets/icons/sell_black_48dp.svg";
+import PlusIcon from "../assets/icons/add_black_48dp.svg";
+import MinusIcon from "../assets/icons/remove_black_48dp.svg";
 import { normalizeData } from "../utils/audio";
 import { useAutoWidth } from "../hooks/use-auto-width";
+import Slider from "rc-slider";
 import "./app.scss";
+import "rc-slider/assets/index.css";
 
 type SoundName = "middle-c" | "c2" | "baby-cry";
 
@@ -16,7 +25,8 @@ const sounds: Record<SoundName, string> = {
   "baby-cry": BabyCrySound
 };
 
-const GRAPH_MARGIN = 10; // px;
+const GRAPH_MARGIN = 20; // px;
+const ZOOM_BUTTONS_WIDTH = 130; // px, it should match width of zoom-buttons-container defined in CSS file
 
 export const App = () => {
   const [selectedSound, setSelectedSound] = useState<SoundName>("middle-c");
@@ -29,7 +39,6 @@ export const App = () => {
   const [graphWidth, setGraphWidth] = useState<number>(100);
 
   const audioContext = useRef<AudioContext>();
-  const audioAnalyser = useRef<AnalyserNode>();
   const audioSource = useRef<AudioBufferSourceNode>();
   const audioBuffer = useRef<AudioBuffer>();
   const gainNode = useRef<GainNode>();
@@ -54,7 +63,6 @@ export const App = () => {
     const soundArrayBuffer = await response.arrayBuffer();
     audioContext.current = new AudioContext();
     audioBuffer.current = await audioContext.current.decodeAudioData(soundArrayBuffer);
-    audioAnalyser.current = audioContext.current.createAnalyser();
     gainNode.current = audioContext.current.createGain();
 
     setPlaybackProgress(0);
@@ -71,11 +79,25 @@ export const App = () => {
     }
   }, [volume]);
 
-  useEffect(() => {
+  const handleSoundChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedSound(event.currentTarget.value as SoundName);
+  };
+
+  const handleVolumeChange = (value: number) => {
+    setVolume(value);
+  };
+
+  const handlePlay = () => {
+    setPlaying(!playing);
+    // It needs to be updated immediately so #measureProgress works correctly.
+    playingRef.current = !playing;
+
+    // Audio playback needs to be initiated by user action like tap or click. It can't be done asynchronously
+    // in `useEffect` callback. This was causing issues on iOS Safari.
     if (audioContext.current?.state === "suspended") {
       audioContext.current.resume();
     }
-    if (playing && audioContext.current && audioBuffer.current && gainNode.current && audioAnalyser.current) {
+    if (playingRef.current && audioContext.current && audioBuffer.current && gainNode.current) {
       // > An AudioBufferSourceNode can only be played once; after each call to start(), you have to create a new node
       // > if you want to play the same sound again. Fortunately, these nodes are very inexpensive to create, and the
       // > actual AudioBuffers can be reused for multiple plays of the sound.
@@ -90,9 +112,8 @@ export const App = () => {
 
       audioSource.current
         .connect(gainNode.current)
-        .connect(audioAnalyser.current)
         .connect(audioContext.current.destination);
-        audioSource.current?.start();
+        audioSource.current?.start(0, 0);
 
       const startTime = audioContext.current.currentTime;
 
@@ -106,18 +127,6 @@ export const App = () => {
     } else {
       audioSource.current?.stop();
     }
-  }, [playing, playbackRate]);
-
-  const handleSoundChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSound(event.currentTarget.value as SoundName);
-  };
-
-  const handleVolumeChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setVolume(Number(event.target.value));
-  };
-
-  const handlePlay = () => {
-    setPlaying(!playing);
   };
 
   const handleZoomIn = () => {
@@ -149,9 +158,19 @@ export const App = () => {
           <option value="baby-cry">Baby Cry</option>
         </select>
       </div>
-      <div className="playback">
-        <button onClick={handlePlay}>{ playing ? "Pause" : "Play" }</button>
-        <input type="range" min="0" max="2" step="0.01" value={volume} onChange={handleVolumeChange} />
+      <div className="main-controls">
+        <div className="playback">
+          <div className="play-pause button" onClick={handlePlay}>{ playing ? <PauseIcon /> : <PlayIcon /> }</div>
+          <VolumeIcon />
+          <Slider
+            className="volume-slider"
+            min={0} max={2} step={0.01}
+            value={volume}
+            onChange={handleVolumeChange}
+          />
+          <MicIcon className="button disabled" />
+        </div>
+        <LabelsIcon className="button disabled" />
       </div>
       <div className="sound-wave-container">
         <SoundWave
@@ -163,24 +182,25 @@ export const App = () => {
           zoom={zoom}
           zoomedInView={true}
         />
-        <SoundWave
-          width={graphWidth} height={60}
-          data={soundWaveData}
-          volume={volume}
-          playbackProgress={playbackProgress}
-          drawingStep={64} // draw every 64th data point
-          zoom={zoom}
-          zoomedInView={false}
-          interactive={!playing}
-          onProgressUpdate={handleProgressUpdate}
-        />
+        <div className="zoomed-out-graph">
+          <SoundWave
+            width={graphWidth - ZOOM_BUTTONS_WIDTH} height={60}
+            data={soundWaveData}
+            volume={volume}
+            playbackProgress={playbackProgress}
+            drawingStep={64} // draw every 64th data point
+            zoom={zoom}
+            zoomedInView={false}
+            interactive={!playing}
+            onProgressUpdate={handleProgressUpdate}
+          />
+          <div className="zoom-buttons-container">
+            <div className="zoom-button" onClick={handleZoomOut}><MinusIcon /></div>
+            <div className="zoom-button" onClick={handleZoomIn}><PlusIcon /></div>
+          </div>
+        </div>
       </div>
-      <div className="zoom-controls">
-        Zoom: { zoom }
-        <button onClick={handleZoomIn}>Zoom In</button>
-        <button onClick={handleZoomOut}>Zoom Out</button>
-      </div>
-      <div className="zoom-controls">
+      <div className="debug-controls">
         Playback Rate: { playbackRate >= 1 ? playbackRate : `1/${Math.round(1/playbackRate)}` }x
         <button onClick={handleFasterPlayback}>Speed up</button>
         <button onClick={handleSlowerPlayback}>Slow down</button>

@@ -8,8 +8,7 @@ export interface IDrawHelperProps extends ISoundWaveProps {
 
 const drawBackground = (props: IDrawHelperProps) => {
   const { ctx, width, height } = props;
-  ctx.fillStyle = "#eee";
-  ctx.fillRect(0, 0, width, height);
+  ctx.clearRect(0, 0, width, height);
 };
 
 const drawSoundWaveLine = (props: IDrawHelperProps) => {

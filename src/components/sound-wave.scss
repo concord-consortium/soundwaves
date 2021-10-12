@@ -1,6 +1,8 @@
+@import "./vars.scss";
+
 .sound-wave {
   canvas {
-    border: 1px solid #434343;
+    border: $borderWidth solid $darkGray;
   }
 
   &.interactive canvas {

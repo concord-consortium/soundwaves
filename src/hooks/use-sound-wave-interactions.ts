@@ -1,9 +1,9 @@
 import { RefObject, useRef } from "react";
 import { ISoundWaveProps } from "../types";
-import { getCurrentSampleX } from "../utils/sound-wave-helpers";
+import { getCurrentSampleX, getPointsCount, getZoomedInViewPointsCount } from "../utils/sound-wave-helpers";
 
 // Padding is necessary, as the zoom box might become almost a line for high zoom levels.
-const ZOOM_AREA_INTERACTION_MARGIN = 20; // px
+const ZOOM_AREA_INTERACTION_MARGIN = 30; // px
 
 export const useSoundWaveInteractions = (canvasRef: RefObject<HTMLCanvasElement>, props: ISoundWaveProps) => {
   const { width, zoom, onProgressUpdate } = props;
@@ -18,6 +18,9 @@ export const useSoundWaveInteractions = (canvasRef: RefObject<HTMLCanvasElement>
     const currentPointX = getCurrentSampleX(props);
     const zoomAreaX1 = currentPointX - ZOOM_AREA_INTERACTION_MARGIN;
     const zoomAreaX2 = getCurrentSampleX(props) + width / zoom + ZOOM_AREA_INTERACTION_MARGIN;
+    const zoomedInViewPointsCount = getZoomedInViewPointsCount(props);
+    const pointsCount = getPointsCount(props);
+    const zoomedInViewPadding = width * zoomedInViewPointsCount / pointsCount;
 
     if (startPointerX >= zoomAreaX1 && startPointerX <= zoomAreaX2) {
       isDraggingActive.current = true;
@@ -26,7 +29,7 @@ export const useSoundWaveInteractions = (canvasRef: RefObject<HTMLCanvasElement>
 
       const handleDragging = (moveEvent: PointerEvent) => {
         const pointerX = getRelativeMouseX(moveEvent);
-        onProgressUpdate?.(Math.max(0, Math.min(1, (pointerX - offset) / width)));
+        onProgressUpdate?.(Math.max(0, Math.min(1, (pointerX - offset) / (width - zoomedInViewPadding))));
       };
 
       const handleDragEnd = () => {

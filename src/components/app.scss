@@ -1,4 +1,4 @@
-$margin: 10px;
+@import "./vars.scss";
 
 #app {
   font-size: 16px;
@@ -7,7 +7,7 @@ $margin: 10px;
   .header {
     color: #fff;
     background-color: #103360;
-    padding: $margin;
+    padding: 10px;
     font-size: 26px;
     line-height: 26px;
 
@@ -25,31 +25,101 @@ $margin: 10px;
     }
   }
 
-  .sound-picker, .playback, .zoom-controls {
-    margin: $margin;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
+  .sound-picker {
+    margin: 20px $margin;
+    font-size: 24px;
   }
 
-  .playback {
-    margin-top: 20px;
+  .main-controls {
+    display: flex;
+    align-items: center;
+    margin: 0 $margin -2px $margin;
 
-    & > * {
-      margin-right: 10px;
+    .button {
+      width: 48px;
+      height: 48px;
+      cursor: pointer;
+
+      &.disabled {
+        fill: #aaa;
+        cursor: default;
+      }
     }
-    input[type='range'] {
-      width: 80px;
+
+    .playback {
+      display: flex;
+      align-items: center;
+      margin-right: 20px;
+      border: $borderWidth solid $darkGray;
+      border-top-left-radius: $borderRadius;
+      border-top-right-radius: $borderRadius;
+      padding: 10px;
+
+      & > * {
+        margin: 0 4px;
+      }
+      .volume-slider {
+        margin-left: -1px;
+      }
+    }
+  }
+
+  .volume-slider {
+    width: 90px;
+
+    .rc-slider-track {
+      background-color: #000;
+      height: 6px;
+    }
+
+    .rc-slider-rail {
+      background-color: #000;
+      height: 6px;
+    }
+
+    .rc-slider-handle {
+      border-color: #000;
+      height: 20px;
+      width: 20px;
+      margin-top: -7px;
+      background-color: #000;
+      &:active, &:hover {
+        box-shadow: none;
+      }
     }
   }
 
   .sound-wave-container {
-    margin: $margin;
+    margin: 0 $margin $margin $margin;
   }
 
-  .zoom-controls {
+  .zoomed-out-graph {
+    display: flex;
+    align-items: center;
+
+    .zoom-buttons-container {
+      width: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+
+      .zoom-button {
+        width: 48px;
+        height: 48px;
+        cursor: pointer;
+        background-color: #000;
+        border-radius: 15px;
+        svg {
+          fill: white
+        }
+      }
+    }
+  }
+
+  .debug-controls {
+    margin: $margin;
     button {
-      margin: 10px;
+      margin: $margin;
     }
   }
 }
