@@ -31,7 +31,7 @@ export const downsampleAudioBuffer = async (audioBuffer: AudioBuffer, newSamples
     return data;
   } else {
     // Additional downsampling necessary. This is a naive version that takes every Nth sample.
-    // It's not perfect, but most likely it'll never has to be used if the sound files are shorter than 6.6 seconds.
+    // It's not perfect, but most likely it'll never have to be used if the sound files are shorter than 6.6 seconds.
     // (6.6s * 3000 = 19800 samples and 198000 < 20000 that sound wave graphs uses as a limit of points).
     const step = Math.ceil(MIN_SAMPLE_RATE / newSampleRate);
     const finalData = new Float32Array(Math.round(data.length / step));
