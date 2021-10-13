@@ -110,13 +110,15 @@ export const App = () => {
       audioSource.current
         .connect(gainNode.current)
         .connect(audioContext.current.destination);
-        audioSource.current?.start(0, 0);
 
+      // Offset lets us continue previously paused playback. When playbackProgress >= 1, we'll restart the playback.
+      const offset = playbackProgress >= 1 ? 0 : audioBuffer.duration * playbackProgress;
       const startTime = audioContext.current.currentTime;
+      audioSource.current?.start(0, offset);
 
       const measureProgress = () => {
         if (playingRef.current && audioContext.current && audioBuffer) {
-          setPlaybackProgress(playbackRate * (audioContext.current.currentTime - startTime) / audioBuffer.duration);
+          setPlaybackProgress(playbackRate * (audioContext.current.currentTime - startTime + offset) / audioBuffer.duration);
           requestAnimationFrame(measureProgress);
         }
       };
