@@ -3,7 +3,7 @@ import { SoundWave } from "./sound-wave";
 import MiddleCSound from "../assets/middle-c.mp3";
 import C2Sound from "../assets/c2.mp3";
 import BabyCrySound from "../assets/baby-cry.mp3";
-import BSCSLogo from "../assets/bscs-logo.svg";
+import WavesLogo from "../assets/wavesLogo.png"
 import PlayIcon from "../assets/icons/play_circle_outline_black_48dp.svg";
 import PauseIcon from "../assets/icons/pause_circle_outline_black_48dp.svg";
 import VolumeIcon from "../assets/icons/volume_up_black_48dp.svg";
@@ -149,7 +149,10 @@ export const App = () => {
 
   return (
     <div className="app">
-      <div className="header"><BSCSLogo /> Sounds are waves</div>
+      <div className="header">
+        <img src={WavesLogo} alt="Waves Logo" />
+        &nbsp;&nbsp;&nbsp;Sounds are waves
+      </div>
       <div>
         <select className="sound-picker" value={selectedSound} onChange={handleSoundChange}>
           <option value="middle-c">Middle C (261.65Hz)</option>
