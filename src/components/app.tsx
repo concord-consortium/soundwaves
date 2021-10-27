@@ -1,9 +1,21 @@
 import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { SoundWave } from "./sound-wave";
-import MiddleCSound from "../assets/middle-c.mp3";
-import C2Sound from "../assets/c2.mp3";
-import BabyCrySound from "../assets/baby-cry.mp3";
 import WavesLogo from "../assets/wavesLogo.png"
+import { useAutoWidth } from "../hooks/use-auto-width";
+import Slider from "rc-slider";
+
+import "./app.scss";
+import "rc-slider/assets/index.css";
+
+import MiddleCSound from "../assets/sounds/middle-c.mp3";
+import C2Sound from "../assets/sounds/c2.mp3";
+import BabyCrySound from "../assets/sounds/baby-cry.mp3";
+import RockNKnockDrumLoopSound from "../assets/sounds/Rock-N-Knock-Drum-Loop.mp3";
+import CutBeatSound from "../assets/sounds/cut-beat-100.mp3";
+import CosmicArpSound from "../assets/sounds/cosmic-arp.mp3";
+import HardBaseSound from "../assets/sounds/hard-bass-vox.mp3";
+import ScratchSampleSound from "../assets/sounds/scratch-sample.mp3";
+
 import PlayIcon from "../assets/icons/play_circle_outline_black_48dp.svg";
 import PauseIcon from "../assets/icons/pause_circle_outline_black_48dp.svg";
 import VolumeIcon from "../assets/icons/volume_up_black_48dp.svg";
@@ -11,17 +23,27 @@ import MicIcon from "../assets/icons/mic_black_48dp.svg";
 import LabelsIcon from "../assets/icons/sell_black_48dp.svg";
 import PlusIcon from "../assets/icons/add_black_48dp.svg";
 import MinusIcon from "../assets/icons/remove_black_48dp.svg";
-import { useAutoWidth } from "../hooks/use-auto-width";
-import Slider from "rc-slider";
-import "rc-slider/assets/index.css";
-import "./app.scss";
 
-type SoundName = "middle-c" | "c2" | "baby-cry";
+
+type SoundName =
+  "middle-c"
+  | "c2"
+  | "baby-cry"
+  | "rock-and-knock-drum-loop"
+  | "cut-beat"
+  | "cosmic-arp"
+  | "hard-base"
+  | "scratch-sample";
 
 const sounds: Record<SoundName, string> = {
   "middle-c": MiddleCSound,
   "c2": C2Sound,
-  "baby-cry": BabyCrySound
+  "baby-cry": BabyCrySound,
+  "rock-and-knock-drum-loop": RockNKnockDrumLoopSound,
+  "cut-beat": CutBeatSound,
+  "cosmic-arp": CosmicArpSound,
+  "hard-base": HardBaseSound,
+  "scratch-sample": ScratchSampleSound
 };
 
 const GRAPH_MARGIN = 20; // px;
@@ -158,6 +180,11 @@ export const App = () => {
           <option value="middle-c">Middle C (261.65Hz)</option>
           <option value="c2">A (65.41 Hz)</option>
           <option value="baby-cry">Baby Cry</option>
+          <option value="rock-and-knock-drum-loop">Rock & Knock</option>
+          <option value="cut-beat">Cut Beat</option>
+          <option value="cosmic-arp">Cosmic Arp</option>
+          <option value="hard-base">Hard Base</option>
+          <option value="scratch-sample">Scratch Sample</option>
         </select>
       </div>
       <div className="main-controls">
