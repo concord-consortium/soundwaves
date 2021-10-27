@@ -1,6 +1,5 @@
 import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { SoundWave } from "./sound-wave";
-import WavesLogo from "../assets/wavesLogo.png"
 import { useAutoWidth } from "../hooks/use-auto-width";
 import Slider from "rc-slider";
 
@@ -16,6 +15,7 @@ import CosmicArpSound from "../assets/sounds/cosmic-arp.mp3";
 import HardBaseSound from "../assets/sounds/hard-bass-vox.mp3";
 import ScratchSampleSound from "../assets/sounds/scratch-sample.mp3";
 
+import WavesLogo from "../assets/wavesLogo.png";
 import PlayIcon from "../assets/icons/play_circle_outline_black_48dp.svg";
 import PauseIcon from "../assets/icons/pause_circle_outline_black_48dp.svg";
 import VolumeIcon from "../assets/icons/volume_up_black_48dp.svg";
