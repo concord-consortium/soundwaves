@@ -31,27 +31,6 @@
     ],
     "testEnvironment": "jsdom"
   },
-  "scripts": {
-    "start": "webpack serve --no-https",
-    "start:secure": "webpack serve",
-    "start:secure:no-certs": "webpack serve --no-https-request-cert",
-    "build": "npm-run-all lint:build build:webpack",
-    "build:webpack": "webpack --mode production",
-    "lint": "eslint \"./src/**/*.{js,jsx,ts,tsx}\" \"./cypress/**/*.{js,jsx,ts,tsx}\"",
-    "lint:build": "eslint -c \".eslintrc.build.js\" \"./src/**/*.{js,jsx,ts,tsx}\" \"./cypress/**/*.{js,jsx,ts,tsx}\"",
-    "lint:fix": "eslint --fix \"./src/**/*.{js,jsx,ts,tsx}\" \"./cypress/**/*.{js,jsx,ts,tsx}\"",
-    "lint:style": "eslint -c \".eslintrc.style.js\" \"./src/**/*.{js,jsx,ts,tsx}\" \"./cypress/**/*.{js,jsx,ts,tsx}\"",
-    "lint:style:fix": "eslint -c \".eslintrc.style.js\" \"./src/**/*.{js,jsx,ts,tsx}\" \"./cypress/**/*.{js,jsx,ts,tsx}\"",
-    "test": "jest",
-    "test:all": "npm-run-all build test start",
-    "test:coverage": "jest --coverage",
-    "test:debug": "node --nolazy --inspect-brk ./node_modules/.bin/jest --runInBand --no-cache",
-    "test:watch": "jest --watch",
-    "test:coverage:watch": "jest --coverage --watchAll",
-    "test:cypress": "cypress run",
-    "test:cypress:open": "cypress open",
-    "test:full": "npm-run-all test test:cypress"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/concord-consortium/soundwaves.git"
@@ -123,5 +102,26 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "resize-observer-polyfill": "^1.5.1"
+  },
+  "scripts": {
+    "start": "webpack serve --no-https",
+    "start:secure": "webpack serve",
+    "start:secure:no-certs": "webpack serve --no-https-request-cert",
+    "build": "npm-run-all lint:build build:webpack",
+    "build:webpack": "webpack --mode production",
+    "lint": "eslint \"./src/**/*.{js,jsx,ts,tsx}\" \"./cypress/**/*.{js,jsx,ts,tsx}\"",
+    "lint:build": "eslint -c \".eslintrc.build.js\" \"./src/**/*.{js,jsx,ts,tsx}\" \"./cypress/**/*.{js,jsx,ts,tsx}\"",
+    "lint:fix": "eslint --fix \"./src/**/*.{js,jsx,ts,tsx}\" \"./cypress/**/*.{js,jsx,ts,tsx}\"",
+    "lint:style": "eslint -c \".eslintrc.style.js\" \"./src/**/*.{js,jsx,ts,tsx}\" \"./cypress/**/*.{js,jsx,ts,tsx}\"",
+    "lint:style:fix": "eslint -c \".eslintrc.style.js\" \"./src/**/*.{js,jsx,ts,tsx}\" \"./cypress/**/*.{js,jsx,ts,tsx}\"",
+    "test": "jest",
+    "test:all": "npm-run-all build test start",
+    "test:coverage": "jest --coverage",
+    "test:debug": "node --nolazy --inspect-brk ./node_modules/.bin/jest --runInBand --no-cache",
+    "test:watch": "jest --watch",
+    "test:coverage:watch": "jest --coverage --watchAll",
+    "test:cypress": "cypress run",
+    "test:cypress:open": "cypress open",
+    "test:full": "npm-run-all test test:cypress"
   }
 }
