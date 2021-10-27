@@ -13,8 +13,8 @@ import PlusIcon from "../assets/icons/add_black_48dp.svg";
 import MinusIcon from "../assets/icons/remove_black_48dp.svg";
 import { useAutoWidth } from "../hooks/use-auto-width";
 import Slider from "rc-slider";
-import "./app.scss";
 import "rc-slider/assets/index.css";
+import "./app.scss";
 
 type SoundName = "middle-c" | "c2" | "baby-cry";
 
@@ -151,7 +151,7 @@ export const App = () => {
     <div className="app">
       <div className="header">
         <img src={WavesLogo} alt="Waves Logo" />
-        &nbsp;&nbsp;&nbsp;Sounds are waves
+        &nbsp;&nbsp;Sounds are waves
       </div>
       <div>
         <select className="sound-picker" value={selectedSound} onChange={handleSoundChange}>
@@ -163,12 +163,17 @@ export const App = () => {
       <div className="main-controls">
         <div className="playback">
           <div className="play-pause button" onClick={handlePlay}>{ playing ? <PauseIcon /> : <PlayIcon /> }</div>
-          <VolumeIcon />
+          {/* If changing the color of the VolumeIcon or Slider
+            then may also need to change the $controls color, for consistency */}
+          <VolumeIcon style={{fill: "#3377BD"}} />
           <Slider
             className="volume-slider"
             min={0} max={2} step={0.01}
             value={volume}
             onChange={handleVolumeChange}
+            trackStyle={{backgroundColor: "#3377BD"}}
+            railStyle={{backgroundColor: "#3377BD"}}
+            handleStyle={{backgroundColor: "#3377BD"}}
           />
           <MicIcon className="button disabled" />
         </div>
