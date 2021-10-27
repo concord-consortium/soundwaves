@@ -76,9 +76,7 @@ export const App = () => {
       await audioContext.current.close();
       setPlaying(false);
     }
-    if (!window.fetch) {
-      // Not implemented in node / jest env. Need to add mock if we ever want to test that.
-    }
+
     const response = await window.fetch(sounds[soundName]);
     const soundArrayBuffer = await response.arrayBuffer();
     audioContext.current = new AudioContext();
@@ -89,6 +87,10 @@ export const App = () => {
   };
 
   useEffect(() => {
+    // AudioContext is apparently unavailable in the node / jest environment.
+    // So we bail out early, to prevent render test failure.
+    if (!window.AudioContext) { return; }
+
     setupAudioContext(selectedSound);
   }, [selectedSound]);
 
