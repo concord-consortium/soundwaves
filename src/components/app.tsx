@@ -160,13 +160,17 @@ export const App = () => {
     setZoom(Math.max(2, zoom * 0.5));
   };
 
+  // const handleFasterPlayback = () => {
+  //   setPlaybackRate(Math.min(8, playbackRate * 2));
+  // };
 
-  const handleFasterPlayback = () => {
-    setPlaybackRate(Math.min(8, playbackRate * 2));
-  };
+  // const handleSlowerPlayback = () => {
+  //   setPlaybackRate(Math.max(1 / 128, playbackRate * 0.5));
+  // };
 
-  const handleSlowerPlayback = () => {
-    setPlaybackRate(Math.max(1 / 128, playbackRate * 0.5));
+  const setPlaybackSpeedTo = (speed: number) => {
+    const boundedSpeed = Math.max((1 / 128), Math.min(8, speed));
+    setPlaybackRate(boundedSpeed);
   };
 
   const handleProgressUpdate = (newProgress: number) => setPlaybackProgress(newProgress);
@@ -175,16 +179,19 @@ export const App = () => {
     <div className="app">
       <div className="header"><BSCSLogo /> Sounds are waves</div>
       <div>
-        <select className="sound-picker" value={selectedSound} onChange={handleSoundChange}>
-          <option value="middle-c">Middle C (261.65Hz)</option>
-          <option value="c2">A (65.41 Hz)</option>
-          <option value="baby-cry">Baby Cry</option>
-          <option value="rock-and-knock-drum-loop">Rock & Knock</option>
-          <option value="cut-beat">Cut Beat</option>
-          <option value="cosmic-arp">Cosmic Arp</option>
-          <option value="hard-base">Hard Base</option>
-          <option value="scratch-sample">Scratch Sample</option>
-        </select>
+        <div className="sound-picker-container">
+          <select className="sound-picker" value={selectedSound} onChange={handleSoundChange}>
+            <option value="middle-c">Middle C (261.65Hz)</option>
+            <option value="c2">A (65.41 Hz)</option>
+            <option value="baby-cry">Baby Cry</option>
+            <option value="rock-and-knock-drum-loop">Rock & Knock</option>
+            <option value="cut-beat">Cut Beat</option>
+            <option value="cosmic-arp">Cosmic Arp</option>
+            <option value="hard-base">Hard Base</option>
+            <option value="scratch-sample">Scratch Sample</option>
+          </select>
+        </div>
+        <MicIcon className="mic-icon button disabled" />
       </div>
       <div className="main-controls">
         <div className="playback">
@@ -196,9 +203,8 @@ export const App = () => {
             value={volume}
             onChange={handleVolumeChange}
           />
-          <MicIcon className="button disabled" />
         </div>
-        <LabelsIcon className="button disabled" />
+        {/* <LabelsIcon className="button disabled" /> */}
       </div>
       <div className="sound-wave-container">
         <SoundWave
@@ -226,10 +232,34 @@ export const App = () => {
           </div>
         </div>
       </div>
-      <div className="debug-controls">
-        Playback Rate: { playbackRate >= 1 ? playbackRate : `1/${Math.round(1/playbackRate)}` }x
-        <button onClick={handleFasterPlayback}>Speed up</button>
-        <button onClick={handleSlowerPlayback}>Slow down</button>
+      <div className="current-speed">
+        Speed: { playbackRate >= 1 ? playbackRate : `1/${Math.round(1/playbackRate)}` }x
+      </div>
+      <div className={'speed-controls'}>
+        <button onClick={() => {setPlaybackSpeedTo(1/16)}} disabled={playing}>
+          <span className={playing ? 'speed-control-text-disabled' : ''}>1/16</span>
+        </button>
+        <button onClick={() => {setPlaybackSpeedTo(1/8)}} disabled={playing}>
+          <span className={playing ? 'speed-control-text-disabled' : ''}>1/8</span>
+        </button>
+        <button onClick={() => {setPlaybackSpeedTo(1/4)}} disabled={playing}>
+          <span className={playing ? 'speed-control-text-disabled' : ''}>1/4</span>
+        </button>
+        <button onClick={() => {setPlaybackSpeedTo(1/2)}} disabled={playing}>
+          <span className={playing ? 'speed-control-text-disabled' : ''}>1/2</span>
+        </button>
+        <button onClick={() => {setPlaybackSpeedTo(1)}} disabled={playing}>
+          <span className={playing ? 'speed-control-text-disabled' : ''}>1</span>
+        </button>
+        <button onClick={() => {setPlaybackSpeedTo(2)}} disabled={playing}>
+          <span className={playing ? 'speed-control-text-disabled' : ''}>2</span>
+        </button>
+        <button onClick={() => {setPlaybackSpeedTo(4)}} disabled={playing}>
+          <span className={playing ? 'speed-control-text-disabled' : ''}>4</span>
+        </button>
+        <button onClick={() => {setPlaybackSpeedTo(8)}} disabled={playing}>
+          <span className={playing ? 'speed-control-text-disabled' : ''}>8</span>
+        </button>
       </div>
     </div>
   );

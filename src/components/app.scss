@@ -25,9 +25,20 @@
     }
   }
 
-  .sound-picker {
-    margin: 20px $margin;
-    font-size: 24px;
+  .sound-picker-container {
+    padding: 20px $margin;
+    display: inline-block;
+    width: calc(100% - 96px); // 96px ~= width of .mic-icon
+
+    .sound-picker {
+      font-size: 24px;
+      width: 100%;
+    }
+  }
+
+  .mic-icon {
+    position: relative;
+    margin-bottom: -15px;
   }
 
   .main-controls {
@@ -116,11 +127,16 @@
     }
   }
 
-  .debug-controls {
-    margin: $margin;
+  .speed-controls, .current-speed {
+    margin: 2px $margin;
+
     button {
-      margin: $margin;
+      margin: 0 1px;
     }
+  }
+
+  .speed-control-text-disabled {
+    color: $darkGray;
   }
 }
 
