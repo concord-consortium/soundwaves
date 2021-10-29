@@ -26,7 +26,7 @@ const drawSoundWaveLine = (props: IDrawHelperProps) => {
     ctx.lineTo(i * xScale, getCurrentAmplitudeY(props, i + startIdx));
   }
 
-  ctx.strokeStyle = "#999";
+  ctx.strokeStyle = "#024059";
   ctx.stroke();
 };
 
@@ -37,7 +37,7 @@ const drawProgressMarker = (props: IDrawHelperProps) => {
   const markerX = Math.round(width * 0.5);
   const markerY = getCurrentAmplitudeY(props, getCurrentSampleIdx(props));
 
-  ctx.fillStyle = "red";
+  ctx.fillStyle = "#88D3DD";
   ctx.fillRect(markerX, 0, 1, height); // line
   ctx.beginPath();
   ctx.arc(markerX, markerY, 5, 0, 2 * Math.PI); // dot
@@ -56,7 +56,7 @@ const drawZoomAreaMarker = (props: IDrawHelperProps) => {
   ctx.strokeStyle = "#333";
   ctx.lineWidth = 2;
   ctx.strokeRect(x * xScale, 0, markerWidth, height);
-  ctx.fillStyle = "rgba(255,0,0,0.5)";
+  ctx.fillStyle = "#88D3DDFF";
   ctx.fillRect(x * xScale + 0.5 * markerWidth, 0, 1, height); // line
 };
 
