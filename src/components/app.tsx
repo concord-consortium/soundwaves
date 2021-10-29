@@ -177,9 +177,9 @@ export const App = () => {
     0.5: { style: null, label: "1/2"},
     1: {style: null, label: "1"},
     2: {style: null, label: "2"},
-    };
+  };
 
-    return (
+  return (
     <div className="app">
       <div className="header">
         <img src={WavesLogo} alt="Waves Logo" />
