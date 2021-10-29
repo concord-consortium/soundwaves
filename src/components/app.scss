@@ -60,23 +60,72 @@
     .playback {
       display: flex;
       align-items: center;
-      margin-right: 20px;
+      width: 100%;
       border: $borderWidth solid $darkGray;
       border-top-left-radius: $borderRadius;
       border-top-right-radius: $borderRadius;
       padding: 10px;
 
       & > * {
-        margin: 0 4px;
+        margin: 0;
       }
+
+      .play-pause {
+        margin-right: 2px;
+      }
+
       .volume-slider {
-        margin-left: -1px;
+        margin-left: -3px;
+        margin-right: 20px;
+      }
+
+      .speed-controls {
+        text-align: center;
+        margin-top: -14px;
+
+        .speed-label {
+          font-size: 70%;
+          padding-bottom: 6px;
+        }
+      }
+
+      .speed-slider {
+        width: 140px;
+
+        .rc-slider-track {
+          background-color: #000;
+          height: 6px;
+        }
+
+        .rc-slider-rail {
+          background-color: #000;
+          height: 6px;
+        }
+
+        .rc-slider-handle {
+          border-color: #000;
+          height: 20px;
+          width: 20px;
+          margin-top: -7px;
+          background-color: #000;
+          &:active, &:hover {
+            box-shadow: none;
+          }
+        }
+      }
+
+      .speed-slider.disabled {
+        .rc-slider-rail, .rc-slider-handle {
+          background-color: silver;
+          border-color: silver;
+        }
       }
     }
   }
 
+
   .volume-slider {
-    width: 90px;
+    width: 50px;
 
     .rc-slider-track {
       background-color: #000;
@@ -127,16 +176,5 @@
     }
   }
 
-  .speed-controls, .current-speed {
-    margin: 2px $margin;
-
-    button {
-      margin: 0 3px;
-    }
-  }
-
-  .speed-control-text-disabled {
-    color: $darkGray;
-  }
 }
 

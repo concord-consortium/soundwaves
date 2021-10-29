@@ -20,6 +20,7 @@ import PlayIcon from "../assets/icons/play_circle_outline_black_48dp.svg";
 import PauseIcon from "../assets/icons/pause_circle_outline_black_48dp.svg";
 import VolumeIcon from "../assets/icons/volume_up_black_48dp.svg";
 import MicIcon from "../assets/icons/mic_black_48dp.svg";
+// import LabelsIcon from "../assets/icons/sell_black_48dp.svg";
 import PlusIcon from "../assets/icons/add_black_48dp.svg";
 import MinusIcon from "../assets/icons/remove_black_48dp.svg";
 
@@ -172,9 +173,21 @@ export const App = () => {
     setPlaybackRate(boundedSpeed);
   };
 
-  const handleProgressUpdate = (newProgress: number) => setPlaybackProgress(newProgress);
+  const handleSpeedChange = (speed: number) => {
+    setPlaybackSpeedTo(speed);
+  };
 
-  return (
+  const handleProgressUpdate = (newProgress: number) =>
+    setPlaybackProgress(newProgress);
+
+  const speedMarks = {
+    0.25: { style: null, label: "1/4"},
+    0.5: { style: null, label: "1/2"},
+    1: {style: null, label: "1"},
+    2: {style: null, label: "2"},
+    };
+
+    return (
     <div className="app">
       <div className="header"><BSCSLogo /> Sounds are waves</div>
       <div>
@@ -202,6 +215,25 @@ export const App = () => {
             value={volume}
             onChange={handleVolumeChange}
           />
+          <div className="speed-controls">
+            <div className="speed-label">
+              Speed
+            </div>
+            <div>
+              <Slider
+                className={playing ? "speed-slider disabled" : "speed-slider"}
+                defaultValue={1}
+                startPoint={1}
+                value={playbackRate}
+                min={0.25}
+                max={2}
+                step={null}
+                marks={speedMarks}
+                disabled={playing}
+                onChange={handleSpeedChange}
+                />
+            </div>
+          </div>
         </div>
         {/* <LabelsIcon className="button disabled" /> */}
       </div>
@@ -231,32 +263,9 @@ export const App = () => {
           </div>
         </div>
       </div>
-      <div className="current-speed">
+      {/* <div className="current-speed">
         Speed: { playbackRate >= 1 ? playbackRate : `1/${Math.round(1/playbackRate)}` }x
-      </div>
-      <div className={"speed-controls"}>
-        <button onClick={() => {setPlaybackSpeedTo(1/8);}} disabled={playing}>
-          <span className={playing ? "speed-control-text-disabled" : ""}>1/8</span>
-        </button>
-        <button onClick={() => {setPlaybackSpeedTo(1/4);}} disabled={playing}>
-          <span className={playing ? "speed-control-text-disabled" : ""}>1/4</span>
-        </button>
-        <button onClick={() => {setPlaybackSpeedTo(1/2);}} disabled={playing}>
-          <span className={playing ? "speed-control-text-disabled" : ""}>1/2</span>
-        </button>
-        <button onClick={() => {setPlaybackSpeedTo(1);}} disabled={playing}>
-          <span className={playing ? "speed-control-text-disabled" : ""}>1</span>
-        </button>
-        <button onClick={() => {setPlaybackSpeedTo(2);}} disabled={playing}>
-          <span className={playing ? "speed-control-text-disabled" : ""}>2</span>
-        </button>
-        <button onClick={() => {setPlaybackSpeedTo(4);}} disabled={playing}>
-          <span className={playing ? "speed-control-text-disabled" : ""}>4</span>
-        </button>
-        <button onClick={() => {setPlaybackSpeedTo(8);}} disabled={playing}>
-          <span className={playing ? "speed-control-text-disabled" : ""}>8</span>
-        </button>
-      </div>
+      </div> */}
     </div>
   );
 };
