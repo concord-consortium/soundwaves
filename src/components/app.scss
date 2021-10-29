@@ -26,21 +26,26 @@
   }
 
   .sound-picker-container {
-    padding: 20px $margin;
-    display: inline-block;
-    width: calc(100% - 96px); // 96px ~= width of .mic-icon
+    margin: $margin/2 $margin;
+    padding: 10px  5px 15px 10px;
+    background-color: #3377BD20;
 
-    .sound-picker {
-      font-size: 24px;
-      width: 100%;
-      color: $controls;
-      border-color: $borderColor;
+    .sound-picker-select-container {
+      display: inline-block;
+      width: calc(100% - 48px); // minus ~width of .mic-icon
+
+      .sound-picker {
+        font-size: 24px;
+        width: 100%;
+        color: $controls;
+        border-color: $borderColor;
+      }
     }
   }
 
   .mic-icon {
     position: relative;
-    margin-bottom: -15px;
+    margin-bottom: -18px;
   }
 
   .main-controls {
@@ -156,7 +161,7 @@
   }
 
   .sound-wave-container {
-    margin: 0 $margin $margin $margin;
+    margin: 0 $margin 0 $margin;
   }
 
   .zoomed-out-graph {
@@ -182,5 +187,31 @@
     }
   }
 
+  .carrier-wave-container {
+    margin: 15px 20px 0 20px;
+    padding: 10px 15px;
+    font-size: 80%;
+    background-color: #3377BD20;
+    color: $controls;
+
+    div {
+      margin: 6px 0px 0px 0px;
+
+      select {
+        width: 100%;
+        margin-bottom: 5px;
+        font-size: 24px;
+        color: $controls;
+        border-color: $borderColor;
+      }
+
+      span.value {
+        color: #03478D;
+      }
+    }
+    div.freq-mod-container {
+      margin-top: 1px;
+    }
+  }
 }
 

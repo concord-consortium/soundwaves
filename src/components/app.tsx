@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import React, { ChangeEvent, ReactComponentElement, useCallback, useEffect, useRef, useState } from "react";
 import { SoundWave } from "./sound-wave";
 import { useAutoWidth } from "../hooks/use-auto-width";
 import Slider from "rc-slider";
@@ -45,6 +45,21 @@ const sounds: Record<SoundName, string> = {
   "hard-base": HardBaseSound,
   "scratch-sample": ScratchSampleSound
 };
+
+type Modulation = "AM" | "FM" ;
+type Frequency = 540e3 | 600e3 | 1200e3 | 897e5 | 1019e5 | 1081e5 ;
+type CarrierWave = {modulation: Modulation, frequency: Frequency};
+const carrierWaves: Record<string, CarrierWave> = {
+  "AM 540kHz":   {modulation: "AM", frequency:  540e3},
+  "AM 600kHz":   {modulation: "AM", frequency:  600e3},
+  "AM 1200kHz":  {modulation: "AM", frequency: 1200e3},
+  "FM 89.7MHz":  {modulation: "FM", frequency:  897e5},
+  "FM 101.9MHz": {modulation: "FM", frequency: 1019e5},
+  "FM 108.1MHz": {modulation: "FM", frequency: 1081e5},
+};
+for (const key in carrierWaves) {
+  console.log(key, carrierWaves[key]);
+}
 
 const GRAPH_MARGIN = 20; // px;
 const ZOOM_BUTTONS_WIDTH = 130; // px, it should match width of zoom-buttons-container defined in CSS file
@@ -179,14 +194,25 @@ export const App = () => {
     2: {style: null, label: "2"},
   };
 
+  const CarrierWaveOptions = (): any => {
+    const carrierWaveKeys: string[] = [];
+    for (const key in carrierWaves) {
+      carrierWaveKeys.push(key);
+    }
+    const optionElements = carrierWaveKeys.map((key) =>
+      <option key={key} value={key}>{key}</option>
+    );
+    return (optionElements);
+  };
+
   return (
     <div className="app">
       <div className="header">
         <img src={WavesLogo} alt="Waves Logo" />
         &nbsp;&nbsp;Sounds are waves
       </div>
-      <div>
-        <div className="sound-picker-container">
+      <div className="sound-picker-container">
+        <div className="sound-picker-select-container">
           <select className="sound-picker" value={selectedSound} onChange={handleSoundChange}>
             <option value="middle-c">Middle C (261.65Hz)</option>
             <option value="c2">A (65.41 Hz)</option>
@@ -263,6 +289,25 @@ export const App = () => {
       {/* <div className="current-speed">
         Speed: { playbackRate >= 1 ? playbackRate : `1/${Math.round(1/playbackRate)}` }x
       </div> */}
+      <div className="carrier-wave-container">
+        <div>
+          Radio Carrier Wave:
+        </div>
+        <div className="freq-mod-container">
+          <select>
+            <CarrierWaveOptions />
+          </select>
+        </div>
+        <div>
+          Wavelength:&nbsp;<span className="value">0.0002ms</span>
+        </div>
+        <div>
+          Higher than human hearing&nbsp;(x):&nbsp;<span className="value">NNN</span>
+        </div>
+        <div>
+          Modulation:&nbsp;<span className="value">Amplitude/Frequency</span>
+        </div>
+      </div>
     </div>
   );
 };
