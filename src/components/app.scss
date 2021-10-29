@@ -6,9 +6,9 @@
 
   .header {
     color: #fff;
-    background-color: #103360;
+    background-color: #024059;
     padding: 10px;
-    font-size: 26px;
+    font-size: 24px;
     line-height: 26px;
 
     display: flex;
@@ -33,6 +33,9 @@
     .sound-picker {
       font-size: 24px;
       width: 100%;
+      // margin: 20px $margin;
+      color: $controls;
+      border-color: $borderColor;
     }
   }
 
@@ -46,13 +49,18 @@
     align-items: center;
     margin: 0 $margin -2px $margin;
 
+    * {
+      // If changing this color, may need to change the <Slider> colors, for consistency
+      fill: $controls;
+    }
+
     .button {
       width: 48px;
       height: 48px;
       cursor: pointer;
 
       &.disabled {
-        fill: #aaa;
+        fill: $disabledButton;
         cursor: default;
       }
     }
@@ -61,7 +69,7 @@
       display: flex;
       align-items: center;
       width: 100%;
-      border: $borderWidth solid $darkGray;
+      border: $borderWidth solid $borderColor;
       border-top-left-radius: $borderRadius;
       border-top-right-radius: $borderRadius;
       padding: 10px;
@@ -167,7 +175,7 @@
         width: 48px;
         height: 48px;
         cursor: pointer;
-        background-color: #000;
+        background-color: $controls;
         border-radius: 15px;
         svg {
           fill: white

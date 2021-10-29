@@ -15,7 +15,7 @@ import CosmicArpSound from "../assets/sounds/cosmic-arp.mp3";
 import HardBaseSound from "../assets/sounds/hard-bass-vox.mp3";
 import ScratchSampleSound from "../assets/sounds/scratch-sample.mp3";
 
-import BSCSLogo from "../assets/bscs-logo.svg";
+import WavesLogo from "../assets/wavesLogo.png";
 import PlayIcon from "../assets/icons/play_circle_outline_black_48dp.svg";
 import PauseIcon from "../assets/icons/pause_circle_outline_black_48dp.svg";
 import VolumeIcon from "../assets/icons/volume_up_black_48dp.svg";
@@ -189,7 +189,10 @@ export const App = () => {
 
     return (
     <div className="app">
-      <div className="header"><BSCSLogo /> Sounds are waves</div>
+      <div className="header">
+        <img src={WavesLogo} alt="Waves Logo" />
+        &nbsp;&nbsp;Sounds are waves
+      </div>
       <div>
         <div className="sound-picker-container">
           <select className="sound-picker" value={selectedSound} onChange={handleSoundChange}>
@@ -208,12 +211,17 @@ export const App = () => {
       <div className="main-controls">
         <div className="playback">
           <div className="play-pause button" onClick={handlePlay}>{ playing ? <PauseIcon /> : <PlayIcon /> }</div>
-          <VolumeIcon />
+          {/* If changing the color of the VolumeIcon or Slider
+            then may also need to change the $controls color, for consistency */}
+          <VolumeIcon style={{fill: "#3377BD"}} />
           <Slider
             className="volume-slider"
             min={0} max={2} step={0.01}
             value={volume}
             onChange={handleVolumeChange}
+            trackStyle={{backgroundColor: "#3377BD"}}
+            railStyle={{backgroundColor: "#3377BD"}}
+            handleStyle={{backgroundColor: "#3377BD"}}
           />
           <div className="speed-controls">
             <div className="speed-label">
