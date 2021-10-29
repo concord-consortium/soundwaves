@@ -1,4 +1,4 @@
-import React, { ChangeEvent, ReactComponentElement, useCallback, useEffect, useRef, useState } from "react";
+import React, { ChangeEvent, ChangeEventHandler, ReactComponentElement, useCallback, useEffect, useRef, useState } from "react";
 import { SoundWave } from "./sound-wave";
 import { useAutoWidth } from "../hooks/use-auto-width";
 import Slider from "rc-slider";
@@ -46,10 +46,11 @@ const sounds: Record<SoundName, string> = {
   "scratch-sample": ScratchSampleSound
 };
 
-type Modulation = "AM" | "FM" ;
-type Frequency = 540e3 | 600e3 | 1200e3 | 897e5 | 1019e5 | 1081e5 ;
+type Modulation = "" | "AM" | "FM" ;
+type Frequency = 0 | 540e3 | 600e3 | 1200e3 | 897e5 | 1019e5 | 1081e5 ;
 type CarrierWave = {modulation: Modulation, frequency: Frequency};
 const carrierWaves: Record<string, CarrierWave> = {
+  "Choose . . .":   {modulation: "", frequency:  0},
   "AM 540kHz":   {modulation: "AM", frequency:  540e3},
   "AM 600kHz":   {modulation: "AM", frequency:  600e3},
   "AM 1200kHz":  {modulation: "AM", frequency: 1200e3},
@@ -57,9 +58,6 @@ const carrierWaves: Record<string, CarrierWave> = {
   "FM 101.9MHz": {modulation: "FM", frequency: 1019e5},
   "FM 108.1MHz": {modulation: "FM", frequency: 1081e5},
 };
-for (const key in carrierWaves) {
-  console.log(key, carrierWaves[key]);
-}
 
 const GRAPH_MARGIN = 20; // px;
 const ZOOM_BUTTONS_WIDTH = 130; // px, it should match width of zoom-buttons-container defined in CSS file
@@ -73,6 +71,10 @@ export const App = () => {
   const [playbackRate, setPlaybackRate] = useState<number>(1);
   const [graphWidth, setGraphWidth] = useState<number>(100);
   const [audioBuffer, setAudioBuffer] = useState<AudioBuffer>();
+  const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose . . .");
+  const [wavelength, setWavelength] = useState<string>("");
+  const [timesHigherThanHuman, setTimesHigherThanHuman] = useState<string>("");
+  const [modulation, setModulation] = useState<string>("");
 
   const audioContext = useRef<AudioContext>();
   const audioSource = useRef<AudioBufferSourceNode>();
@@ -205,6 +207,24 @@ export const App = () => {
     return (optionElements);
   };
 
+  const handleCarrierChange = ( (event: ChangeEvent<HTMLSelectElement>): any => {
+    const value = event.target.value;
+console.log(value);
+    setCarrierWaveSelection(value);
+
+    const modulation = carrierWaves[value].modulation;
+    setModulation(modulation ? modulation : "");
+
+    const frequency = carrierWaves[value].frequency;
+    setTimesHigherThanHuman( (frequency != 0)
+      ? `${(frequency / 2e4).toString()}x` // Using 20kHz as upper range of human hearing
+      : "");
+
+    setWavelength( (frequency != 0)
+      ? `${Math.floor(3e8 / frequency)} (meters)`
+      : "");
+  });
+
   return (
     <div className="app">
       <div className="header">
@@ -294,18 +314,19 @@ export const App = () => {
           Radio Carrier Wave:
         </div>
         <div className="freq-mod-container">
-          <select>
+          <select value={carrierWaveSelection} onChange={handleCarrierChange}>
             <CarrierWaveOptions />
           </select>
         </div>
         <div>
-          Wavelength:&nbsp;<span className="value">0.0002ms</span>
+          Wavelength:&nbsp;<span className="value">{wavelength}</span>
         </div>
         <div>
-          Higher than human hearing&nbsp;(x):&nbsp;<span className="value">NNN</span>
+          Higher than human hearing range by:&nbsp;
+          <span className="value">{timesHigherThanHuman}</span>
         </div>
         <div>
-          Modulation:&nbsp;<span className="value">Amplitude/Frequency</span>
+          Modulation:&nbsp;<span className="value">{modulation}</span>
         </div>
       </div>
     </div>

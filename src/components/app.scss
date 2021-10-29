@@ -38,7 +38,8 @@
         font-size: 24px;
         width: 100%;
         color: $controls;
-        border-color: $borderColor;
+        border-color: $darkBorderColor;
+        background-color: #3377BD20;
       }
     }
   }
@@ -202,7 +203,8 @@
         margin-bottom: 5px;
         font-size: 24px;
         color: $controls;
-        border-color: $borderColor;
+        border-color: $darkBorderColor;
+        background-color: #3377BD20;
       }
 
       span.value {
