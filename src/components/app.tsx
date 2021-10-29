@@ -235,25 +235,25 @@ export const App = () => {
         Speed: { playbackRate >= 1 ? playbackRate : `1/${Math.round(1/playbackRate)}` }x
       </div>
       <div className={"speed-controls"}>
-        <button onClick={() => {setPlaybackSpeedTo(1/8)}} disabled={playing}>
+        <button onClick={() => {setPlaybackSpeedTo(1/8);}} disabled={playing}>
           <span className={playing ? "speed-control-text-disabled" : ""}>1/8</span>
         </button>
-        <button onClick={() => {setPlaybackSpeedTo(1/4)}} disabled={playing}>
+        <button onClick={() => {setPlaybackSpeedTo(1/4);}} disabled={playing}>
           <span className={playing ? "speed-control-text-disabled" : ""}>1/4</span>
         </button>
-        <button onClick={() => {setPlaybackSpeedTo(1/2)}} disabled={playing}>
+        <button onClick={() => {setPlaybackSpeedTo(1/2);}} disabled={playing}>
           <span className={playing ? "speed-control-text-disabled" : ""}>1/2</span>
         </button>
-        <button onClick={() => {setPlaybackSpeedTo(1)}} disabled={playing}>
+        <button onClick={() => {setPlaybackSpeedTo(1);}} disabled={playing}>
           <span className={playing ? "speed-control-text-disabled" : ""}>1</span>
         </button>
-        <button onClick={() => {setPlaybackSpeedTo(2)}} disabled={playing}>
+        <button onClick={() => {setPlaybackSpeedTo(2);}} disabled={playing}>
           <span className={playing ? "speed-control-text-disabled" : ""}>2</span>
         </button>
-        <button onClick={() => {setPlaybackSpeedTo(4)}} disabled={playing}>
+        <button onClick={() => {setPlaybackSpeedTo(4);}} disabled={playing}>
           <span className={playing ? "speed-control-text-disabled" : ""}>4</span>
         </button>
-        <button onClick={() => {setPlaybackSpeedTo(8)}} disabled={playing}>
+        <button onClick={() => {setPlaybackSpeedTo(8);}} disabled={playing}>
           <span className={playing ? "speed-control-text-disabled" : ""}>8</span>
         </button>
       </div>
