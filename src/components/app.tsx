@@ -160,14 +160,6 @@ export const App = () => {
     setZoom(Math.max(2, zoom * 0.5));
   };
 
-  // const handleFasterPlayback = () => {
-  //   setPlaybackRate(Math.min(8, playbackRate * 2));
-  // };
-
-  // const handleSlowerPlayback = () => {
-  //   setPlaybackRate(Math.max(1 / 128, playbackRate * 0.5));
-  // };
-
   const setPlaybackSpeedTo = (speed: number) => {
     const boundedSpeed = Math.max((1 / 128), Math.min(8, speed));
     setPlaybackRate(boundedSpeed);
@@ -211,7 +203,7 @@ export const App = () => {
       <div className="main-controls">
         <div className="playback">
           <div className="play-pause button" onClick={handlePlay}>{ playing ? <PauseIcon /> : <PlayIcon /> }</div>
-          {/* If changing the color of the VolumeIcon or Slider
+          {/* If changing the color of the VolumeIcon
             then may also need to change the $controls color, for consistency */}
           <VolumeIcon style={{fill: "#3377BD"}} />
           <Slider
@@ -219,9 +211,6 @@ export const App = () => {
             min={0} max={2} step={0.01}
             value={volume}
             onChange={handleVolumeChange}
-            trackStyle={{backgroundColor: "#3377BD"}}
-            railStyle={{backgroundColor: "#3377BD"}}
-            handleStyle={{backgroundColor: "#3377BD"}}
           />
           <div className="speed-controls">
             <div className="speed-label">
