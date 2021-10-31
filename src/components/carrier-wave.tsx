@@ -51,7 +51,9 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
         <span className="value">{timesHigherThanHuman}</span>
       </div>
       <div>
-        Modulation:&nbsp;<span className="value">{
+        Modulation:&nbsp;
+        <span className="value">
+        {
           modulation && ((modulation === "FM") ? "Frequency" : "Amplitude")
         }
         </span>
