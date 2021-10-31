@@ -1,5 +1,6 @@
-import React, { ChangeEvent, ChangeEventHandler, ReactComponentElement, useCallback, useEffect, useRef, useState } from "react";
+import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { SoundWave } from "./sound-wave";
+import { CarrierWave, carrierWaves } from "./carrier-wave";
 import { useAutoWidth } from "../hooks/use-auto-width";
 import Slider from "rc-slider";
 
@@ -44,19 +45,6 @@ const sounds: Record<SoundName, string> = {
   "cosmic-arp": CosmicArpSound,
   "hard-base": HardBaseSound,
   "scratch-sample": ScratchSampleSound
-};
-
-type Modulation = "" | "AM" | "FM" ;
-type Frequency = 0 | 540e3 | 600e3 | 1200e3 | 897e5 | 1019e5 | 1081e5 ;
-type CarrierWave = {modulation: Modulation, frequency: Frequency};
-const carrierWaves: Record<string, CarrierWave> = {
-  "Choose . . .":   {modulation: "", frequency:  0},
-  "AM 540kHz":   {modulation: "AM", frequency:  540e3},
-  "AM 600kHz":   {modulation: "AM", frequency:  600e3},
-  "AM 1200kHz":  {modulation: "AM", frequency: 1200e3},
-  "FM 89.7MHz":  {modulation: "FM", frequency:  897e5},
-  "FM 101.9MHz": {modulation: "FM", frequency: 1019e5},
-  "FM 108.1MHz": {modulation: "FM", frequency: 1081e5},
 };
 
 const GRAPH_MARGIN = 20; // px;
@@ -196,20 +184,8 @@ export const App = () => {
     2: {style: null, label: "2"},
   };
 
-  const CarrierWaveOptions = (): any => {
-    const carrierWaveKeys: string[] = [];
-    for (const key in carrierWaves) {
-      carrierWaveKeys.push(key);
-    }
-    const optionElements = carrierWaveKeys.map((key) =>
-      <option key={key} value={key}>{key}</option>
-    );
-    return (optionElements);
-  };
-
-  const handleCarrierChange = ( (event: ChangeEvent<HTMLSelectElement>): any => {
+  const handleCarrierChange = ( (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
-console.log(value);
     setCarrierWaveSelection(value);
 
     const modulation = carrierWaves[value].modulation;
@@ -224,6 +200,7 @@ console.log(value);
       ? `${Math.floor(3e8 / frequency)} (meters)`
       : "");
   });
+
 
   return (
     <div className="app">
@@ -309,26 +286,13 @@ console.log(value);
       {/* <div className="current-speed">
         Speed: { playbackRate >= 1 ? playbackRate : `1/${Math.round(1/playbackRate)}` }x
       </div> */}
-      <div className="carrier-wave-container">
-        <div>
-          Radio Carrier Wave:
-        </div>
-        <div className="freq-mod-container">
-          <select value={carrierWaveSelection} onChange={handleCarrierChange}>
-            <CarrierWaveOptions />
-          </select>
-        </div>
-        <div>
-          Wavelength:&nbsp;<span className="value">{wavelength}</span>
-        </div>
-        <div>
-          Higher than human hearing range by:&nbsp;
-          <span className="value">{timesHigherThanHuman}</span>
-        </div>
-        <div>
-          Modulation:&nbsp;<span className="value">{modulation}</span>
-        </div>
-      </div>
+      <CarrierWave
+        carrierWaveSelection={carrierWaveSelection}
+        wavelength={wavelength}
+        timesHigherThanHuman={timesHigherThanHuman}
+        modulation={modulation}
+        handleCarrierChange={handleCarrierChange}
+      />
     </div>
   );
 };
