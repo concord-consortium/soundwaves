@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import { CarrierWave } from "./carrier-wave";
 
 const mockCarrierChangeHandler = ((event: ChangeEvent<HTMLSelectElement>): any => {
-  if (event) { // NO-OP, just to not fail CI}
+  if (event) {} // NO-OP, just to not fail CI
 });
 
 describe("CarrierWave", () => {
