@@ -25,11 +25,22 @@
     }
   }
 
-  .sound-picker {
-    margin: 20px $margin;
-    font-size: 24px;
-    color: $controls;
-    border-color: $borderColor;
+  .sound-picker-container {
+    padding: 20px $margin;
+    display: inline-block;
+    width: calc(100% - 96px); // 96px ~= width of .mic-icon
+
+    .sound-picker {
+      font-size: 24px;
+      width: 100%;
+      color: $controls;
+      border-color: $borderColor;
+    }
+  }
+
+  .mic-icon {
+    position: relative;
+    margin-bottom: -15px;
   }
 
   .main-controls {
@@ -56,40 +67,88 @@
     .playback {
       display: flex;
       align-items: center;
-      margin-right: 20px;
+      width: 100%;
       border: $borderWidth solid $borderColor;
       border-top-left-radius: $borderRadius;
       border-top-right-radius: $borderRadius;
       padding: 10px;
 
       & > * {
-        margin: 0 4px;
+        margin: 0;
       }
+
+      .play-pause {
+        margin-right: 2px;
+      }
+
       .volume-slider {
-        margin-left: -1px;
+        margin-left: -3px;
+        margin-right: 20px;
+      }
+
+      .speed-controls {
+        text-align: center;
+        margin-top: -14px;
+
+        .speed-label {
+          font-size: 70%;
+          padding-bottom: 6px;
+        }
+      }
+
+      .speed-slider {
+        width: 140px;
+
+        .rc-slider-track {
+          background-color: $controls;
+          height: 6px;
+        }
+
+        .rc-slider-rail {
+          background-color: $controls;
+          height: 6px;
+        }
+
+        .rc-slider-handle {
+          fill: $controls;
+          height: 20px;
+          width: 20px;
+          margin-top: -7px;
+          background-color: $controls;
+          &:active, &:hover {
+            box-shadow: none;
+          }
+        }
+      }
+
+      .speed-slider.disabled {
+        .rc-slider-rail, .rc-slider-handle {
+          background-color: silver;
+          border-color: silver;
+        }
       }
     }
   }
 
   .volume-slider {
-    width: 90px;
+    width: 50px;
 
     .rc-slider-track {
-      background-color: #000;
+      background-color: $controls;
       height: 6px;
     }
 
     .rc-slider-rail {
-      background-color: #000;
+      background-color: $controls;
       height: 6px;
     }
 
     .rc-slider-handle {
-      border-color: #000;
+      border-color: $controls;
       height: 20px;
       width: 20px;
       margin-top: -7px;
-      background-color: #000;
+      background-color: $controls;
       &:active, &:hover {
         box-shadow: none;
       }
@@ -123,13 +182,5 @@
     }
   }
 
-  .debug-controls {
-    margin: $margin;
-    font-size: 80%;
-    button {
-      margin: 0;
-      margin-left: 10px;
-    }
-  }
 }
 
