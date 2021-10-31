@@ -188,15 +188,15 @@ export const App = () => {
     const value = event.target.value;
     setCarrierWaveSelection(value);
 
-    const modulation = carrierWaves[value].modulation;
-    setModulation(modulation ? modulation : "");
+    const newModulationValue = carrierWaves[value].modulation;
+    setModulation(newModulationValue ? newModulationValue : "");
 
     const frequency = carrierWaves[value].frequency;
-    setTimesHigherThanHuman( (frequency != 0)
+    setTimesHigherThanHuman( (frequency !== 0)
       ? `${(frequency / 2e4).toString()}x` // Using 20kHz as upper range of human hearing
       : "");
 
-    setWavelength( (frequency != 0)
+    setWavelength( (frequency !== 0)
       ? `${Math.floor(3e8 / frequency)} (meters)`
       : "");
   });
@@ -283,9 +283,6 @@ export const App = () => {
           </div>
         </div>
       </div>
-      {/* <div className="current-speed">
-        Speed: { playbackRate >= 1 ? playbackRate : `1/${Math.round(1/playbackRate)}` }x
-      </div> */}
       <CarrierWave
         carrierWaveSelection={carrierWaveSelection}
         wavelength={wavelength}
