@@ -1,7 +1,27 @@
 @import "./vars.scss";
 
+HTML {
+  height: 100%;
+}
+
+BODY {
+  background-color: $controlsBackground;
+  height: 100%;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+
+  & > DIV {
+    flex: 0 1 auto;
+    flex-grow: 0;
+    flex-shrink: 1;
+    flex-basis: auto;
+  }
+}
+
 #app {
-  font-size: 16px;
   overflow: hidden;
 
   .header {
@@ -26,33 +46,49 @@
   }
 
   .sound-picker-container {
-    margin: $margin/2 $margin;
-    padding: 10px  5px 15px 10px;
-    background-color: #3377BD20;
+    margin: 0 $margin;
+    margin: 0;
+    padding: 10px 10px 5px 10px;
+    display: flex;
+    justify-content: space-between;
+
+    .mic-label-icons-container {
+      width: 32px;
+      height: 32px;
+    }
 
     .sound-picker-select-container {
       display: inline-block;
-      width: calc(100% - 48px); // minus ~width of .mic-icon
+      width: calc(87%); // leave some whitespace between this and the icons
 
       .sound-picker {
-        font-size: 24px;
+        font-size: $selectFontSize;
         width: 100%;
         color: $controls;
         border-color: $darkBorderColor;
-        background-color: #3377BD20;
+        background-color: $controlsBackgroundSolid;
       }
     }
   }
 
+  .main-controls-and-waves-container {
+    flex: 1 1 auto;
+    height: calc(100vh - 245px); // fit to container, minus height of sibling elemnts
+    margin: 0;
+    padding: $margin $margin;
+    border-top: 5px solid $controls;
+    border-bottom: 5px solid $controls;
+  }
+
   .mic-icon {
     position: relative;
-    margin-bottom: -18px;
+    margin-bottom: -24px;
   }
 
   .main-controls {
+    margin: 0 0 -2px 0;
     display: flex;
     align-items: center;
-    margin: 0 $margin -2px $margin;
 
     * {
       // If changing this color, may need to change the <Slider> colors, for consistency
@@ -73,11 +109,10 @@
     .playback {
       display: flex;
       align-items: center;
-      width: 100%;
-      border: $borderWidth solid $borderColor;
+      border: $borderWidth solid $darkBorderColor;
       border-top-left-radius: $borderRadius;
       border-top-right-radius: $borderRadius;
-      padding: 10px;
+      padding: 10px 20px 10px 10px;
 
       & > * {
         margin: 0;
@@ -162,7 +197,7 @@
   }
 
   .sound-wave-container {
-    margin: 0 $margin 0 $margin;
+    margin: 0;
   }
 
   .zoomed-out-graph {
@@ -189,30 +224,48 @@
   }
 
   .carrier-wave-container {
-    margin: 15px 20px 0 20px;
-    padding: 10px 15px;
-    font-size: 80%;
-    background-color: #3377BD20;
+    margin: 0;
+    padding: 5px 10px 10px 10px;
+    font-size: 85%;
     color: $controls;
 
-    div {
-      margin: 6px 0px 0px 0px;
+    .carrier-picker-container {
+      display: flex;
 
+      .carrier-picker-caption {
+        margin-top: 3px;
+        font-size: $selectFontSize;
+      }
+    }
+
+    DIV {
       select {
         width: 100%;
-        margin-bottom: 5px;
-        font-size: 24px;
+        font-size: $selectFontSize;
         color: $controls;
         border-color: $darkBorderColor;
-        background-color: #3377BD20;
+        background-color: $controlsBackgroundSolid;
       }
 
       span.value {
         color: #03478D;
       }
     }
-    div.freq-mod-container {
+
+    DIV.freq-mod-container {
       margin-top: 1px;
+    }
+
+    .wavelength-mod-container {
+      margin-top: 6px;
+      display: flex;
+
+      DIV {
+        width: 50%;
+      }
+    }
+    .times-higher-than-container {
+      margin-top: 6px;
     }
   }
 }

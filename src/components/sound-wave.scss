@@ -2,7 +2,8 @@
 
 .sound-wave {
   canvas {
-    border: $borderWidth solid $borderColor;
+    border: $borderWidth solid $darkBorderColor;
+    background-color: white;
   }
 
   &.interactive canvas {

@@ -221,8 +221,12 @@ export const App = () => {
             <option value="scratch-sample">Scratch Sample</option>
           </select>
         </div>
-        <MicIcon className="mic-icon button disabled" />
+        <div className="mic-label-icons-container">
+          <MicIcon className="mic-icon button disabled" viewBox="0 0 36 36" />
+          {/* <LabelsIcon className="button disabled" /> */}
+        </div>
       </div>
+      <div className="main-controls-and-waves-container">
       <div className="main-controls">
         <div className="playback">
           <div className="play-pause button" onClick={handlePlay}>{ playing ? <PauseIcon /> : <PlayIcon /> }</div>
@@ -255,7 +259,6 @@ export const App = () => {
             </div>
           </div>
         </div>
-        {/* <LabelsIcon className="button disabled" /> */}
       </div>
       <div className="sound-wave-container">
         <SoundWave
@@ -282,6 +285,7 @@ export const App = () => {
             <div className="zoom-button" onClick={handleZoomIn}><PlusIcon /></div>
           </div>
         </div>
+      </div>
       </div>
       <CarrierWave
         carrierWaveSelection={carrierWaveSelection}

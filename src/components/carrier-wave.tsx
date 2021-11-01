@@ -35,28 +35,32 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
 
   return (
     <div className="carrier-wave-container">
-      <div>
-        Radio Carrier Wave:
+      <div className="carrier-picker-container">
+        <div className="carrier-picker-caption">
+          Radio Carrier Wave:
+        </div>
+        <div className="freq-mod-container">
+          <select value={carrierWaveSelection} onChange={handleCarrierChange}>
+            <CarrierWaveOptions />
+          </select>
+        </div>
       </div>
-      <div className="freq-mod-container">
-        <select value={carrierWaveSelection} onChange={handleCarrierChange}>
-          <CarrierWaveOptions />
-        </select>
-      </div>
-      <div>
-        Wavelength:&nbsp;<span className="value">{wavelength}</span>
-      </div>
-      <div>
-        Higher than human hearing range by:&nbsp;
-        <span className="value">{timesHigherThanHuman}</span>
-      </div>
-      <div>
-        Modulation:&nbsp;
+      <div className="wavelength-mod-container">
+        <div>
+          Wavelength:&nbsp;<span className="value">{wavelength}</span>
+        </div>
+        <div>
+        &nbsp;&nbsp;Modulation:&nbsp;
         <span className="value">
         {
           modulation && ((modulation === "FM") ? "Frequency" : "Amplitude")
         }
         </span>
+      </div>
+      </div>
+      <div className="times-higher-than-container">
+        Higher than human hearing range by:&nbsp;
+        <span className="value">{timesHigherThanHuman}</span>
       </div>
     </div>
   );
