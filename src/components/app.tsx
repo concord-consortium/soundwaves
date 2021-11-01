@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { SoundWave } from "./sound-wave";
+import { CarrierWave, carrierWaves } from "./carrier-wave";
 import { useAutoWidth } from "../hooks/use-auto-width";
 import Slider from "rc-slider";
 
@@ -58,6 +59,10 @@ export const App = () => {
   const [playbackRate, setPlaybackRate] = useState<number>(1);
   const [graphWidth, setGraphWidth] = useState<number>(100);
   const [audioBuffer, setAudioBuffer] = useState<AudioBuffer>();
+  const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose . . .");
+  const [wavelength, setWavelength] = useState<string>("");
+  const [timesHigherThanHuman, setTimesHigherThanHuman] = useState<string>("");
+  const [modulation, setModulation] = useState<string>("");
 
   const audioContext = useRef<AudioContext>();
   const audioSource = useRef<AudioBufferSourceNode>();
@@ -179,14 +184,32 @@ export const App = () => {
     2: {style: null, label: "2"},
   };
 
+  const handleCarrierChange = ( (event: ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    setCarrierWaveSelection(value);
+
+    const newModulationValue = carrierWaves[value].modulation;
+    setModulation(newModulationValue ? newModulationValue : "");
+
+    const frequency = carrierWaves[value].frequency;
+    setTimesHigherThanHuman( (frequency !== 0)
+      ? `${(frequency / 2e4).toString()}x` // Using 20kHz as upper range of human hearing
+      : "");
+
+    setWavelength( (frequency !== 0)
+      ? `${Math.floor(3e8 / frequency)} (meters)`
+      : "");
+  });
+
+
   return (
     <div className="app">
       <div className="header">
         <img src={WavesLogo} alt="Waves Logo" />
         &nbsp;&nbsp;Sounds are waves
       </div>
-      <div>
-        <div className="sound-picker-container">
+      <div className="sound-picker-container">
+        <div className="sound-picker-select-container">
           <select className="sound-picker" value={selectedSound} onChange={handleSoundChange}>
             <option value="middle-c">Middle C (261.65Hz)</option>
             <option value="c2">A (65.41 Hz)</option>
@@ -260,9 +283,13 @@ export const App = () => {
           </div>
         </div>
       </div>
-      {/* <div className="current-speed">
-        Speed: { playbackRate >= 1 ? playbackRate : `1/${Math.round(1/playbackRate)}` }x
-      </div> */}
+      <CarrierWave
+        carrierWaveSelection={carrierWaveSelection}
+        wavelength={wavelength}
+        timesHigherThanHuman={timesHigherThanHuman}
+        modulation={modulation}
+        handleCarrierChange={handleCarrierChange}
+      />
     </div>
   );
 };
