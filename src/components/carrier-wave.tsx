@@ -37,7 +37,7 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
     <div className="carrier-wave-container">
       <div className="carrier-picker-container">
         <div className="carrier-picker-caption">
-          Radio Carrier Wave:
+          Radio Carrier Wave:&nbsp;
         </div>
         <div className="freq-mod-container">
           <select value={carrierWaveSelection} onChange={handleCarrierChange}>

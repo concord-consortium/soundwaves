@@ -9,6 +9,10 @@ BODY {
   height: 100%;
 }
 
+#app { // This is actually the ROOT container!
+  overflow: hidden;
+}
+
 .app {
   display: flex;
   flex-direction: column;
@@ -19,61 +23,10 @@ BODY {
     flex-shrink: 1;
     flex-basis: auto;
   }
-}
-
-#app {
-  overflow: hidden;
-
-  .header {
-    color: #fff;
-    background-color: #024059;
-    padding: 10px;
-    font-size: 24px;
-    line-height: 26px;
-
-    display: flex;
-    align-items: center;
-
-    svg {
-      width: 120px;
-      padding: 3px;
-      margin-right: 10px;
-
-      path, circle {
-        fill: #fff;
-      }
-    }
-  }
-
-  .sound-picker-container {
-    margin: 0 $margin;
-    margin: 0;
-    padding: 10px 10px 5px 10px;
-    display: flex;
-    justify-content: space-between;
-
-    .mic-label-icons-container {
-      width: 32px;
-      height: 32px;
-    }
-
-    .sound-picker-select-container {
-      display: inline-block;
-      width: calc(87%); // leave some whitespace between this and the icons
-
-      .sound-picker {
-        font-size: $selectFontSize;
-        width: 100%;
-        color: $controls;
-        border-color: $darkBorderColor;
-        background-color: $controlsBackgroundSolid;
-      }
-    }
-  }
 
   .main-controls-and-waves-container {
     flex: 1 1 auto;
-    height: calc(100vh - 245px); // fit to container, minus height of sibling elemnts
+    height: calc(100vh - 350px); // fit to container, minus height of sibling elemnts
     margin: 0;
     padding: $margin $margin;
     border-top: 5px solid $controls;
@@ -134,6 +87,12 @@ BODY {
         .speed-label {
           font-size: 70%;
           padding-bottom: 6px;
+          margin-left: -20px;
+          color: $controls;
+
+          &.disabled {
+            color: $disabledButton;
+          }
         }
       }
 
@@ -164,8 +123,8 @@ BODY {
 
       .speed-slider.disabled {
         .rc-slider-rail, .rc-slider-handle {
-          background-color: silver;
-          border-color: silver;
+          background-color: $disabledButton;
+          border-color: $disabledButton;
         }
       }
     }
@@ -200,12 +159,20 @@ BODY {
     margin: 0;
   }
 
-  .zoomed-out-graph {
+  .zoomed-out-graph-container {
     display: flex;
     align-items: center;
+    margin-top: -6px;
+    margin-right: 4px;
+    height: 60px;
+    padding: 3px 5px 0 10px;
+    border: $borderWidth solid $darkBorderColor;
+    border-bottom-left-radius: $borderRadius;
+    border-bottom-right-radius: $borderRadius;
 
     .zoom-buttons-container {
       width: 130px;
+      margin-top: -5px;
       display: flex;
       align-items: center;
       justify-content: space-around;
@@ -221,6 +188,12 @@ BODY {
         }
       }
     }
+  }
+
+  .carrier-wave-graph-container {
+    display: flex;
+    justify-content: center;
+    // border: 2px solid red;
   }
 
   .carrier-wave-container {
@@ -268,5 +241,6 @@ BODY {
       margin-top: 6px;
     }
   }
-}
+
+} // END OF: .app
 

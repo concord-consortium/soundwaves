@@ -1,8 +1,12 @@
 import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import Slider from "rc-slider";
+
+import { SoundName } from "../types";
 import { SoundWave } from "./sound-wave";
 import { CarrierWave, carrierWaves } from "./carrier-wave";
+import { AppHeader } from "./application-header/application-header";
+import { SoundPicker } from "./sound-picker/sound-picker";
 import { useAutoWidth } from "../hooks/use-auto-width";
-import Slider from "rc-slider";
 
 import "./app.scss";
 import "rc-slider/assets/index.css";
@@ -16,25 +20,12 @@ import CosmicArpSound from "../assets/sounds/cosmic-arp.mp3";
 import HardBaseSound from "../assets/sounds/hard-bass-vox.mp3";
 import ScratchSampleSound from "../assets/sounds/scratch-sample.mp3";
 
-import WavesLogo from "../assets/wavesLogo.png";
 import PlayIcon from "../assets/icons/play_circle_outline_black_48dp.svg";
 import PauseIcon from "../assets/icons/pause_circle_outline_black_48dp.svg";
 import VolumeIcon from "../assets/icons/volume_up_black_48dp.svg";
-import MicIcon from "../assets/icons/mic_black_48dp.svg";
-// import LabelsIcon from "../assets/icons/sell_black_48dp.svg";
 import PlusIcon from "../assets/icons/add_black_48dp.svg";
 import MinusIcon from "../assets/icons/remove_black_48dp.svg";
 
-
-type SoundName =
-  "middle-c"
-  | "c2"
-  | "baby-cry"
-  | "rock-and-knock-drum-loop"
-  | "cut-beat"
-  | "cosmic-arp"
-  | "hard-base"
-  | "scratch-sample";
 
 const sounds: Record<SoundName, string> = {
   "middle-c": MiddleCSound,
@@ -204,28 +195,10 @@ export const App = () => {
 
   return (
     <div className="app">
-      <div className="header">
-        <img src={WavesLogo} alt="Waves Logo" />
-        &nbsp;&nbsp;Sounds are waves
-      </div>
-      <div className="sound-picker-container">
-        <div className="sound-picker-select-container">
-          <select className="sound-picker" value={selectedSound} onChange={handleSoundChange}>
-            <option value="middle-c">Middle C (261.65Hz)</option>
-            <option value="c2">Lower C (65.41 Hz)</option>
-            <option value="baby-cry">Baby Cry</option>
-            <option value="rock-and-knock-drum-loop">Rock & Knock</option>
-            <option value="cut-beat">Cut Beat</option>
-            <option value="cosmic-arp">Cosmic Arp</option>
-            <option value="hard-base">Hard Base</option>
-            <option value="scratch-sample">Scratch Sample</option>
-          </select>
-        </div>
-        <div className="mic-label-icons-container">
-          <MicIcon className="mic-icon button disabled" viewBox="0 0 36 36" />
-          {/* <LabelsIcon className="button disabled" /> */}
-        </div>
-      </div>
+      <AppHeader/>
+
+      <SoundPicker selectedSound={selectedSound} handleSoundChange={handleSoundChange} />
+
       <div className="main-controls-and-waves-container">
       <div className="main-controls">
         <div className="playback">
@@ -240,7 +213,7 @@ export const App = () => {
             onChange={handleVolumeChange}
           />
           <div className="speed-controls">
-            <div className="speed-label">
+            <div className={`speed-label${(playing) ? " disabled" : ""}`}>
               Speed
             </div>
             <div>
@@ -262,16 +235,18 @@ export const App = () => {
       </div>
       <div className="sound-wave-container">
         <SoundWave
-          width={graphWidth} height={200}
+          width={graphWidth}
+          height={180}
           audioBuffer={audioBuffer}
           volume={volume}
           playbackProgress={playbackProgress}
           zoom={zoom}
           zoomedInView={true}
         />
-        <div className="zoomed-out-graph">
+        <div className="zoomed-out-graph-container">
           <SoundWave
-            width={graphWidth - ZOOM_BUTTONS_WIDTH} height={60}
+            width={graphWidth - ZOOM_BUTTONS_WIDTH}
+            height={40}
             audioBuffer={audioBuffer}
             volume={volume}
             playbackProgress={playbackProgress}
@@ -294,6 +269,19 @@ export const App = () => {
         modulation={modulation}
         handleCarrierChange={handleCarrierChange}
       />
+      <div className="carrier-wave-graph-container">
+        <SoundWave
+          width={graphWidth}
+          height={90}
+          audioBuffer={audioBuffer}
+          volume={volume}
+          playbackProgress={playbackProgress}
+          zoom={zoom}
+          zoomedInView={false}
+          interactive={!playing}
+          onProgressUpdate={handleProgressUpdate}
+      />
+      </div>
     </div>
   );
 };

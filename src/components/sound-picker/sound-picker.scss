@@ -1,0 +1,28 @@
+@import "../vars.scss";
+
+.sound-picker-container {
+    margin: 0 $margin;
+    margin: 0;
+    padding: 10px 10px 5px 10px;
+    display: flex;
+    justify-content: space-between;
+
+    .sound-picker-select-container {
+      display: inline-block;
+      width: 86%; // leave some whitespace between this and the icons
+
+      .sound-picker {
+        font-size: $selectFontSize;
+        width: 100%;
+        color: $controls;
+        border-color: $darkBorderColor;
+        background-color: $controlsBackgroundSolid;
+        }
+    }
+
+    .mic-label-icons-container {
+        width: 32px;
+        height: 32px;
+        margin-top: -4px;
+        }
+}

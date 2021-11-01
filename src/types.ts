@@ -16,6 +16,21 @@ export interface ISoundWavePropsWithData extends ISoundWaveProps {
   data: Float32Array;
 }
 
+export interface ISoundWavePropsWithDataAndCarrier extends ISoundWavePropsWithData {
+  carrier: Float32Array;
+}
+
+export type SoundName =
+"middle-c"
+| "c2"
+| "baby-cry"
+| "rock-and-knock-drum-loop"
+| "cut-beat"
+| "cosmic-arp"
+| "hard-base"
+| "scratch-sample";
+
+
 export interface ICarrierWaveProps {
   carrierWaveSelection: string;
   wavelength: string;
