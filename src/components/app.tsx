@@ -212,7 +212,7 @@ export const App = () => {
         <div className="sound-picker-select-container">
           <select className="sound-picker" value={selectedSound} onChange={handleSoundChange}>
             <option value="middle-c">Middle C (261.65Hz)</option>
-            <option value="c2">A (65.41 Hz)</option>
+            <option value="c2">Lower C (65.41 Hz)</option>
             <option value="baby-cry">Baby Cry</option>
             <option value="rock-and-knock-drum-loop">Rock & Knock</option>
             <option value="cut-beat">Cut Beat</option>
