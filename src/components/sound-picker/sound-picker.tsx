@@ -32,7 +32,8 @@ export const SoundPicker = (props: ISoundPickerProps) => {
         </select>
       </div>
       <div className="mic-label-icons-container">
-        <MicIcon className="mic-icon button disabled" viewBox="0 0 36 36" />
+        <MicIcon className="mic-icon button disabled" viewBox="0 0 36 36"
+        style={{fill: "#aaa" /* show as disabled, until support implemented */}} />
         {/* <LabelsIcon className="button disabled" viewBox="0 0 36 36" /> */}
       </div>
     </div>

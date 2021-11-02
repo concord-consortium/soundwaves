@@ -54,8 +54,11 @@ export const App = () => {
   const [wavelength, setWavelength] = useState<string>("");
   const [timesHigherThanHuman, setTimesHigherThanHuman] = useState<string>("");
   const [modulation, setModulation] = useState<string>("");
+  const [carrierBuffer, setCarrierBuffer] = useState<AudioBuffer>();
 
   const audioContext = useRef<AudioContext>();
+  const carrierContext = useRef<OfflineAudioContext>();
+  // const carrierContext = useRef<AudioContext>();
   const audioSource = useRef<AudioBufferSourceNode>();
   const gainNode = useRef<GainNode>();
   const playingRef = useRef<boolean>();
@@ -82,12 +85,29 @@ export const App = () => {
     setPlaybackProgress(0);
   };
 
+  const setupCarrierContext = async (soundName: string) => {
+    const numChannels = 1;
+    const sampleRate = 441000;
+    const length = sampleRate * 60; // Sixty seconds
+
+    carrierContext.current = new OfflineAudioContext(numChannels, length, sampleRate);
+    // carrierContext.current = new AudioContext();
+
+    const carrierOscillator = carrierContext.current.createOscillator();
+    carrierOscillator.type = "sine";
+    carrierOscillator.frequency.setValueAtTime(440, carrierContext.current.currentTime);
+    carrierOscillator.connect(carrierContext.current.destination);
+    setCarrierBuffer(carrierContext.current.createBuffer(numChannels, length, sampleRate));
+    carrierOscillator.start();
+  };
+
   useEffect(() => {
     // AudioContext is apparently unavailable in the node / jest environment.
     // So we bail out early, to prevent render test failure.
     if (!window.AudioContext) { return; }
 
     setupAudioContext(selectedSound);
+    setupCarrierContext(carrierWaveSelection);
   }, [selectedSound]);
 
   useEffect(() => {
@@ -196,7 +216,6 @@ export const App = () => {
   return (
     <div className="app">
       <AppHeader/>
-
       <SoundPicker selectedSound={selectedSound} handleSoundChange={handleSoundChange} />
 
       <div className="main-controls-and-waves-container">
@@ -273,13 +292,14 @@ export const App = () => {
         <SoundWave
           width={graphWidth}
           height={90}
-          audioBuffer={audioBuffer}
+          audioBuffer={carrierBuffer}
           volume={volume}
           playbackProgress={playbackProgress}
           zoom={zoom}
           zoomedInView={false}
           interactive={!playing}
           onProgressUpdate={handleProgressUpdate}
+          debug={true}
       />
       </div>
     </div>
