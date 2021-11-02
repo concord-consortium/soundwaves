@@ -94,6 +94,7 @@ export const App = () => {
     // carrierContext.current = new OfflineAudioContext(numChannels, length, sampleRate);
     // carrierContext.current = new AudioContext();
 
+    // Attempt 'B'
     // const myArrayBuffer =
     //   carrierContext.current.createBuffer(numChannels, length, sampleRate);
     // const data = myArrayBuffer.getChannelData(0);
@@ -109,6 +110,7 @@ export const App = () => {
     // setCarrierBuffer(myArrayBuffer);
     // source.start();
 
+    // Attempt 'A'
     // const carrierOscillator = carrierContext.current.createOscillator();
     // carrierOscillator.type = "sine";
     // carrierOscillator.frequency.setValueAtTime(440, carrierContext.current.currentTime);
@@ -188,6 +190,7 @@ export const App = () => {
     }
   };
 
+  // Attempt 'C'
   const renderCarrier = (audioBuffer: AudioBuffer): void => {
     console.log('length', audioBuffer.length);
     console.log('duration', audioBuffer.duration);
