@@ -40,7 +40,7 @@ const drawProgressMarker = (props: IDrawHelperProps) => {
   ctx.fillStyle = "#88D3DD";
   ctx.fillRect(markerX, 0, 1, height); // line
   ctx.beginPath();
-  ctx.arc(markerX, markerY, 5, 0, 2 * Math.PI); // dot
+  // ctx.arc(markerX, markerY, 5, 0, 2 * Math.PI); // dot
   ctx.fill();
 };
 
@@ -61,7 +61,7 @@ const drawZoomAreaMarker = (props: IDrawHelperProps) => {
 };
 
 export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, data: Float32Array, props: ISoundWaveProps) => {
-  const { width, height, volume, playbackProgress, zoom, zoomedInView } = props;
+  const { width, height, volume, playbackProgress, zoom, zoomedInView, shouldDrawProgressMarker } = props;
 
   useEffect(() => {
     if (!canvasRef.current) {
@@ -81,7 +81,7 @@ export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, d
 
     drawBackground(drawHelperProps);
     drawSoundWaveLine(drawHelperProps);
-    if (zoomedInView) {
+    if (zoomedInView && shouldDrawProgressMarker) {
       drawProgressMarker(drawHelperProps);
     } else {
       drawZoomAreaMarker(drawHelperProps);

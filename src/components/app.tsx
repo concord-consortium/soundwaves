@@ -46,19 +46,20 @@ export const App = () => {
   const [playing, setPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(1);
   const [zoom, setZoom] = useState<number>(16);
+  const [carrierZoom, setCarrierZoom] = useState<number>(16);
   const [playbackProgress, setPlaybackProgress] = useState<number>(0);
   const [playbackRate, setPlaybackRate] = useState<number>(1);
   const [graphWidth, setGraphWidth] = useState<number>(100);
   const [audioBuffer, setAudioBuffer] = useState<AudioBuffer>();
   const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose . . .");
-  const [wavelength, setWavelength] = useState<string>("");
+  const [carrierWavelength, setCarrierWavelength] = useState<string>("");
+  const [carrierFrequency, setCarrierFrequency] = useState<number>(0);
   const [timesHigherThanHuman, setTimesHigherThanHuman] = useState<string>("");
   const [modulation, setModulation] = useState<string>("");
   const [carrierBuffer, setCarrierBuffer] = useState<AudioBuffer>();
 
   const audioContext = useRef<AudioContext>();
   const carrierContext = useRef<OfflineAudioContext>();
-  // const carrierContext = useRef<AudioContext>();
   const audioSource = useRef<AudioBufferSourceNode>();
   const gainNode = useRef<GainNode>();
   const playingRef = useRef<boolean>();
@@ -85,38 +86,8 @@ export const App = () => {
     setPlaybackProgress(0);
   };
 
-  const setupCarrierContext = async (soundName: string) => {
-
-    // const numChannels = 1;
-    // const sampleRate = 441000;
-    // const length = sampleRate * 2; // 2 seconds
-
-    // carrierContext.current = new OfflineAudioContext(numChannels, length, sampleRate);
-    // carrierContext.current = new AudioContext();
-
-    // Attempt 'B'
-    // const myArrayBuffer =
-    //   carrierContext.current.createBuffer(numChannels, length, sampleRate);
-    // const data = myArrayBuffer.getChannelData(0);
-    // const frameCount = carrierContext.current.sampleRate;
-    // for (var i = 0; i < frameCount; i++) {
-    //   // Math.random() is in [0; 1.0]
-    //    // audio needs to be in [-1.0; 1.0]
-    //   // data[i] = Math.random() * 2 - 1;
-    //   data[i] = Math.sin(i);
-    // }
-    // const source = carrierContext.current.createBufferSource();
-    // source.buffer = myArrayBuffer;
-    // setCarrierBuffer(myArrayBuffer);
-    // source.start();
-
-    // Attempt 'A'
-    // const carrierOscillator = carrierContext.current.createOscillator();
-    // carrierOscillator.type = "sine";
-    // carrierOscillator.frequency.setValueAtTime(440, carrierContext.current.currentTime);
-    // const carrierBuffer = carrierContext.current.createBuffer(numChannels, length, sampleRate)
-    // setCarrierBuffer(carrierBuffer);
-    // carrierOscillator.start();
+  const setupCarrierContext = async () => {
+console.log('carrierFrequency', carrierFrequency);
   };
 
   useEffect(() => {
@@ -125,8 +96,8 @@ export const App = () => {
     if (!window.AudioContext) { return; }
 
     setupAudioContext(selectedSound);
-    setupCarrierContext(carrierWaveSelection);
-  }, [selectedSound]);
+    setupCarrierContext();
+  }, [selectedSound, carrierFrequency]);
 
   useEffect(() => {
     if (gainNode.current) {
@@ -190,40 +161,86 @@ export const App = () => {
     }
   };
 
-  // Attempt 'C'
-  const renderCarrier = (audioBuffer: AudioBuffer): void => {
-    console.log('length', audioBuffer.length);
-    console.log('duration', audioBuffer.duration);
+  // Attempt 'D'
+  const renderCarrier = async (mainBuffer: AudioBuffer) => {
+    console.log('length', mainBuffer.length);
+    console.log('duration', mainBuffer.duration);
+    console.log('sampleRate', mainBuffer.sampleRate);
 
     const numChannels = 1;
-    const sampleRate = 441000;
-    const length = sampleRate * 2; // 2 seconds
+    const carrierFrequency = 262; // TODO: set based on user selection
+    const carrierSampleRate = 480000; // mainBuffer.sampleRate;
+    const carrierBufferLength = 480000; // Sixty seconds // mainBuffer.length;
 
-    carrierContext.current = new OfflineAudioContext(numChannels, length, sampleRate);
+    // Create a context for the carrier wave that matches the one used for main sound
+    carrierContext.current = new OfflineAudioContext(
+      numChannels,
+      carrierBufferLength,
+      carrierSampleRate);
 
-    // const carrierOscillator = carrierContext.current.createOscillator();
-    // carrierOscillator.type = "sine";
-    // carrierOscillator.frequency.setValueAtTime(440, carrierContext.current.currentTime);
-    // const carrierBuffer = carrierContext.current.createBuffer(numChannels, length, sampleRate)
+    const carrierOscillator = carrierContext.current.createOscillator();
+    carrierOscillator.type = "sine";
+    carrierOscillator.frequency.setValueAtTime(
+      carrierFrequency, carrierContext.current.currentTime);
+    carrierOscillator.connect(carrierContext.current.destination);
+    carrierOscillator.start();
+    const carrierBuffer = await carrierContext.current.startRendering();
+    setCarrierBuffer(carrierBuffer);
+
+    // const carrierBuffer = carrierContext.current.createBuffer(
+    //   numChannels, carrierBufferLength, carrierSampleRate);
     // setCarrierBuffer(carrierBuffer);
-    // carrierOscillator.start();
 
-    const myArrayBuffer =
-      carrierContext.current.createBuffer(numChannels, length, sampleRate);
-    const data = myArrayBuffer.getChannelData(0);
-    const frameCount = carrierContext.current.sampleRate;
-    for (var i = 0; i < frameCount; i++) {
-      // Math.random() is in [0; 1.0]
-       // audio needs to be in [-1.0; 1.0]
-      // data[i] = Math.random() * 2 - 1;
-      data[i] = Math.sin(i);
-    }
-    const source = carrierContext.current.createBufferSource();
-    source.buffer = myArrayBuffer;
-    setCarrierBuffer(myArrayBuffer);
-    source.start();
-
+    // const myArrayBuffer =
+    //   carrierContext.current.createBuffer(numChannels, carrierBufferLength, carrierSampleRate);
+    // const data = myArrayBuffer.getChannelData(0);
+    // const frameCount = carrierContext.current.sampleRate;
+    // for (var i = 0; i < frameCount; i++) {
+    //   // Math.random() is in [0; 1.0]
+    //    // audio needs to be in [-1.0; 1.0]
+    //   // data[i] = Math.random() * 2 - 1;
+    //   data[i] = Math.sin(i);
+    // }
+    // const source = carrierContext.current.createBufferSource();
+    // source.buffer = myArrayBuffer;
+    // setCarrierBuffer(myArrayBuffer);
+    // source.start();
   };
+
+  // // Attempt 'C'
+  // const renderCarrier = (audioBuffer: AudioBuffer): void => {
+  //   console.log('length', audioBuffer.length);
+  //   console.log('duration', audioBuffer.duration);
+
+  //   const numChannels = 1;
+  //   const sampleRate = 441000;
+  //   const length = sampleRate * 2; // 2 seconds
+
+  //   carrierContext.current = new OfflineAudioContext(numChannels, length, sampleRate);
+
+  //   // const carrierOscillator = carrierContext.current.createOscillator();
+  //   // carrierOscillator.type = "sine";
+  //   // carrierOscillator.frequency.setValueAtTime(440, carrierContext.current.currentTime);
+  //   // const carrierBuffer = carrierContext.current.createBuffer(numChannels, length, sampleRate)
+  //   // setCarrierBuffer(carrierBuffer);
+  //   // carrierOscillator.start();
+
+  //   const myArrayBuffer =
+  //     carrierContext.current.createBuffer(numChannels, length, sampleRate);
+  //   const data = myArrayBuffer.getChannelData(0);
+  //   const frameCount = carrierContext.current.sampleRate;
+  //   for (var i = 0; i < frameCount; i++) {
+  //     // Math.random() is in [0; 1.0]
+  //      // audio needs to be in [-1.0; 1.0]
+  //     // data[i] = Math.random() * 2 - 1;
+  //     data[i] = Math.sin(i);
+  //   }
+  //   const source = carrierContext.current.createBufferSource();
+  //   source.buffer = myArrayBuffer;
+  //   setCarrierBuffer(myArrayBuffer);
+  //   source.start();
+
+  // };
 
   const handleZoomIn = () => {
     setZoom(Math.min(2048, zoom * 2));
@@ -260,15 +277,18 @@ export const App = () => {
     setModulation(newModulationValue ? newModulationValue : "");
 
     const frequency = carrierWaves[value].frequency;
+    setCarrierFrequency(frequency);
+
     setTimesHigherThanHuman( (frequency !== 0)
       ? `${(frequency / 2e4).toString()}x` // Using 20kHz as upper range of human hearing
       : "");
 
-    setWavelength( (frequency !== 0)
+    setCarrierWavelength( (frequency !== 0)
       ? `${Math.floor(3e8 / frequency)} (meters)`
       : "");
-  });
 
+    setupCarrierContext();
+  });
 
   return (
     <div className="app">
@@ -318,6 +338,7 @@ export const App = () => {
           playbackProgress={playbackProgress}
           zoom={zoom}
           zoomedInView={true}
+          shouldDrawProgressMarker={true}
         />
         <div className="zoomed-out-graph-container">
           <SoundWave
@@ -328,6 +349,7 @@ export const App = () => {
             playbackProgress={playbackProgress}
             zoom={zoom}
             zoomedInView={false}
+            shouldDrawProgressMarker={false}
             interactive={!playing}
             onProgressUpdate={handleProgressUpdate}
           />
@@ -340,24 +362,26 @@ export const App = () => {
       </div>
       <CarrierWave
         carrierWaveSelection={carrierWaveSelection}
-        wavelength={wavelength}
+        wavelength={carrierWavelength}
         timesHigherThanHuman={timesHigherThanHuman}
         modulation={modulation}
         handleCarrierChange={handleCarrierChange}
       />
       <div className="carrier-wave-graph-container">
+        { (carrierFrequency !== 0) &&
         <SoundWave
           width={graphWidth}
           height={90}
           audioBuffer={carrierBuffer}
           volume={volume}
           playbackProgress={playbackProgress}
-          zoom={zoom}
-          zoomedInView={false}
+          zoom={carrierZoom}
+          zoomedInView={true}
+          shouldDrawProgressMarker={false}
           interactive={!playing}
           onProgressUpdate={handleProgressUpdate}
           debug={true}
-      />
+        />}
       </div>
     </div>
   );

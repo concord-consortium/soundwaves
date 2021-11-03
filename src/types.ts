@@ -10,6 +10,7 @@ export interface ISoundWaveProps {
   zoomedInView: boolean;
   interactive?: boolean;
   onProgressUpdate?: (newProgress: number) => void;
+  shouldDrawProgressMarker?: boolean;
   debug?: boolean;
 }
 
