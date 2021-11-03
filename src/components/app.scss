@@ -26,11 +26,11 @@ BODY {
 
   .main-controls-and-waves-container {
     flex: 1 1 auto;
-    height: calc(100vh - 350px); // fit to container, minus height of sibling elemnts
-    margin: 0;
-    padding: $margin $margin;
-    border-top: 5px solid $controls;
-    border-bottom: 5px solid $controls;
+    // FUTURE: consider making variable height, based on viewport
+    height: $soundWaveContainerHeight;
+    margin: 0 $margin;
+    // border-top: 5px solid $controls;
+    // border-bottom: 5px solid $controls;
   }
 
   .mic-icon {
@@ -39,7 +39,8 @@ BODY {
   }
 
   .main-controls {
-    margin: 0 0 -2px 0;
+    margin: 0;
+    margin-bottom: -2px;;
     display: flex;
     align-items: center;
 
@@ -190,26 +191,31 @@ BODY {
     }
   }
 
-  .carrier-wave-graph-container {
-    display: flex;
-    justify-content: center;
-    // border: 2px solid red;
-  }
-
   .carrier-wave-container {
-    margin: 0;
-    padding: 5px 10px 10px 10px;
+    height: $carrierWaveContainerHeight;
+    margin-top: 10px;
+    padding: 10px 10px 0px 10px;
     font-size: 85%;
     color: $controls;
+background-color: #ffffff40;
 
     .carrier-picker-container {
       display: flex;
+      padding: 0 15px;
 
       .carrier-picker-caption {
         margin-top: 3px;
         font-size: $selectFontSize;
       }
     }
+
+    .carrier-wave-graph-container {
+      background-color: goldenrod;
+      height: 113px;
+            margin: 5px 0 5px 0;
+            display: flex;
+            justify-content: center;
+          }
 
     DIV {
       select {

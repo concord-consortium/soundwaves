@@ -14,6 +14,10 @@ export interface ISoundWaveProps {
   debug?: boolean;
 }
 
+export interface ICarrierWaveProps {
+  width: number;
+}
+
 export interface ISoundWavePropsWithData extends ISoundWaveProps {
   data: Float32Array;
 }
@@ -33,13 +37,13 @@ export type SoundName =
 | "scratch-sample";
 
 
-export interface ICarrierWaveProps {
-  carrierWaveSelection: string;
-  wavelength: string;
-  timesHigherThanHuman: string;
-  modulation: string;
-  handleCarrierChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
-}
+// export interface ICarrierWaveProps {
+//   carrierWaveSelection: string;
+//   wavelength: string;
+//   timesHigherThanHuman: string;
+//   modulation: string;
+//   handleCarrierChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
+// }
 
 export type Modulation = "" | "AM" | "FM" ;
 export type Frequency = 0 | 540e3 | 600e3 | 1200e3 | 897e5 | 1019e5 | 1081e5 ;

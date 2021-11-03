@@ -1,9 +1,9 @@
 @import "../vars.scss";
 
 .application-header-container {
+    height: $applicationHeaderContainerHeight;
     color: #fff;
     background-color: #024059;
-    padding: 10px;
     font-size: 24px;
     line-height: 26px;
 
