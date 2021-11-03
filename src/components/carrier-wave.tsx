@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useRef, useState } from "react";
 import { ICarrierWaveProps, Frequency, Modulation, ISoundWavePropsWithDataAndCarrier, ISoundWaveProps } from "../types";
+import { SoundWave } from "./sound-wave";
 
 type CarrierWave = {modulation: Modulation, frequency: Frequency};
 
@@ -163,29 +164,47 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
       </div>
 
       <div className="carrier-wave-graph-container">
-        {/* { (carrierFrequency !== 0) &&
+        { (carrierFrequency !== 0) &&
+        <div>
+          <SoundWave
+            width={200}
+            height={50}
+            audioBuffer={carrierBuffer}
+            volume={0}
+            playbackProgress={0}
+            zoom={1}
+            zoomedInView={true}
+            shouldDrawProgressMarker={false}
+            interactive={false}
+            // onProgressUpdate={handleProgressUpdate}
+            debug={true}
+          />
+        </div>
+        }
+        { (carrierFrequency !== 0) &&
+        <div>
         <SoundWave
-          width={graphWidth}
-          height={90}
+          width={150}
+          height={50}
           audioBuffer={carrierBuffer}
-          volume={volume}
-          playbackProgress={playbackProgress}
-          zoom={carrierZoom}
+          volume={0}
+          playbackProgress={0}
+          zoom={1}
           zoomedInView={true}
           shouldDrawProgressMarker={false}
-          interactive={!playing}
-          onProgressUpdate={handleProgressUpdate}
+          interactive={false}
+          // onProgressUpdate={handleProgressUpdate}
           debug={true}
-        />} */}
+        />
       </div>
-
-
+      }
+      </div>
       <div className="wavelength-mod-container">
         <div>
           Wavelength:&nbsp;<span className="value">{carrierWavelength}</span>
         </div>
         <div>
-        &nbsp;&nbsp;Modulation:&nbsp;
+        &nbsp;Modulation:&nbsp;
         <span className="value">
         {
           modulation && ((modulation === "FM") ? "Frequency" : "Amplitude")

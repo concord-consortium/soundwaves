@@ -29,8 +29,6 @@ BODY {
     // FUTURE: consider making variable height, based on viewport
     height: $soundWaveContainerHeight;
     margin: 0 $margin;
-    // border-top: 5px solid $controls;
-    // border-bottom: 5px solid $controls;
   }
 
   .mic-icon {
@@ -192,12 +190,12 @@ BODY {
   }
 
   .carrier-wave-container {
-    height: $carrierWaveContainerHeight;
-    margin-top: 10px;
-    padding: 10px 10px 0px 10px;
+    margin: 10px 8px 0 8px;
+    padding: 5px 0px 5px 0px;
     font-size: 85%;
     color: $controls;
-background-color: #ffffff40;
+    border: 2px solid $darkBorderColor;
+    border-radius: $borderRadius;
 
     .carrier-picker-container {
       display: flex;
@@ -210,12 +208,9 @@ background-color: #ffffff40;
     }
 
     .carrier-wave-graph-container {
-      background-color: goldenrod;
       height: 113px;
-            margin: 5px 0 5px 0;
-            display: flex;
-            justify-content: center;
-          }
+      margin: 5px 0 5px 0;
+    }
 
     DIV {
       select {
@@ -237,14 +232,17 @@ background-color: #ffffff40;
 
     .wavelength-mod-container {
       margin-top: 6px;
+      margin-left: 8px;
       display: flex;
 
       DIV {
         width: 50%;
       }
     }
+
     .times-higher-than-container {
       margin-top: 6px;
+      margin-left: 8px;
     }
   }
 
