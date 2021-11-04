@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useState } from "react";
 
 import { SoundName } from "../../types";
 import MicIcon from "../../assets/icons/mic_black_48dp.svg";
@@ -14,12 +14,35 @@ export interface ISoundPickerProps {
 export const SoundPicker = (props: ISoundPickerProps) => {
   const { selectedSound, handleSoundChange } = props;
 
+  // defaults to match default of Middle C selection
+  const [isPureToneSelected, setIsPureToneSelected] = useState<boolean>(true);
+
+  const [isRecordMyOwnelected, setIsRecordMyOwnSelected] = useState<boolean>(false);
+
+  const onSoundPickerChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const soundName = event.currentTarget.value as SoundName;
+    switch (soundName) {
+      case "middle-c":
+        setIsPureToneSelected(true);
+        break;
+      case "c2":
+        setIsPureToneSelected(true);
+        break;
+      default:
+        setIsPureToneSelected(false);
+    }
+    setIsRecordMyOwnSelected(soundName === "record-my-own");
+
+    handleSoundChange && handleSoundChange(event);
+  };
+
+
   return (
     <div className="sound-picker-container">
       <div className="sound-picker-select-container">
         <select className="sound-picker"
           value={selectedSound}
-          onChange={handleSoundChange}
+          onChange={onSoundPickerChange}
           >
           <option value="middle-c">Middle C (261.65Hz)</option>
           <option value="c2">Lower C (65.41 Hz)</option>
@@ -29,13 +52,12 @@ export const SoundPicker = (props: ISoundPickerProps) => {
           <option value="cosmic-arp">Cosmic Arp</option>
           <option value="hard-base">Hard Base</option>
           <option value="scratch-sample">Scratch Sample</option>
+          <option value="record-my-own">(record my own . . .)</option>
         </select>
       </div>
       <div className="sound-picker-icons-container">
-        <MicIcon className="sound-picker-icon button disabled"
-        style={{fill: "#aaa" /* show as disabled, until support implemented */}} />
-        <LabelsIcon className="sound-picker-icon button disabled"
-        style={{fill: "#aaa" /* show as disabled, until support implemented */}} />
+        <MicIcon className={`sound-picker-icon button ${isRecordMyOwnelected ? "" : "disabled"}`} />
+        <LabelsIcon className={`sound-picker-icon button ${isPureToneSelected ? "" : "disabled"}`} />
         </div>
     </div>
   );

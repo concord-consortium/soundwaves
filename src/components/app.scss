@@ -24,8 +24,7 @@ BODY {
   }
 
   .main-controls-and-waves-container {
-    // FUTURE: consider making variable height, based on viewport
-    // height: $soundWaveContainerHeight;
+    // FUTURE: consider making this be of variable height, based on the viewport
     margin: 0 $margin;
   }
 
@@ -38,7 +37,7 @@ BODY {
     .speed-label {
       margin-bottom: 5px;
       text-align: center;
-      font-size: 70%;
+      font-size: $smallLabelFontSize;
       color: $controls;
 
       &.disabled {
@@ -190,63 +189,6 @@ BODY {
           fill: white
         }
       }
-    }
-  }
-
-  .carrier-wave-container {
-    margin: 10px 8px 0 8px;
-    padding: 5px 0px 5px 0px;
-    font-size: 85%;
-    color: $controls;
-    border: 2px solid $darkBorderColor;
-    border-radius: $borderRadius;
-
-    .carrier-picker-container {
-      display: flex;
-      padding: 0 15px;
-
-      .carrier-picker-caption {
-        margin-top: 3px;
-        font-size: $selectFontSize;
-      }
-    }
-
-    .carrier-wave-graph-container {
-      height: 113px;
-      margin: 5px 0 5px 0;
-    }
-
-    DIV {
-      select {
-        width: 100%;
-        font-size: $selectFontSize;
-        color: $controls;
-        border-color: $darkBorderColor;
-        background-color: $controlsBackgroundSolid;
-      }
-
-      span.value {
-        color: #03478D;
-      }
-    }
-
-    DIV.freq-mod-container {
-      margin-top: 1px;
-    }
-
-    .wavelength-mod-container {
-      margin-top: 6px;
-      margin-left: 8px;
-      display: flex;
-
-      DIV {
-        width: 50%;
-      }
-    }
-
-    .times-higher-than-container {
-      margin-top: 6px;
-      margin-left: 8px;
     }
   }
 

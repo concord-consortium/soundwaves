@@ -1,9 +1,9 @@
 import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import Slider from "rc-slider";
 
-import { SoundName } from "../types";
+import { SIDE_MARGIN_PLUS_BORDER, SoundName, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT, ZOOM_BUTTONS_WIDTH } from "../types";
 import { SoundWave } from "./sound-wave";
-import { CarrierWave, carrierWaves } from "./carrier-wave";
+import { CarrierWave } from "./carrier-wave/carrier-wave";
 import { AppHeader } from "./application-header/application-header";
 import { SoundPicker } from "./sound-picker/sound-picker";
 import { useAutoWidth } from "../hooks/use-auto-width";
@@ -35,11 +35,10 @@ const sounds: Record<SoundName, string> = {
   "cut-beat": CutBeatSound,
   "cosmic-arp": CosmicArpSound,
   "hard-base": HardBaseSound,
-  "scratch-sample": ScratchSampleSound
+  "scratch-sample": ScratchSampleSound,
+  "record-my-own": "record-my-own",
 };
 
-const GRAPH_MARGIN = 12; // px;
-const ZOOM_BUTTONS_WIDTH = 130; // px, it should match width of zoom-buttons-container defined in CSS file
 
 export const App = () => {
   const [selectedSound, setSelectedSound] = useState<SoundName>("middle-c");
@@ -61,7 +60,7 @@ export const App = () => {
   useAutoWidth({
     container: document.body,
     onWidthChange: useCallback(
-      (newWidth) => {setGraphWidth(newWidth - 2 * GRAPH_MARGIN)}
+      (newWidth) => {setGraphWidth(newWidth - (2 * SIDE_MARGIN_PLUS_BORDER))}
     , [])
   });
 
@@ -96,7 +95,8 @@ export const App = () => {
   }, [volume]);
 
   const handleSoundChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSound(event.currentTarget.value as SoundName);
+    const soundName = event.currentTarget.value as SoundName;
+    setSelectedSound(soundName);
   };
 
   const handleVolumeChange = (value: number) => {
@@ -180,8 +180,10 @@ export const App = () => {
   return (
     <div className="app">
       <AppHeader/>
-      <SoundPicker selectedSound={selectedSound} handleSoundChange={handleSoundChange} />
-
+      <SoundPicker
+        selectedSound={selectedSound}
+        handleSoundChange={handleSoundChange}
+        />
       <div className="main-controls-and-waves-container">
         <div className="playback-and-volume-controls">
           <div className="play-pause button" onClick={handlePlay}>
@@ -231,7 +233,7 @@ export const App = () => {
         <div className="sound-wave-container">
           <SoundWave
             width={graphWidth}
-            height={135}
+            height={SOUND_WAVE_GRAPH_HEIGHT}
             audioBuffer={audioBuffer}
             volume={volume}
             playbackProgress={playbackProgress}
@@ -242,7 +244,7 @@ export const App = () => {
           <div className="zoomed-out-graph-container">
             <SoundWave
               width={graphWidth - ZOOM_BUTTONS_WIDTH}
-              height={45}
+              height={ZOOMED_OUT_GRAPH_HEIGHT}
               audioBuffer={audioBuffer}
               volume={volume}
               playbackProgress={playbackProgress}
@@ -259,7 +261,7 @@ export const App = () => {
           </div>
         </div>
       </div>
-      <CarrierWave width={graphWidth} />
+      <CarrierWave/>
     </div>
   );
 };

@@ -1,10 +1,14 @@
-import React, { ChangeEvent, useRef, useState } from "react";
-import { ICarrierWaveProps, Frequency, Modulation, ISoundWavePropsWithDataAndCarrier, ISoundWaveProps } from "../types";
-import { SoundWave } from "./sound-wave";
+import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import { ICarrierWaveProps, Frequency, Modulation, ISoundWavePropsWithDataAndCarrier, ISoundWaveProps, SIDE_MARGIN_PLUS_BORDER, ZOOM_BUTTONS_WIDTH, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT } from "../../types"
+import { SoundWave } from "../sound-wave";
+import { useAutoWidth } from "../../hooks/use-auto-width";
+
+import "./carrier-wave.scss";
+
 
 type CarrierWave = {modulation: Modulation, frequency: Frequency};
 
-export const carrierWaves: Record<string, CarrierWave> = {
+const carrierWaves: Record<string, CarrierWave> = {
   "Choose . . .":   {modulation: "", frequency:  0},
   "AM 540kHz":   {modulation: "AM", frequency:  540e3},
   "AM 600kHz":   {modulation: "AM", frequency:  600e3},
@@ -14,15 +18,10 @@ export const carrierWaves: Record<string, CarrierWave> = {
   "FM 108.1MHz": {modulation: "FM", frequency: 1081e5},
 };
 
-// export const CarrierWave = (props: ISoundWaveProps) => {
 export const CarrierWave = (props: ICarrierWaveProps) => {
   const {
-    // carrierWaveSelection,
-    // wavelength,
-    // timesHigherThanHuman,
-    // modulation,
-    // handleCarrierChange,
   } = props;
+
 
   const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose . . .");
   const [carrierWavelength, setCarrierWavelength] = useState<string>("");
@@ -30,24 +29,20 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
   const [timesHigherThanHuman, setTimesHigherThanHuman] = useState<string>("");
   const [modulation, setModulation] = useState<string>("");
   const [carrierBuffer, setCarrierBuffer] = useState<AudioBuffer>();
+  const [graphWidth, setGraphWidth] = useState<number>(100);
+
   const carrierContext = useRef<OfflineAudioContext>();
 
   // Attempt 'D'
-  const renderCarrier = async (mainBuffer: AudioBuffer) => {
-    console.log('length', mainBuffer.length);
-    console.log('duration', mainBuffer.duration);
-    console.log('sampleRate', mainBuffer.sampleRate);
+  const renderCarrier = async () => {
 
     const numChannels = 1;
     const carrierFrequency = 262; // TODO: set based on user selection
-    const carrierSampleRate = 480000; // mainBuffer.sampleRate;
-    const carrierBufferLength = 480000; // Sixty seconds // mainBuffer.length;
+    const carrierSampleRate = 96000; // mainBuffer.sampleRate;
+    const carrierBufferLength = carrierSampleRate * 100; // 100 second(s)
 
-    // Create a context for the carrier wave that matches the one used for main sound
-    carrierContext.current = new OfflineAudioContext(
-      numChannels,
-      carrierBufferLength,
-      carrierSampleRate);
+    carrierContext.current =
+      new OfflineAudioContext(numChannels, carrierBufferLength, carrierSampleRate);
 
     const carrierOscillator = carrierContext.current.createOscillator();
     carrierOscillator.type = "sine";
@@ -58,10 +53,10 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
     const carrierBuffer = await carrierContext.current.startRendering();
     setCarrierBuffer(carrierBuffer);
 
+    // OBSOELTE
     // const carrierBuffer = carrierContext.current.createBuffer(
     //   numChannels, carrierBufferLength, carrierSampleRate);
     // setCarrierBuffer(carrierBuffer);
-
     // const myArrayBuffer =
     //   carrierContext.current.createBuffer(numChannels, carrierBufferLength, carrierSampleRate);
     // const data = myArrayBuffer.getChannelData(0);
@@ -95,23 +90,19 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
   //   // const carrierBuffer = carrierContext.current.createBuffer(numChannels, length, sampleRate)
   //   // setCarrierBuffer(carrierBuffer);
   //   // carrierOscillator.start();
-
-  //   const myArrayBuffer =
-  //     carrierContext.current.createBuffer(numChannels, length, sampleRate);
-  //   const data = myArrayBuffer.getChannelData(0);
-  //   const frameCount = carrierContext.current.sampleRate;
-  //   for (var i = 0; i < frameCount; i++) {
-  //     // Math.random() is in [0; 1.0]
-  //      // audio needs to be in [-1.0; 1.0]
-  //     // data[i] = Math.random() * 2 - 1;
-  //     data[i] = Math.sin(i);
-  //   }
-  //   const source = carrierContext.current.createBufferSource();
-  //   source.buffer = myArrayBuffer;
-  //   setCarrierBuffer(myArrayBuffer);
-  //   source.start();
-
   // };
+
+  useAutoWidth({
+    container: document.body,
+    onWidthChange: useCallback(
+      (newWidth) => {setGraphWidth(newWidth - (2 * SIDE_MARGIN_PLUS_BORDER))}
+    , [])
+  });
+
+  useEffect( () => {
+    renderCarrier();
+  }, []);
+
 
 
   const setupCarrierContext = async () => {
@@ -127,13 +118,14 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
 
     const frequency = carrierWaves[value].frequency;
     setCarrierFrequency(frequency);
+    const wavelengthInMilliSeconds = ((1 / frequency) * 1000).toPrecision(3);
 
     setTimesHigherThanHuman( (frequency !== 0)
       ? `${(frequency / 2e4).toString()}x` // Using 20kHz as upper range of human hearing
       : "");
 
     setCarrierWavelength( (frequency !== 0)
-      ? `${Math.floor(3e8 / frequency)} (meters)`
+      ? `${wavelengthInMilliSeconds}ms`
       : "");
 
     // setupCarrierContext();
@@ -164,54 +156,53 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
       </div>
 
       <div className="carrier-wave-graph-container">
-        { (carrierFrequency !== 0) &&
-        <div>
+        {/* { (carrierFrequency !== 0) && */}
+        <div className="zoomed-in-view">
           <SoundWave
-            width={200}
-            height={50}
+            width={graphWidth}
+            height={SOUND_WAVE_GRAPH_HEIGHT}
             audioBuffer={carrierBuffer}
-            volume={0}
+            volume={1}
             playbackProgress={0}
             zoom={1}
-            zoomedInView={true}
+            zoomedInView={false}
             shouldDrawProgressMarker={false}
             interactive={false}
-            // onProgressUpdate={handleProgressUpdate}
             debug={true}
           />
         </div>
-        }
-        { (carrierFrequency !== 0) &&
+        {/* }
+        { (carrierFrequency !== 0) && */}
         <div>
         <SoundWave
-          width={150}
-          height={50}
+          width={graphWidth - ZOOM_BUTTONS_WIDTH}
+          height={ZOOMED_OUT_GRAPH_HEIGHT}
           audioBuffer={carrierBuffer}
-          volume={0}
+          volume={1}
           playbackProgress={0}
           zoom={1}
           zoomedInView={true}
           shouldDrawProgressMarker={false}
           interactive={false}
-          // onProgressUpdate={handleProgressUpdate}
-          debug={true}
+          debug={false}
         />
       </div>
-      }
+      {/* } */}
       </div>
       <div className="wavelength-mod-container">
         <div>
           Wavelength:&nbsp;<span className="value">{carrierWavelength}</span>
         </div>
         <div>
-        &nbsp;Modulation:&nbsp;
-        <span className="value">
-        {
-          modulation && ((modulation === "FM") ? "Frequency" : "Amplitude")
-        }
-        </span>
+          &nbsp;Modulation:&nbsp;
+          <span className="value">
+            {
+              modulation && ((modulation === "FM") ? "Frequency" : "Amplitude")
+            }
+          </span>
+        </div>
       </div>
-      </div>
+
       <div className="times-higher-than-container">
         Higher than human hearing range by:&nbsp;
         <span className="value">{timesHigherThanHuman}</span>

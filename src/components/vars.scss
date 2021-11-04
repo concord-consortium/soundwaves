@@ -2,10 +2,11 @@ $applicationHeaderContainerHeight: 50px;
 $soundPickerContainerHeight: 30px;
 $soundWaveContainerHeight: 270px;
 
-$margin: 8px; // 16px;
-$borderWidth: 2px;
+$margin: 8px; // If this is changed; also change SIDE_MARGIN
+$borderWidth: 2px; // If this is changed; also change BORDER_WIDTH
 $borderRadius: 10px;
 $selectFontSize: 18px;
+$smallLabelFontSize: 70%;
 
 $darkGray: #494949;
 $borderColor: #e0e0e0;
@@ -14,3 +15,4 @@ $controls: #3377BD;
 $controlsBackground: #3377BD20;
 $controlsBackgroundSolid: #ffffff20;
 $disabledButton: #aaa;
+$graphBackgroundColor: white;

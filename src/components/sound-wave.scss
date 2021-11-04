@@ -3,7 +3,7 @@
 .sound-wave {
   canvas {
     border: $borderWidth solid $darkBorderColor;
-    background-color: white;
+    background-color: $graphBackgroundColor;
   }
 
   &.interactive canvas {
