@@ -60,7 +60,9 @@ export const App = () => {
 
   useAutoWidth({
     container: document.body,
-    onWidthChange: useCallback((newWidth) => setGraphWidth(newWidth - 2 * GRAPH_MARGIN), [])
+    onWidthChange: useCallback(
+      (newWidth) => {setGraphWidth(newWidth - 2 * GRAPH_MARGIN)}
+    , [])
   });
 
   const setupAudioContext = async (soundName: SoundName) => {
@@ -171,6 +173,7 @@ export const App = () => {
     0.5: { style: null, label: "1/2"},
     1: {style: null, label: "1"},
     2: {style: null, label: "2"},
+    4: {style: null, label: "4"},
   };
 
 
@@ -180,69 +183,81 @@ export const App = () => {
       <SoundPicker selectedSound={selectedSound} handleSoundChange={handleSoundChange} />
 
       <div className="main-controls-and-waves-container">
-      <div className="main-controls">
-        <div className="playback">
-          <div className="play-pause button" onClick={handlePlay}>{ playing ? <PauseIcon /> : <PlayIcon /> }</div>
-          {/* If changing the color of the VolumeIcon
-            then may also need to change the $controls color, for consistency */}
-          <VolumeIcon style={{fill: "#3377BD"}} />
-          <Slider
-            className="volume-slider"
-            min={0} max={2} step={0.01}
-            value={volume}
-            onChange={handleVolumeChange}
-          />
-          <div className="speed-controls">
-            <div className={`speed-label${(playing) ? " disabled" : ""}`}>
-              Speed
+        <div className="playback-and-volume-controls">
+          <div className="play-pause button" onClick={handlePlay}>
+            { playing ? <PauseIcon /> : <PlayIcon /> }
+          </div>
+          <div className="volume-controls">
+            <div className="volume-label">
+              Volume
             </div>
-            <div>
+            <div style={{width: '100%'}}>
               <Slider
-                className={playing ? "speed-slider disabled" : "speed-slider"}
-                defaultValue={1}
-                startPoint={1}
-                value={playbackRate}
-                min={0.25}
-                max={2}
-                step={null}
-                marks={speedMarks}
-                disabled={playing}
-                onChange={handleSpeedChange}
-                />
+                className="volume-slider"
+                min={0} max={2} step={0.01}
+                value={volume}
+                onChange={handleVolumeChange}
+              />
+            </div>
+            <div className="volume-icons">
+              <div><VolumeIcon className="volume-icon" /></div>
+              <div style={{textAlign: "right"}}>
+                <VolumeIcon className="volume-icon" />
+                <VolumeIcon className="volume-icon" />
+                <VolumeIcon className="volume-icon" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className="sound-wave-container">
-        <SoundWave
-          width={graphWidth}
-          height={135}
-          audioBuffer={audioBuffer}
-          volume={volume}
-          playbackProgress={playbackProgress}
-          zoom={zoom}
-          zoomedInView={true}
-          shouldDrawProgressMarker={true}
-        />
-        <div className="zoomed-out-graph-container">
+        <div className="speed-controls">
+          <div className={`speed-label${(playing) ? " disabled" : ""}`}>
+            Speed
+          </div>
+          <div>
+            <Slider
+              className={playing ? "speed-slider disabled" : "speed-slider"}
+              defaultValue={1}
+              startPoint={1}
+              value={playbackRate}
+              min={0.25}
+              max={4}
+              step={null}
+              marks={speedMarks}
+              disabled={playing}
+              onChange={handleSpeedChange}
+              />
+          </div>
+        </div>
+        <div className="sound-wave-container">
           <SoundWave
-            width={graphWidth - ZOOM_BUTTONS_WIDTH}
-            height={45}
+            width={graphWidth}
+            height={135}
             audioBuffer={audioBuffer}
             volume={volume}
             playbackProgress={playbackProgress}
             zoom={zoom}
-            zoomedInView={false}
-            shouldDrawProgressMarker={false}
-            interactive={!playing}
-            onProgressUpdate={handleProgressUpdate}
+            zoomedInView={true}
+            shouldDrawProgressMarker={true}
           />
-          <div className="zoom-buttons-container">
-            <div className="zoom-button" onClick={handleZoomOut}><MinusIcon /></div>
-            <div className="zoom-button" onClick={handleZoomIn}><PlusIcon /></div>
+          <div className="zoomed-out-graph-container">
+            <SoundWave
+              width={graphWidth - ZOOM_BUTTONS_WIDTH}
+              height={45}
+              audioBuffer={audioBuffer}
+              volume={volume}
+              playbackProgress={playbackProgress}
+              zoom={zoom}
+              zoomedInView={false}
+              shouldDrawProgressMarker={false}
+              interactive={!playing}
+              onProgressUpdate={handleProgressUpdate}
+            />
+            <div className="zoom-buttons-container">
+              <div className="zoom-button" onClick={handleZoomOut}><MinusIcon /></div>
+              <div className="zoom-button" onClick={handleZoomIn}><PlusIcon /></div>
+            </div>
           </div>
         </div>
-      </div>
       </div>
       <CarrierWave width={graphWidth} />
     </div>

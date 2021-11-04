@@ -31,11 +31,12 @@ export const SoundPicker = (props: ISoundPickerProps) => {
           <option value="scratch-sample">Scratch Sample</option>
         </select>
       </div>
-      <div className="mic-label-icons-container">
-        <MicIcon className="mic-icon button disabled" viewBox="0 0 36 36"
+      <div className="sound-picker-icons-container">
+        <MicIcon className="sound-picker-icon button disabled"
         style={{fill: "#aaa" /* show as disabled, until support implemented */}} />
-        {/* <LabelsIcon className="button disabled" viewBox="0 0 36 36" /> */}
-      </div>
+        <LabelsIcon className="sound-picker-icon button disabled"
+        style={{fill: "#aaa" /* show as disabled, until support implemented */}} />
+        </div>
     </div>
   );
 }
