@@ -23,6 +23,7 @@ export interface ISoundWaveProps {
 }
 
 export interface ICarrierWaveProps {
+  playbackProgress: number; // normalized, [0, 1]
 }
 
 export interface IZoomButtonsProps{

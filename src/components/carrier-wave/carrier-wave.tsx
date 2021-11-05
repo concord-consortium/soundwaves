@@ -20,7 +20,7 @@ const carrierWaves: Record<string, CarrierWave> = {
 };
 
 export const CarrierWave = (props: ICarrierWaveProps) => {
-  // const {} = props;
+  const { playbackProgress } = props;
 console.log('Into CarrierWave ctor');
 
 const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose . . .");
@@ -39,8 +39,8 @@ const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose
 console.log('Into CarrierWave renderCarrier()');
 
     const numChannels = 1;
-    const carrierFrequency = 262; // TODO: set based on user selection
-    const carrierSampleRate = 96000; // mainBuffer.sampleRate;
+    const carrierFrequency = 262; // TODO: set based on user selection (but SCALED???)
+    const carrierSampleRate = 96000; // WebAudio API's maximum (required) rate is 96kHz!
     const carrierBufferLength = carrierSampleRate * 100; // 100 second(s)
 
     carrierContext.current =
@@ -50,7 +50,15 @@ console.log('Into CarrierWave renderCarrier()');
     carrierOscillator.type = "sine";
     carrierOscillator.frequency.setValueAtTime(
       carrierFrequency, carrierContext.current.currentTime);
-    carrierOscillator.connect(carrierContext.current.destination);
+
+    // carrierOscillator.connect(carrierContext.current.destination);
+
+const gainNode = new GainNode(carrierContext.current);
+gainNode.gain.value = 0.2;
+// gainNode.gain.setValueAtTime(0.5, 0);
+carrierOscillator.connect(gainNode);
+gainNode.connect(carrierContext.current.destination);
+
     carrierOscillator.start();
     const carrierBuffer = await carrierContext.current.startRendering();
     setCarrierBuffer(carrierBuffer);
@@ -175,10 +183,10 @@ console.log('Into CarrierWave before returning JSX');
             height={SOUND_WAVE_GRAPH_HEIGHT}
             audioBuffer={carrierBuffer}
             volume={1}
-            playbackProgress={0}
-            zoom={1}
-            zoomedInView={false}
-            shouldDrawProgressMarker={false}
+            playbackProgress={playbackProgress}
+            zoom={carrierZoom}
+            zoomedInView={true}
+            shouldDrawProgressMarker={true}
             interactive={false}
             debug={false}
           />
@@ -186,13 +194,12 @@ console.log('Into CarrierWave before returning JSX');
         <div className="zoomed-out-graph-container">
           <SoundWave
             width={graphWidth - ZOOM_BUTTONS_WIDTH}
-            // width={88}
             height={ZOOMED_OUT_GRAPH_HEIGHT}
             audioBuffer={carrierBuffer}
             volume={1}
-            playbackProgress={0}
-            zoom={1}
-            zoomedInView={true}
+            playbackProgress={playbackProgress}
+            zoom={carrierZoom}
+            zoomedInView={false}
             shouldDrawProgressMarker={false}
             interactive={false}
             debug={false}

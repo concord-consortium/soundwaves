@@ -3,11 +3,15 @@
 .sound-wave {
   canvas {
     border: $borderWidth solid $darkBorderColor;
-    background-color: $graphBackgroundColor;
+    background-color: $zoomedOutGraphBackgroundColor;
   }
 
   &.interactive canvas {
     touch-action: none; // Important! Otherwise, zoom area dragging would cause page scrolling.
+  }
+
+  &.zoomed-in-view canvas {
+    background-color: $graphBackgroundColor;
   }
 }
 

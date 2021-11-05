@@ -13,7 +13,6 @@ export const SoundWave = (props: ISoundWaveProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [data, setData] = useState<Float32Array>(new Float32Array(0));
 
-// console.log('debug', debug);
   if (debug) {
     console.log('interactive', interactive);
     console.log('zoom', zoom);
@@ -39,16 +38,17 @@ export const SoundWave = (props: ISoundWaveProps) => {
   }, [audioBuffer, zoom, zoomedInView]);
 
   if (debug) {
-    // console.log('canvasRef', canvasRef);
-    // console.log('props', props);
     console.log('data', data);
   }
 
   useSoundWaveRendering(canvasRef, data, props);
   const { handlePointerDown, handlePointerMove } = useSoundWaveInteractions(canvasRef, data, props);
 
+  const cssClasses =
+    `sound-wave ${interactive ? "interactive" : ""} ${zoomedInView ? "zoomed-in-view" : ""}`;
+
   return (
-    <div className={`sound-wave ${interactive ? "interactive" : ""}`}>
+    <div className={cssClasses}>
       <canvas
         ref={canvasRef}
         onPointerDown={interactive ? handlePointerDown : undefined}

@@ -264,7 +264,7 @@ console.log('Before App JSX return');
           </div>
         </div>
       </div>
-      <CarrierWave/>
+      <CarrierWave playbackProgress={playbackProgress} />
     </div>
   );
 };

@@ -26,7 +26,7 @@ const drawSoundWaveLine = (props: IDrawHelperProps) => {
     ctx.lineTo(i * xScale, getCurrentAmplitudeY(props, i + startIdx));
   }
 
-  ctx.strokeStyle = "#024059";
+  ctx.strokeStyle = (zoomedInView) ? "#024059" : "#3377BD";
   ctx.stroke();
 };
 
@@ -40,7 +40,7 @@ const drawProgressMarker = (props: IDrawHelperProps) => {
   ctx.fillStyle = "#88D3DD";
   ctx.fillRect(markerX, 0, 1, height); // line
   ctx.beginPath();
-  // ctx.arc(markerX, markerY, 5, 0, 2 * Math.PI); // dot
+  ctx.arc(markerX, markerY, 5, 0, 2 * Math.PI); // dot
   ctx.fill();
 };
 
