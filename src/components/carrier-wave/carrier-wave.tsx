@@ -2,6 +2,7 @@ import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "re
 import { ICarrierWaveProps, Frequency, Modulation, ISoundWavePropsWithDataAndCarrier, ISoundWaveProps, SIDE_MARGIN_PLUS_BORDER, ZOOM_BUTTONS_WIDTH, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT } from "../../types"
 import { SoundWave } from "../sound-wave";
 import { useAutoWidth } from "../../hooks/use-auto-width";
+import { ZoomButtons } from "../zoom-buttons/zoom-buttons";
 
 import "./carrier-wave.scss";
 
@@ -19,22 +20,23 @@ const carrierWaves: Record<string, CarrierWave> = {
 };
 
 export const CarrierWave = (props: ICarrierWaveProps) => {
-  const {
-  } = props;
+  // const {} = props;
+console.log('Into CarrierWave ctor');
 
-
-  const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose . . .");
+const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose . . .");
   const [carrierWavelength, setCarrierWavelength] = useState<string>("");
   const [carrierFrequency, setCarrierFrequency] = useState<number>(0);
   const [timesHigherThanHuman, setTimesHigherThanHuman] = useState<string>("");
   const [modulation, setModulation] = useState<string>("");
   const [carrierBuffer, setCarrierBuffer] = useState<AudioBuffer>();
   const [graphWidth, setGraphWidth] = useState<number>(100);
+  const [carrierZoom, setCarrierZoom] = useState<number>(16);
 
   const carrierContext = useRef<OfflineAudioContext>();
 
   // Attempt 'D'
   const renderCarrier = async () => {
+console.log('Into CarrierWave renderCarrier()');
 
     const numChannels = 1;
     const carrierFrequency = 262; // TODO: set based on user selection
@@ -100,6 +102,7 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
   });
 
   useEffect( () => {
+console.log('Into CarrierWave useEffect()');
     renderCarrier();
   }, []);
 
@@ -131,6 +134,15 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
     // setupCarrierContext();
   });
 
+  const handleZoomIn = () => {
+    setCarrierZoom(Math.min(2048, carrierZoom * 2));
+  };
+
+  const handleZoomOut = () => {
+    setCarrierZoom(Math.max(2, carrierZoom * 0.5));
+  };
+
+
   const CarrierWaveOptions = (): any => {
     const carrierWaveKeys: string[] = [];
     for (const key in carrierWaves) {
@@ -141,6 +153,8 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
     );
     return (optionElements);
   };
+
+console.log('Into CarrierWave before returning JSX');
 
   return (
     <div className="carrier-wave-container">
@@ -154,9 +168,7 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
           </select>
         </div>
       </div>
-
       <div className="carrier-wave-graph-container">
-        {/* { (carrierFrequency !== 0) && */}
         <div className="zoomed-in-view">
           <SoundWave
             width={graphWidth}
@@ -168,26 +180,25 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
             zoomedInView={false}
             shouldDrawProgressMarker={false}
             interactive={false}
-            debug={true}
+            debug={false}
           />
         </div>
-        {/* }
-        { (carrierFrequency !== 0) && */}
-        <div>
-        <SoundWave
-          width={graphWidth - ZOOM_BUTTONS_WIDTH}
-          height={ZOOMED_OUT_GRAPH_HEIGHT}
-          audioBuffer={carrierBuffer}
-          volume={1}
-          playbackProgress={0}
-          zoom={1}
-          zoomedInView={true}
-          shouldDrawProgressMarker={false}
-          interactive={false}
-          debug={false}
-        />
-      </div>
-      {/* } */}
+        <div className="zoomed-out-graph-container">
+          <SoundWave
+            width={graphWidth - ZOOM_BUTTONS_WIDTH}
+            // width={88}
+            height={ZOOMED_OUT_GRAPH_HEIGHT}
+            audioBuffer={carrierBuffer}
+            volume={1}
+            playbackProgress={0}
+            zoom={1}
+            zoomedInView={true}
+            shouldDrawProgressMarker={false}
+            interactive={false}
+            debug={false}
+          />
+          <ZoomButtons handleZoomIn={handleZoomIn} handleZoomOut={handleZoomOut} />
+        </div>
       </div>
       <div className="wavelength-mod-container">
         <div>

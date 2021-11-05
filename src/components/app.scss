@@ -172,14 +172,14 @@ BODY {
     border-bottom-left-radius: $borderRadius;
     border-bottom-right-radius: $borderRadius;
 
-    .zoom-buttons-container {
+    .app-zoom-buttons-container {
       width: 130px;
       margin-top: -5px;
       display: flex;
       align-items: center;
       justify-content: space-around;
 
-      .zoom-button {
+      .app-zoom-button {
         width: 48px;
         height: 48px;
         cursor: pointer;

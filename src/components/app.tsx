@@ -25,6 +25,7 @@ import PauseIcon from "../assets/icons/pause_circle_outline_black_48dp.svg";
 import VolumeIcon from "../assets/icons/volume_up_black_48dp.svg";
 import PlusIcon from "../assets/icons/add_black_48dp.svg";
 import MinusIcon from "../assets/icons/remove_black_48dp.svg";
+import { ZoomButtons } from "./zoom-buttons/zoom-buttons";
 
 
 const sounds: Record<SoundName, string> = {
@@ -41,11 +42,11 @@ const sounds: Record<SoundName, string> = {
 
 
 export const App = () => {
+console.log('Into App ctor');
   const [selectedSound, setSelectedSound] = useState<SoundName>("middle-c");
   const [playing, setPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(1);
   const [zoom, setZoom] = useState<number>(16);
-  const [carrierZoom, setCarrierZoom] = useState<number>(16);
   const [playbackProgress, setPlaybackProgress] = useState<number>(0);
   const [playbackRate, setPlaybackRate] = useState<number>(1);
   const [graphWidth, setGraphWidth] = useState<number>(100);
@@ -81,6 +82,7 @@ export const App = () => {
   };
 
   useEffect(() => {
+console.log('Into App useEffect');
     // AudioContext is apparently unavailable in the node / jest environment.
     // So we bail out early, to prevent render test failure.
     if (!window.AudioContext) { return; }
@@ -147,7 +149,6 @@ export const App = () => {
     }
   };
 
-
   const handleZoomIn = () => {
     setZoom(Math.min(2048, zoom * 2));
   };
@@ -176,6 +177,7 @@ export const App = () => {
     4: {style: null, label: "4"},
   };
 
+console.log('Before App JSX return');
 
   return (
     <div className="app">
@@ -254,9 +256,10 @@ export const App = () => {
               interactive={!playing}
               onProgressUpdate={handleProgressUpdate}
             />
-            <div className="zoom-buttons-container">
-              <div className="zoom-button" onClick={handleZoomOut}><MinusIcon /></div>
-              <div className="zoom-button" onClick={handleZoomIn}><PlusIcon /></div>
+            {/* <ZoomButtons /> */}
+            <div className="app-zoom-buttons-container">
+              <div className="app-zoom-button" onClick={handleZoomOut}><MinusIcon /></div>
+              <div className="app-zoom-button" onClick={handleZoomIn}><PlusIcon /></div>
             </div>
           </div>
         </div>

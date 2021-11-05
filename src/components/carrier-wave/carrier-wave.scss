@@ -19,7 +19,7 @@
   }
 
   .carrier-wave-graph-container {
-    height:  170px;
+    height:  180px;
     margin: 5px 0 5px -2px;
   }
 
@@ -40,6 +40,34 @@
   DIV.zoomed-in-view {
     margin-bottom: 5px;
   }
+
+  // .zoomed-out-graph-container {
+  //   margin: 0;
+  //   margin-top: -6px;
+  //   display: flex;
+  //   align-items: center;
+  //   height: 60px;
+  //   padding: 3px 5px 0 10px;
+
+  //   .zoom-buttons-container {
+  //     // width: 130px;
+  //     margin-top: -5px;
+  //     display: flex;
+  //     align-items: center;
+  //     justify-content: space-around;
+
+  //     .zoom-button {
+  //       width: 48px;
+  //       height: 48px;
+  //       cursor: pointer;
+  //       background-color: $controls;
+  //       border-radius: 15px;
+  //       svg {
+  //         fill: white
+  //       }
+  //     }
+  //   }
+  // }
 
   DIV.freq-mod-container {
     margin-top: 1px;

@@ -25,6 +25,11 @@ export interface ISoundWaveProps {
 export interface ICarrierWaveProps {
 }
 
+export interface IZoomButtonsProps{
+  handleZoomOut?: () => void;
+  handleZoomIn?: () => void;
+}
+
 export interface ISoundWavePropsWithData extends ISoundWaveProps {
   data: Float32Array;
 }
