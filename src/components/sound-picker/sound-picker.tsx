@@ -58,7 +58,7 @@ export const SoundPicker = (props: ISoundPickerProps) => {
       <div className="sound-picker-icons-container">
         <MicIcon className={`sound-picker-icon button ${isRecordMyOwnelected ? "" : "disabled"}`} />
         <LabelsIcon className={`sound-picker-icon button ${isPureToneSelected ? "" : "disabled"}`} />
-        </div>
+      </div>
     </div>
   );
 }

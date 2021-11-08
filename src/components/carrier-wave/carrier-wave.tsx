@@ -21,8 +21,8 @@ const carrierWaves: Record<string, CarrierWave> = {
 
 export const CarrierWave = (props: ICarrierWaveProps) => {
   const { audioBuffer, playbackProgress } = props;
-console.log('Into CarrierWave ctor');
-// console.log('audioBuffer', audioBuffer);
+console.log("Into CarrierWave ctor");
+// console.log("audioBuffer", audioBuffer);
 
 const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose . . .");
   const [carrierWavelength, setCarrierWavelength] = useState<string>("");
@@ -36,14 +36,16 @@ const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose
 
   const carrierContext = useRef<OfflineAudioContext>();
 
-  // Attempt 'D'
+  // Attempt "D"
   const renderCarrier = async () => {
-    console.log('Into CarrierWave renderCarrier()');
-    // console.log('audioBuffer', audioBuffer);
+    console.log("Into CarrierWave renderCarrier()");
+    // console.log("audioBuffer", audioBuffer);
 
         const numChannels = 1;
         const carrierFrequency = 262; // TODO: set based on user selection (but SCALED???)
-        const carrierSampleRate = 48000; // WebAudio API's (minimum required) maximum rate is 96kHz
+        // The WebAudio API standard specifies that the sampleRate is guaranteed
+        // to at least 96kHz (or possibly higher, but not guaranteed)
+        const carrierSampleRate = 48000;
         const carrierBufferLength = carrierSampleRate * 100; // 100 second(s)
 
         carrierContext.current =
@@ -86,25 +88,25 @@ const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose
         // source.start();
   };
 
-// console.log('previousAudioBuffer', previousAudioBuffer);
-// console.log('audioBuffer', audioBuffer);
-// console.log('carrierBuffer', carrierBuffer);
+// console.log("previousAudioBuffer", previousAudioBuffer);
+// console.log("audioBuffer", audioBuffer);
+// console.log("carrierBuffer", carrierBuffer);
   if (audioBuffer) {
-console.log('audioBuffer defined:', audioBuffer);
-console.log('carrierBuffer', carrierBuffer);
+console.log("audioBuffer defined:", audioBuffer);
+console.log("carrierBuffer", carrierBuffer);
 if (!previousAudioBuffer) {
-console.log('previousAudioBuffer UN-defined');
+console.log("previousAudioBuffer UN-defined");
       setPreviousAudioBuffer(audioBuffer);
       renderCarrier();
     } else {
-console.log('previousAudioBuffer defined; length=', previousAudioBuffer.length);
+console.log("previousAudioBuffer defined; length=", previousAudioBuffer.length);
       if (previousAudioBuffer.length !== audioBuffer.length) {
         setPreviousAudioBuffer(audioBuffer);
         renderCarrier();
       }
     }
   } else {
-console.log('audioBuffer UN-defined');
+console.log("audioBuffer UN-defined");
   }
 
   // if (audioBuffer && !previousAudioBuffer) {
@@ -113,16 +115,16 @@ console.log('audioBuffer UN-defined');
     // //   renderCarrier();
     // // }
     // } else {
-    //   console.log('previousAudioBuffer', previousAudioBuffer);
+    //   console.log("previousAudioBuffer", previousAudioBuffer);
     //   if (previousAudioBuffer?.length !== audioBuffer?.length) {
     //     setPreviousAudioBuffer(audioBuffer);
     //   }
     // }
 
-  // // Attempt 'C'
+  // // Attempt "C"
   // const renderCarrier = (audioBuffer: AudioBuffer): void => {
-  //   console.log('length', audioBuffer.length);
-  //   console.log('duration', audioBuffer.duration);
+  //   console.log("length", audioBuffer.length);
+  //   console.log("duration", audioBuffer.duration);
 
   //   const numChannels = 1;
   //   const sampleRate = 441000;
@@ -146,12 +148,12 @@ console.log('audioBuffer UN-defined');
   });
 
   useEffect( () => {
-console.log('Into CarrierWave useEffect(); playbackProgress: ', playbackProgress);
+console.log("Into CarrierWave useEffect(); playbackProgress: ", playbackProgress);
     // renderCarrier();
   }, [playbackProgress]);
 
   const setupCarrierContext = async () => {
-    console.log('setupCarrierContext() - carrierFrequency', carrierFrequency);
+    console.log("setupCarrierContext() - carrierFrequency", carrierFrequency);
       };
 
   const handleCarrierChange = ( (event: ChangeEvent<HTMLSelectElement>) => {
@@ -195,7 +197,7 @@ console.log('Into CarrierWave useEffect(); playbackProgress: ', playbackProgress
     return (optionElements);
   };
 
-console.log('Into CarrierWave before returning JSX; carrierZoom=', carrierZoom);
+console.log("Into CarrierWave before returning JSX; carrierZoom=", carrierZoom);
 
   return (
     <div className="carrier-wave-container">

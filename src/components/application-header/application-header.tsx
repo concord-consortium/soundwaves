@@ -11,4 +11,4 @@ export const AppHeader = () => {
         &nbsp;&nbsp;Sounds are waves
       </div>
     );
-}
+};

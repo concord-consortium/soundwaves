@@ -25,7 +25,7 @@ import PauseIcon from "../assets/icons/pause_circle_outline_black_48dp.svg";
 import VolumeIcon from "../assets/icons/volume_up_black_48dp.svg";
 import PlusIcon from "../assets/icons/add_black_48dp.svg";
 import MinusIcon from "../assets/icons/remove_black_48dp.svg";
-import { ZoomButtons } from "./zoom-buttons/zoom-buttons";
+// import { ZoomButtons } from "./zoom-buttons/zoom-buttons";
 
 
 const sounds: Record<SoundName, string> = {
@@ -61,7 +61,9 @@ export const App = () => {
   useAutoWidth({
     container: document.body,
     onWidthChange: useCallback(
-      (newWidth) => {setGraphWidth(newWidth - (2 * SIDE_MARGIN_PLUS_BORDER))}
+      (newWidth) => {
+        setGraphWidth(newWidth - (2 * SIDE_MARGIN_PLUS_BORDER));
+      }
     , [])
   });
 
@@ -195,7 +197,7 @@ export const App = () => {
             <div className="volume-label">
               Volume
             </div>
-            <div style={{width: '100%'}}>
+            <div style={{width: "100%"}}>
               <Slider
                 className="volume-slider"
                 min={0} max={2} step={0.01}

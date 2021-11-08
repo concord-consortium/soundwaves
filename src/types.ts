@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+// import { ChangeEvent } from "react";
 
 export const ZOOM_BUTTONS_WIDTH = 130; // px, it should match width of zoom-buttons-container defined in CSS file
 const SIDE_MARGIN = 8; // Units: px. If changing; also change $margin, in vars.scss
