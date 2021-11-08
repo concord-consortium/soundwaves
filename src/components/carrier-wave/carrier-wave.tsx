@@ -20,8 +20,9 @@ const carrierWaves: Record<string, CarrierWave> = {
 };
 
 export const CarrierWave = (props: ICarrierWaveProps) => {
-  const { playbackProgress } = props;
+  const { audioBuffer, playbackProgress } = props;
 console.log('Into CarrierWave ctor');
+// console.log('audioBuffer', audioBuffer);
 
 const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose . . .");
   const [carrierWavelength, setCarrierWavelength] = useState<string>("");
@@ -31,57 +32,92 @@ const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose
   const [carrierBuffer, setCarrierBuffer] = useState<AudioBuffer>();
   const [graphWidth, setGraphWidth] = useState<number>(100);
   const [carrierZoom, setCarrierZoom] = useState<number>(16);
+  const [previousAudioBuffer, setPreviousAudioBuffer] = useState<AudioBuffer>();
 
   const carrierContext = useRef<OfflineAudioContext>();
 
   // Attempt 'D'
   const renderCarrier = async () => {
-console.log('Into CarrierWave renderCarrier()');
+    console.log('Into CarrierWave renderCarrier()');
+    // console.log('audioBuffer', audioBuffer);
 
-    const numChannels = 1;
-    const carrierFrequency = 262; // TODO: set based on user selection (but SCALED???)
-    const carrierSampleRate = 96000; // WebAudio API's maximum (required) rate is 96kHz!
-    const carrierBufferLength = carrierSampleRate * 100; // 100 second(s)
+        const numChannels = 1;
+        const carrierFrequency = 262; // TODO: set based on user selection (but SCALED???)
+        const carrierSampleRate = 48000; // WebAudio API's (minimum required) maximum rate is 96kHz
+        const carrierBufferLength = carrierSampleRate * 100; // 100 second(s)
 
-    carrierContext.current =
-      new OfflineAudioContext(numChannels, carrierBufferLength, carrierSampleRate);
+        carrierContext.current =
+          new OfflineAudioContext(numChannels, carrierBufferLength, carrierSampleRate);
 
-    const carrierOscillator = carrierContext.current.createOscillator();
-    carrierOscillator.type = "sine";
-    carrierOscillator.frequency.setValueAtTime(
-      carrierFrequency, carrierContext.current.currentTime);
+        const carrierOscillator = carrierContext.current.createOscillator();
+        carrierOscillator.type = "sine";
+        carrierOscillator.frequency.setValueAtTime(
+          carrierFrequency, carrierContext.current.currentTime);
 
-    // carrierOscillator.connect(carrierContext.current.destination);
+        carrierOscillator.connect(carrierContext.current.destination);
 
-const gainNode = new GainNode(carrierContext.current);
-gainNode.gain.value = 0.2;
-// gainNode.gain.setValueAtTime(0.5, 0);
-carrierOscillator.connect(gainNode);
-gainNode.connect(carrierContext.current.destination);
+    // const gainNode = new GainNode(carrierContext.current);
+    // gainNode.gain.value = 0.2;
+    // carrierOscillator.connect(gainNode);
+    // gainNode.connect(carrierContext.current.destination);
 
-    carrierOscillator.start();
-    const carrierBuffer = await carrierContext.current.startRendering();
-    setCarrierBuffer(carrierBuffer);
+        carrierOscillator.start();
+        const carrierBuffer = await carrierContext.current.startRendering();
+        setCarrierBuffer(carrierBuffer);
+//  console.log(carrierBuffer);
 
-    // OBSOELTE
-    // const carrierBuffer = carrierContext.current.createBuffer(
-    //   numChannels, carrierBufferLength, carrierSampleRate);
-    // setCarrierBuffer(carrierBuffer);
-    // const myArrayBuffer =
-    //   carrierContext.current.createBuffer(numChannels, carrierBufferLength, carrierSampleRate);
-    // const data = myArrayBuffer.getChannelData(0);
-    // const frameCount = carrierContext.current.sampleRate;
-    // for (var i = 0; i < frameCount; i++) {
-    //   // Math.random() is in [0; 1.0]
-    //    // audio needs to be in [-1.0; 1.0]
-    //   // data[i] = Math.random() * 2 - 1;
-    //   data[i] = Math.sin(i);
-    // }
-    // const source = carrierContext.current.createBufferSource();
-    // source.buffer = myArrayBuffer;
-    // setCarrierBuffer(myArrayBuffer);
-    // source.start();
+        // OBSOLETE
+        // const carrierBuffer = carrierContext.current.createBuffer(
+        //   numChannels, carrierBufferLength, carrierSampleRate);
+        // setCarrierBuffer(carrierBuffer);
+        // const myArrayBuffer =
+        //   carrierContext.current.createBuffer(numChannels, carrierBufferLength, carrierSampleRate);
+        // const data = myArrayBuffer.getChannelData(0);
+        // const frameCount = carrierContext.current.sampleRate;
+        // for (var i = 0; i < frameCount; i++) {
+        //   // Math.random() is in [0; 1.0]
+        //    // audio needs to be in [-1.0; 1.0]
+        //   // data[i] = Math.random() * 2 - 1;
+        //   data[i] = Math.sin(i);
+        // }
+        // const source = carrierContext.current.createBufferSource();
+        // source.buffer = myArrayBuffer;
+        // setCarrierBuffer(myArrayBuffer);
+        // source.start();
   };
+
+// console.log('previousAudioBuffer', previousAudioBuffer);
+// console.log('audioBuffer', audioBuffer);
+// console.log('carrierBuffer', carrierBuffer);
+  if (audioBuffer) {
+console.log('audioBuffer defined:', audioBuffer);
+console.log('carrierBuffer', carrierBuffer);
+if (!previousAudioBuffer) {
+console.log('previousAudioBuffer UN-defined');
+      setPreviousAudioBuffer(audioBuffer);
+      renderCarrier();
+    } else {
+console.log('previousAudioBuffer defined; length=', previousAudioBuffer.length);
+      if (previousAudioBuffer.length !== audioBuffer.length) {
+        setPreviousAudioBuffer(audioBuffer);
+        renderCarrier();
+      }
+    }
+  } else {
+console.log('audioBuffer UN-defined');
+  }
+
+  // if (audioBuffer && !previousAudioBuffer) {
+    // // if ( (!carrierBuffer) || (previousAudioBuffer !== audioBuffer) ) {
+    //   setPreviousAudioBuffer(audioBuffer);
+    // //   renderCarrier();
+    // // }
+    // } else {
+    //   console.log('previousAudioBuffer', previousAudioBuffer);
+    //   if (previousAudioBuffer?.length !== audioBuffer?.length) {
+    //     setPreviousAudioBuffer(audioBuffer);
+    //   }
+    // }
 
   // // Attempt 'C'
   // const renderCarrier = (audioBuffer: AudioBuffer): void => {
@@ -110,14 +146,12 @@ gainNode.connect(carrierContext.current.destination);
   });
 
   useEffect( () => {
-console.log('Into CarrierWave useEffect()');
-    renderCarrier();
-  }, []);
-
-
+console.log('Into CarrierWave useEffect(); playbackProgress: ', playbackProgress);
+    // renderCarrier();
+  }, [playbackProgress]);
 
   const setupCarrierContext = async () => {
-    console.log('carrierFrequency', carrierFrequency);
+    console.log('setupCarrierContext() - carrierFrequency', carrierFrequency);
       };
 
   const handleCarrierChange = ( (event: ChangeEvent<HTMLSelectElement>) => {
@@ -150,7 +184,6 @@ console.log('Into CarrierWave useEffect()');
     setCarrierZoom(Math.max(2, carrierZoom * 0.5));
   };
 
-
   const CarrierWaveOptions = (): any => {
     const carrierWaveKeys: string[] = [];
     for (const key in carrierWaves) {
@@ -162,7 +195,7 @@ console.log('Into CarrierWave useEffect()');
     return (optionElements);
   };
 
-console.log('Into CarrierWave before returning JSX');
+console.log('Into CarrierWave before returning JSX; carrierZoom=', carrierZoom);
 
   return (
     <div className="carrier-wave-container">

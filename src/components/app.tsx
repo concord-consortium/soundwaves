@@ -42,7 +42,7 @@ const sounds: Record<SoundName, string> = {
 
 
 export const App = () => {
-console.log('Into App ctor');
+// console.log('Into App ctor');
   const [selectedSound, setSelectedSound] = useState<SoundName>("middle-c");
   const [playing, setPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(1);
@@ -82,7 +82,7 @@ console.log('Into App ctor');
   };
 
   useEffect(() => {
-console.log('Into App useEffect');
+// console.log('Into App useEffect');
     // AudioContext is apparently unavailable in the node / jest environment.
     // So we bail out early, to prevent render test failure.
     if (!window.AudioContext) { return; }
@@ -177,7 +177,7 @@ console.log('Into App useEffect');
     4: {style: null, label: "4"},
   };
 
-console.log('Before App JSX return');
+// console.log('Before App JSX return');
 
   return (
     <div className="app">
@@ -264,7 +264,7 @@ console.log('Before App JSX return');
           </div>
         </div>
       </div>
-      <CarrierWave playbackProgress={playbackProgress} />
+      <CarrierWave audioBuffer={audioBuffer} playbackProgress={playbackProgress} />
     </div>
   );
 };

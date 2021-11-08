@@ -23,6 +23,7 @@ export interface ISoundWaveProps {
 }
 
 export interface ICarrierWaveProps {
+  audioBuffer?: AudioBuffer; // This is the buffer for the user-chosen sound; and NOT the carrier wave
   playbackProgress: number; // normalized, [0, 1]
 }
 
