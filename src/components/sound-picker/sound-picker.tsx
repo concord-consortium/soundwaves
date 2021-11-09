@@ -33,7 +33,7 @@ export const SoundPicker = (props: ISoundPickerProps) => {
     }
     setIsRecordMyOwnSelected(soundName === "record-my-own");
 
-    handleSoundChange && handleSoundChange(event);
+    handleSoundChange?.(event);
   };
 
 
@@ -61,4 +61,4 @@ export const SoundPicker = (props: ISoundPickerProps) => {
       </div>
     </div>
   );
-}
+};

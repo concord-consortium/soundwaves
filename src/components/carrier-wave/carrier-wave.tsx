@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
-import { ICarrierWaveProps, Frequency, Modulation, ISoundWavePropsWithDataAndCarrier, ISoundWaveProps, SIDE_MARGIN_PLUS_BORDER, ZOOM_BUTTONS_WIDTH, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT } from "../../types"
+import { ICarrierWaveProps, Frequency, Modulation, SIDE_MARGIN_PLUS_BORDER, ZOOM_BUTTONS_WIDTH, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT } from "../../types";
 import { SoundWave } from "../sound-wave";
 import { useAutoWidth } from "../../hooks/use-auto-width";
 import { ZoomButtons } from "../zoom-buttons/zoom-buttons";
@@ -143,7 +143,9 @@ console.log("audioBuffer UN-defined");
   useAutoWidth({
     container: document.body,
     onWidthChange: useCallback(
-      (newWidth) => {setGraphWidth(newWidth - (2 * SIDE_MARGIN_PLUS_BORDER))}
+      (newWidth) => {
+        setGraphWidth(newWidth - (2 * SIDE_MARGIN_PLUS_BORDER));
+      }
     , [])
   });
 
@@ -152,9 +154,9 @@ console.log("Into CarrierWave useEffect(); playbackProgress: ", playbackProgress
     // renderCarrier();
   }, [playbackProgress]);
 
-  const setupCarrierContext = async () => {
-    console.log("setupCarrierContext() - carrierFrequency", carrierFrequency);
-      };
+  // const setupCarrierContext = async () => {
+  //   console.log("setupCarrierContext() - carrierFrequency", carrierFrequency);
+  //     };
 
   const handleCarrierChange = ( (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
