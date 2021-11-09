@@ -21,7 +21,7 @@ const carrierWaves: Record<string, CarrierWave> = {
 
 export const CarrierWave = (props: ICarrierWaveProps) => {
   const { audioBuffer, playbackProgress } = props;
-console.log("Into CarrierWave ctor");
+// console.log("Into CarrierWave ctor");
 // console.log("audioBuffer", audioBuffer);
 
 const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose . . .");
@@ -38,7 +38,7 @@ const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose
 
   // Attempt "D"
   const renderCarrier = async () => {
-    console.log("Into CarrierWave renderCarrier()");
+    // console.log("Into CarrierWave renderCarrier()");
     // console.log("audioBuffer", audioBuffer);
 
         const numChannels = 1;
@@ -92,21 +92,21 @@ const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose
 // console.log("audioBuffer", audioBuffer);
 // console.log("carrierBuffer", carrierBuffer);
   if (audioBuffer) {
-console.log("audioBuffer defined:", audioBuffer);
-console.log("carrierBuffer", carrierBuffer);
+// console.log("audioBuffer defined:", audioBuffer);
+// console.log("carrierBuffer", carrierBuffer);
 if (!previousAudioBuffer) {
-console.log("previousAudioBuffer UN-defined");
+// console.log("previousAudioBuffer UN-defined");
       setPreviousAudioBuffer(audioBuffer);
       renderCarrier();
     } else {
-console.log("previousAudioBuffer defined; length=", previousAudioBuffer.length);
+// console.log("previousAudioBuffer defined; length=", previousAudioBuffer.length);
       if (previousAudioBuffer.length !== audioBuffer.length) {
         setPreviousAudioBuffer(audioBuffer);
         renderCarrier();
       }
     }
   } else {
-console.log("audioBuffer UN-defined");
+// console.log("audioBuffer UN-defined");
   }
 
   // if (audioBuffer && !previousAudioBuffer) {
@@ -150,7 +150,7 @@ console.log("audioBuffer UN-defined");
   });
 
   useEffect( () => {
-console.log("Into CarrierWave useEffect(); playbackProgress: ", playbackProgress);
+// console.log("Into CarrierWave useEffect(); playbackProgress: ", playbackProgress);
     // renderCarrier();
   }, [playbackProgress]);
 
@@ -199,7 +199,7 @@ console.log("Into CarrierWave useEffect(); playbackProgress: ", playbackProgress
     return (optionElements);
   };
 
-console.log("Into CarrierWave before returning JSX; carrierZoom=", carrierZoom);
+// console.log("Into CarrierWave before returning JSX; carrierZoom=", carrierZoom);
 
   return (
     <div className="carrier-wave-container">

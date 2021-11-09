@@ -42,7 +42,6 @@ const sounds: Record<SoundName, string> = {
 
 
 export const App = () => {
-// console.log('Into App ctor');
   const [selectedSound, setSelectedSound] = useState<SoundName>("middle-c");
   const [playing, setPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(1);
@@ -67,6 +66,11 @@ export const App = () => {
     , [])
   });
 
+  const setupAudioContextFromRecording = (audioBuffer: AudioBuffer) => {
+    setAudioBuffer(audioBuffer);
+    setPlaybackProgress(0);
+  };
+
   const setupAudioContext = async (soundName: SoundName) => {
     if (audioSource.current && audioContext.current) {
       audioSource.current.stop();
@@ -74,6 +78,26 @@ export const App = () => {
       setPlaying(false);
     }
 
+    // When a user chooses to record their own sound, we don't start recording
+    // immediately. But we do want to clear out the old sound data here, and to
+    // update the playback progress indicator, so that it is clear that there
+    // is nothing recorded (yet).
+    if (soundName === "record-my-own") {
+      // Arbitrary value--it just needs to be in the legal range, per the API specification
+      const minSupportedSampleRate = 3000;
+
+      const emptyBuffer = new AudioBuffer({
+        length: 1,
+        sampleRate: minSupportedSampleRate
+      });
+      audioContext.current = new AudioContext();
+      gainNode.current = audioContext.current.createGain();
+      setAudioBuffer(emptyBuffer);
+      setPlaybackProgress(0);
+      return;
+    }
+
+    // Handle selection of 'canned' sounds...
     const response = await window.fetch(sounds[soundName]);
     const soundArrayBuffer = await response.arrayBuffer();
     audioContext.current = new AudioContext();
@@ -84,7 +108,6 @@ export const App = () => {
   };
 
   useEffect(() => {
-// console.log('Into App useEffect');
     // AudioContext is apparently unavailable in the node / jest environment.
     // So we bail out early, to prevent render test failure.
     if (!window.AudioContext) { return; }
@@ -179,14 +202,13 @@ export const App = () => {
     4: {style: null, label: "4"},
   };
 
-// console.log('Before App JSX return');
-
   return (
     <div className="app">
       <AppHeader/>
       <SoundPicker
         selectedSound={selectedSound}
         handleSoundChange={handleSoundChange}
+        onRecordingCompleted={setupAudioContextFromRecording}
         />
       <div className="main-controls-and-waves-container">
         <div className="playback-and-volume-controls">
