@@ -33,7 +33,7 @@ export const SoundPicker = (props: ISoundPickerProps) => {
     }
     setIsRecordMyOwnSelected(soundName === "record-my-own");
 
-    handleSoundChange && handleSoundChange(event);
+    handleSoundChange?.(event);
   };
 
 
@@ -43,7 +43,7 @@ export const SoundPicker = (props: ISoundPickerProps) => {
         <select className="sound-picker"
           value={selectedSound}
           onChange={onSoundPickerChange}
-          >
+        >
           <option value="middle-c">Middle C (261.65Hz)</option>
           <option value="c2">Lower C (65.41 Hz)</option>
           <option value="baby-cry">Baby Cry</option>
@@ -58,7 +58,7 @@ export const SoundPicker = (props: ISoundPickerProps) => {
       <div className="sound-picker-icons-container">
         <MicIcon className={`sound-picker-icon button ${isRecordMyOwnelected ? "" : "disabled"}`} />
         <LabelsIcon className={`sound-picker-icon button ${isPureToneSelected ? "" : "disabled"}`} />
-        </div>
+      </div>
     </div>
   );
-}
+};

@@ -59,8 +59,8 @@ export const App = () => {
   useAutoWidth({
     container: document.body,
     onWidthChange: useCallback(
-      (newWidth) => {setGraphWidth(newWidth - (2 * SIDE_MARGIN_PLUS_BORDER))}
-    , [])
+      (newWidth) => { setGraphWidth(newWidth - (2 * SIDE_MARGIN_PLUS_BORDER)); }
+      , [])
   });
 
   const setupAudioContext = async (soundName: SoundName) => {
@@ -167,30 +167,30 @@ export const App = () => {
     setPlaybackProgress(newProgress);
 
   const speedMarks = {
-    0.25: { style: null, label: "1/4"},
-    0.5: { style: null, label: "1/2"},
-    1: {style: null, label: "1"},
-    2: {style: null, label: "2"},
-    4: {style: null, label: "4"},
+    0.25: { style: null, label: "1/4" },
+    0.5: { style: null, label: "1/2" },
+    1: { style: null, label: "1" },
+    2: { style: null, label: "2" },
+    4: { style: null, label: "4" },
   };
 
   return (
     <div className="app">
-      <AppHeader/>
+      <AppHeader />
       <SoundPicker
         selectedSound={selectedSound}
         handleSoundChange={handleSoundChange}
-        />
+      />
       <div className="main-controls-and-waves-container">
         <div className="playback-and-volume-controls">
           <div className="play-pause button" onClick={handlePlay}>
-            { playing ? <PauseIcon /> : <PlayIcon /> }
+            {playing ? <PauseIcon /> : <PlayIcon />}
           </div>
           <div className="volume-controls">
             <div className="volume-label">
               Volume
             </div>
-            <div style={{width: '100%'}}>
+            <div style={{ width: "100%" }}>
               <Slider
                 className="volume-slider"
                 min={0} max={2} step={0.01}
@@ -200,7 +200,7 @@ export const App = () => {
             </div>
             <div className="volume-icons">
               <div><VolumeIcon className="volume-icon" /></div>
-              <div style={{textAlign: "right"}}>
+              <div style={{ textAlign: "right" }}>
                 <VolumeIcon className="volume-icon" />
                 <VolumeIcon className="volume-icon" />
                 <VolumeIcon className="volume-icon" />
@@ -224,7 +224,7 @@ export const App = () => {
               marks={speedMarks}
               disabled={playing}
               onChange={handleSpeedChange}
-              />
+            />
           </div>
         </div>
         <div className="sound-wave-container">

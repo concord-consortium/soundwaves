@@ -13,7 +13,7 @@ export const getCurrentSampleIdx = (props: ISoundWavePropsWithData) => {
   return Math.max(0, Math.floor(data.length * playbackProgress));
 };
 
-export const getPointsCount =  (props: ISoundWavePropsWithData) => {
+export const getPointsCount = (props: ISoundWavePropsWithData) => {
   const { data, zoomedInView } = props;
   const zoomedInViewPointsCount = getZoomedInViewPointsCount(props);
   if (zoomedInView) {
