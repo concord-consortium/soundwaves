@@ -13,7 +13,7 @@ export const normalizeData = (data: Float32Array) => {
 };
 
 const MIN_SAMPLE_RATE = 3000; // limit defined by Web Audio API
-export const downsampleAudioBuffer = async (audioBuffer: AudioBuffer, newSamplesCount: number) => {
+export const downsampleAudioBuffer = async (audioBuffer: AudioBuffer, newSamplesCount: number): Promise<Float32Array> => {
   const ratio = newSamplesCount / audioBuffer.length;
   // audioBuffer.sampleRate
   const newSampleRate = Math.round(ratio * audioBuffer.sampleRate);
@@ -40,4 +40,38 @@ export const downsampleAudioBuffer = async (audioBuffer: AudioBuffer, newSamples
     }
     return finalData;
   }
+};
+
+// WebAudio API's (minimum required) maximum rate is 96kHz.
+// The bigger value let's us use higher frequencies for carrier wave.
+const CARRIER_SAMPLE_RATE = 96e3;
+
+// [0, 1]. For example, if it's 0.5 and the FM frequency is 5000Hz, the final signal will be within [2500Hz, 7500Hz] range.
+// Real FM radio uses value around 0.02, but this wouldn't be noticeable by users.
+const FREQUENCY_MODULATION_RANGE = 0.5;
+
+export const getFMCarrierWave = async (sourceBuffer: AudioBuffer, carrierFrequency: number, volume: number): Promise<AudioBuffer> => {
+  const bufferLengthInSeconds = sourceBuffer.length / sourceBuffer.sampleRate;
+  const carrierBufferLength = CARRIER_SAMPLE_RATE * bufferLengthInSeconds;
+
+  const offlineContext = new OfflineAudioContext(1, carrierBufferLength, CARRIER_SAMPLE_RATE);
+
+  const carrierOscillator = offlineContext.createOscillator();
+  carrierOscillator.type = "sine";
+  carrierOscillator.frequency.setValueAtTime(carrierFrequency, 0);
+
+  const gainNode = new GainNode(offlineContext);
+  gainNode.gain.value = carrierFrequency * FREQUENCY_MODULATION_RANGE * volume;
+
+  const audioSource = offlineContext.createBufferSource();
+  audioSource.buffer = sourceBuffer;
+
+  audioSource.connect(gainNode);
+  gainNode.connect(carrierOscillator.frequency);
+  carrierOscillator.connect(offlineContext.destination);
+
+  audioSource.start();
+  carrierOscillator.start();
+
+  return await offlineContext.startRendering();
 };
