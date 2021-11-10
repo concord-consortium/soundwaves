@@ -21,8 +21,8 @@ export const SoundPicker = (props: ISoundPickerProps) => {
   // defaults to match default of Middle C selection
   const [isPureToneSelected, setIsPureToneSelected] = useState<boolean>(true);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder>();
-  const [isReadyToRecord, setIsReadyToRecord] = useState<Boolean>(false);
-  const [isRecording, setIsRecording] = useState<Boolean>(false);
+  const [isReadyToRecord, setIsReadyToRecord] = useState<boolean>(false);
+  const [isRecording, setIsRecording] = useState<boolean>(false);
 
   const soundSelectRef = useRef<HTMLSelectElement>(null);
   const recordingTimerRef = useRef<number>();
@@ -48,7 +48,7 @@ export const SoundPicker = (props: ISoundPickerProps) => {
       // Use API to convert chunks to a blob, and then into a buffer
       // (plus its raw data), for use playback and visualization (and for
       // initial silence trimming, here).
-      const blob = new Blob(audioRecordingChunks, { 'type' : recorder.mimeType });
+      const blob = new Blob(audioRecordingChunks, { "type" : recorder.mimeType });
       const audioURL = window.URL.createObjectURL(blob);
       const arrayBuffer = await (await fetch(audioURL)).arrayBuffer();
       let audioBuffer = await (new AudioContext()).decodeAudioData(arrayBuffer);
@@ -74,7 +74,7 @@ export const SoundPicker = (props: ISoundPickerProps) => {
       // sounds of interest.
       if (firstSoundIndex !== -1) {
         const extraSamplesOffset =
-          audioBuffer.sampleRate * 0.2 // 200 milliseconds of samples
+          audioBuffer.sampleRate * 0.2; // 200 milliseconds of samples
         const adjustedSoundIndex =
           Math.max(0, (firstSoundIndex - extraSamplesOffset));
         channelData = channelData.slice(firstSoundIndex);
@@ -123,7 +123,6 @@ export const SoundPicker = (props: ISoundPickerProps) => {
       setIsRecording(true);
       const soundSelect = soundSelectRef.current;
       if (soundSelect) { soundSelect.disabled = true; }
-      return;
     } else {
       doFinishedRecording();
     }

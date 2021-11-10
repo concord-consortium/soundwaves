@@ -66,8 +66,8 @@ export const App = () => {
     , [])
   });
 
-  const setupAudioContextFromRecording = (audioBuffer: AudioBuffer) => {
-    setAudioBuffer(audioBuffer);
+  const setupAudioContextFromRecording = (recordingBuffer: AudioBuffer) => {
+    setAudioBuffer(recordingBuffer);
     setPlaybackProgress(0);
   };
 

@@ -26,7 +26,6 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
 
 const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose . . .");
   const [carrierWavelength, setCarrierWavelength] = useState<string>("");
-  const [carrierFrequency, setCarrierFrequency] = useState<number>(0);
   const [timesHigherThanHuman, setTimesHigherThanHuman] = useState<string>("");
   const [modulation, setModulation] = useState<string>("");
   const [carrierBuffer, setCarrierBuffer] = useState<AudioBuffer>();
@@ -64,8 +63,7 @@ const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose
     // gainNode.connect(carrierContext.current.destination);
 
         carrierOscillator.start();
-        const carrierBuffer = await carrierContext.current.startRendering();
-        setCarrierBuffer(carrierBuffer);
+        setCarrierBuffer(await carrierContext.current.startRendering());
 //  console.log(carrierBuffer);
 
         // OBSOLETE
@@ -166,7 +164,6 @@ if (!previousAudioBuffer) {
     setModulation(newModulationValue ? newModulationValue : "");
 
     const frequency = carrierWaves[value].frequency;
-    setCarrierFrequency(frequency);
     const wavelengthInMilliSeconds = ((1 / frequency) * 1000).toPrecision(3);
 
     setTimesHigherThanHuman( (frequency !== 0)
