@@ -45,11 +45,47 @@ export const SoundPicker = (props: ISoundPickerProps) => {
     };
 
     recorder.onstop = async (event) => {
+      // Use API to convert chunks to a blob, and then into a buffer
+      // (plus its raw data), for use playback and visualization (and for
+      // initial silence trimming, here).
       const blob = new Blob(audioRecordingChunks, { 'type' : recorder.mimeType });
-
       const audioURL = window.URL.createObjectURL(blob);
       const arrayBuffer = await (await fetch(audioURL)).arrayBuffer();
-      const audioBuffer = await (new AudioContext()).decodeAudioData(arrayBuffer);
+      let audioBuffer = await (new AudioContext()).decodeAudioData(arrayBuffer);
+      let channelData = audioBuffer.getChannelData(0);
+
+      // In testing, the API seems to be adding some 'dead time' at the
+      // beginning of the recording. The code below attempts to detect
+      // that initial 'silence', and minimize it in the clip.
+
+      // Value (empirically determined), below which we assume there's only
+      // silence/background noise.
+      const noiseFloorValue = 0.01;
+
+      // Get the index of the first sound sample which has an amplitude above
+      // background noise.
+      const firstSoundIndex = channelData.findIndex( (soundAmplitude) => {
+        const absValue = Math.abs(soundAmplitude);
+        return (absValue > noiseFloorValue);
+      });
+
+      // If initial 'silence' found, then create a new buffer, without the
+      // initial silence, except for the 0.2s of 'silence' just prior to the
+      // sounds of interest.
+      if (firstSoundIndex !== -1) {
+        const extraSamplesOffset =
+          audioBuffer.sampleRate * 0.2 // 200 milliseconds of samples
+        const adjustedSoundIndex =
+          Math.max(0, (firstSoundIndex - extraSamplesOffset));
+        channelData = channelData.slice(firstSoundIndex);
+        audioBuffer = new AudioBuffer({
+          length: audioBuffer.length - adjustedSoundIndex,
+          sampleRate: audioBuffer.sampleRate
+        });
+        audioBuffer.copyToChannel(channelData, 0);
+      }
+
+      // Invoke the callback for recording completion
       onRecordingCompleted?.(audioBuffer);
       audioRecordingChunks = [];
     };
