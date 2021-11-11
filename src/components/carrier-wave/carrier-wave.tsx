@@ -23,10 +23,12 @@ export interface ICarrierWaveProps {
   playbackProgress: number; // normalized, [0, 1]
   graphWidth: number;
   volume: number;
+  onProgressUpdate?: (newProgress: number) => void;
+  interactive: boolean;
 }
 
 export const CarrierWave = (props: ICarrierWaveProps) => {
-  const { audioBuffer, playbackProgress, graphWidth, volume } = props;
+  const { audioBuffer, playbackProgress, graphWidth, volume, onProgressUpdate, interactive } = props;
 
   const [carrierBuffer, setCarrierBuffer] = useState<AudioBuffer>();
   const [carrierZoom, setCarrierZoom] = useState<number>(16);
@@ -111,7 +113,8 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
             zoom={carrierZoom}
             zoomedInView={false}
             shouldDrawProgressMarker={false}
-            interactive={false}
+            interactive={interactive}
+            onProgressUpdate={onProgressUpdate}
             debug={false}
           />
           <ZoomButtons handleZoomIn={handleZoomIn} handleZoomOut={handleZoomOut} />

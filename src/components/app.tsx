@@ -258,6 +258,8 @@ export const App = () => {
         playbackProgress={playbackProgress}
         graphWidth={graphWidth}
         volume={volume}
+        interactive={!playing}
+        onProgressUpdate={handleProgressUpdate}
       />
     </div>
   );
