@@ -65,7 +65,7 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
       carrierWaveKeys.push(key);
     }
     const optionElements = carrierWaveKeys.map((key) =>
-      <option key={key} value={key}>{key}</option>
+      <option key={key} value={key}>{ key }</option>
     );
     return optionElements;
   };
@@ -113,7 +113,7 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
       </div>
       <div className="wavelength-mod-container">
         <div>
-          Wavelength:&nbsp;<span className="value">{carrierWavelength}</span>
+          Wavelength:&nbsp;<span className="value">{ carrierWavelength }</span>
         </div>
         <div>
           &nbsp;Modulation:&nbsp;
@@ -127,7 +127,7 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
 
       <div className="times-higher-than-container">
         Higher than human hearing range by:&nbsp;
-        <span className="value">{timesHigherThanHuman}</span>
+        <span className="value">{ timesHigherThanHuman }</span>
       </div>
     </div>
   );

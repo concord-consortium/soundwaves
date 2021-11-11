@@ -15,9 +15,6 @@ export interface ISoundPickerProps {
 export const SoundPicker = (props: ISoundPickerProps) => {
   const { selectedSound, handleSoundChange, onRecordingCompleted } = props;
 
-  // While recording, 'chunks' of audio data are appended here
-  let audioRecordingChunks: BlobPart[] | undefined = [];
-
   // defaults to match default of Middle C selection
   const [isPureToneSelected, setIsPureToneSelected] = useState<boolean>(true);
   const [isReadyToRecord, setIsReadyToRecord] = useState<boolean>(false);
@@ -27,6 +24,9 @@ export const SoundPicker = (props: ISoundPickerProps) => {
   const mediaRecorderRef = useRef<MediaRecorder>();
 
   const accessRecordingStream = async () => {
+
+    // While recording, 'chunks' of audio data are appended here
+    let audioRecordingChunks: BlobPart[] | undefined = [];
 
     // Bail out if there's a browser security restriction
     if (!navigator.mediaDevices) {
@@ -116,7 +116,6 @@ export const SoundPicker = (props: ISoundPickerProps) => {
       // Use a one-shot timer, to ensure recording does not exceed the maximum length
       recordingTimerRef.current = setTimeout(onTimedOutRecording, maximumRecordingLengthInMilliseconds);
 
-      audioRecordingChunks = []; // Clear out any old audio data
       mediaRecorderRef.current?.start();
       setIsRecording(true);
     } else {
@@ -138,7 +137,7 @@ export const SoundPicker = (props: ISoundPickerProps) => {
     }
 
     const isUserRecordingSelected = soundName === "record-my-own";
-    const hasMediaRecorder: boolean = !!(mediaRecorderRef.current);
+    const hasMediaRecorder = !!(mediaRecorderRef.current);
     setIsReadyToRecord(hasMediaRecorder && isUserRecordingSelected);
     if (isUserRecordingSelected && !hasMediaRecorder) {
         accessRecordingStream();

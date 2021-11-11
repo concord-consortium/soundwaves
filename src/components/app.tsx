@@ -209,7 +209,7 @@ export const App = () => {
       <div className="main-controls-and-waves-container">
         <div className="playback-and-volume-controls">
           <div className="play-pause button" onClick={handlePlay}>
-            {playing ? <PauseIcon /> : <PlayIcon />}
+            { playing ? <PauseIcon /> : <PlayIcon /> }
           </div>
           <div className="volume-controls">
             <div className="volume-label">
