@@ -7,6 +7,7 @@ import { CarrierWave } from "./carrier-wave/carrier-wave";
 import { AppHeader } from "./application-header/application-header";
 import { SoundPicker } from "./sound-picker/sound-picker";
 import { useAutoWidth } from "../hooks/use-auto-width";
+import { ZoomButtons } from "./zoom-buttons/zoom-buttons";
 
 import "./app.scss";
 import "rc-slider/assets/index.css";
@@ -23,9 +24,6 @@ import ScratchSampleSound from "../assets/sounds/scratch-sample.mp3";
 import PlayIcon from "../assets/icons/play_circle_outline_black_48dp.svg";
 import PauseIcon from "../assets/icons/pause_circle_outline_black_48dp.svg";
 import VolumeIcon from "../assets/icons/volume_up_black_48dp.svg";
-import PlusIcon from "../assets/icons/add_black_48dp.svg";
-import MinusIcon from "../assets/icons/remove_black_48dp.svg";
-
 
 const sounds: Record<SoundName, string> = {
   "middle-c": MiddleCSound,
@@ -251,10 +249,7 @@ export const App = () => {
               interactive={!playing}
               onProgressUpdate={handleProgressUpdate}
             />
-            <div className="app-zoom-buttons-container">
-              <div className="app-zoom-button" onClick={handleZoomOut}><MinusIcon /></div>
-              <div className="app-zoom-button" onClick={handleZoomIn}><PlusIcon /></div>
-            </div>
+            <ZoomButtons handleZoomIn={handleZoomIn} handleZoomOut={handleZoomOut} />
           </div>
         </div>
       </div>
