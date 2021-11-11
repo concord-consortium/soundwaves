@@ -20,12 +20,11 @@ export const SoundPicker = (props: ISoundPickerProps) => {
 
   // defaults to match default of Middle C selection
   const [isPureToneSelected, setIsPureToneSelected] = useState<boolean>(true);
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder>();
   const [isReadyToRecord, setIsReadyToRecord] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState<boolean>(false);
 
-  const soundSelectRef = useRef<HTMLSelectElement>(null);
   const recordingTimerRef = useRef<number>();
+  const mediaRecorderRef = useRef<MediaRecorder>();
 
   const accessRecordingStream = async () => {
 
@@ -90,7 +89,7 @@ export const SoundPicker = (props: ISoundPickerProps) => {
       audioRecordingChunks = [];
     };
 
-    setMediaRecorder(recorder);
+    mediaRecorderRef.current = recorder;
     setIsReadyToRecord(true);
     window.alert("Click on the microphone to start/stop recording (up to: 5 seconds).");
   };
@@ -98,10 +97,8 @@ export const SoundPicker = (props: ISoundPickerProps) => {
   const doFinishedRecording = () => {
     clearTimeout(recordingTimerRef.current);
 
-    mediaRecorder?.stop();
+    mediaRecorderRef.current?.stop();
     setIsRecording(false);
-    const soundSelect = soundSelectRef.current;
-    if (soundSelect) { soundSelect.disabled = false; }
   };
 
   const onTimedOutRecording = () => {
@@ -114,15 +111,14 @@ export const SoundPicker = (props: ISoundPickerProps) => {
     // Ignore this event, if it happens when "(record my own) is NOT selected"
     if (!isReadyToRecord) { return; }
 
-    if (mediaRecorder?.state === "inactive") {
+    if (mediaRecorderRef.current?.state === "inactive") {
+
       // Use a one-shot timer, to ensure recording does not exceed the maximum length
       recordingTimerRef.current = setTimeout(onTimedOutRecording, maximumRecordingLengthInMilliseconds);
 
       audioRecordingChunks = []; // Clear out any old audio data
-      mediaRecorder?.start();
+      mediaRecorderRef.current?.start();
       setIsRecording(true);
-      const soundSelect = soundSelectRef.current;
-      if (soundSelect) { soundSelect.disabled = true; }
     } else {
       doFinishedRecording();
     }
@@ -142,9 +138,10 @@ export const SoundPicker = (props: ISoundPickerProps) => {
     }
 
     const isUserRecordingSelected = soundName === "record-my-own";
-    setIsReadyToRecord((!!mediaRecorder) && isUserRecordingSelected);
-    if (isUserRecordingSelected && !mediaRecorder) {
-      accessRecordingStream();
+    const hasMediaRecorder: boolean = !!(mediaRecorderRef.current);
+    setIsReadyToRecord(hasMediaRecorder && isUserRecordingSelected);
+    if (isUserRecordingSelected && !hasMediaRecorder) {
+        accessRecordingStream();
     }
 
     handleSoundChange?.(event);
@@ -155,7 +152,7 @@ export const SoundPicker = (props: ISoundPickerProps) => {
     <div className="sound-picker-container">
       <div className="sound-picker-select-container">
         <select className="sound-picker"
-          ref={soundSelectRef}
+          disabled={isRecording}
           value={selectedSound}
           onChange={onSoundPickerChange}
         >

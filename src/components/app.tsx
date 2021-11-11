@@ -80,7 +80,7 @@ export const App = () => {
     // is nothing recorded (yet).
     if (soundName === "record-my-own") {
       // Arbitrary value--it just needs to be in the legal range, per the API specification
-      const minSupportedSampleRate = 3000;
+      const minSupportedSampleRate = 44100;
 
       const emptyBuffer = new AudioBuffer({
         length: 1,
