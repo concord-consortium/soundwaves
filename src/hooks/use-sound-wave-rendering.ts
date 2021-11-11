@@ -86,5 +86,5 @@ export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, d
     } else {
       drawZoomAreaMarker(drawHelperProps);
     }
-  }, [canvasRef, width, height, data, volume, playbackProgress, zoom, zoomedInView]);
+  }, [canvasRef, width, height, data, volume, playbackProgress, zoom, zoomedInView, shouldDrawProgressMarker]);
 };

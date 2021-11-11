@@ -158,7 +158,7 @@ export const SoundPicker = (props: ISoundPickerProps) => {
           ref={soundSelectRef}
           value={selectedSound}
           onChange={onSoundPickerChange}
-          >
+        >
           <option value="middle-c">Middle C (261.65Hz)</option>
           <option value="c2">Lower C (65.41 Hz)</option>
           <option value="baby-cry">Baby Cry</option>
