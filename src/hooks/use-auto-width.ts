@@ -12,7 +12,7 @@ export const useAutoWidth = ({ container, onWidthChange }: IConfig) => {
       return;
     }
     // TypeScript doesn't seem to have types of the native ResizeObserver yet. Use types coming from polyfill.
-    const NativeResizeObserver = (window as any).ResizeObserver as new(callback: ResizeObserverCallback) => ResizeObserver;
+    const NativeResizeObserver = (window as any).ResizeObserver as new (callback: ResizeObserverCallback) => ResizeObserver;
 
     const observer = new (NativeResizeObserver || ResizeObserver)(entries => {
       const entry = entries[0];

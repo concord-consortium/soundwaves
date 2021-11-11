@@ -14,10 +14,10 @@ export const SoundWave = (props: ISoundWaveProps) => {
   const [data, setData] = useState<Float32Array>(new Float32Array(0));
 
   if (debug) {
-    console.log('interactive', interactive);
-    console.log('zoom', zoom);
-    console.log('audioBuffer', audioBuffer);
-    console.log('channelData', audioBuffer?.getChannelData(0));
+    console.log("interactive", interactive);
+    console.log("zoom", zoom);
+    console.log("audioBuffer", audioBuffer);
+    console.log("channelData", audioBuffer?.getChannelData(0));
   }
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export const SoundWave = (props: ISoundWaveProps) => {
   }, [audioBuffer, zoom, zoomedInView]);
 
   if (debug) {
-    console.log('data', data);
+    console.log("data", data);
   }
 
   useSoundWaveRendering(canvasRef, data, props);

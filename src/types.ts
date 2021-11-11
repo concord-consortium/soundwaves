@@ -20,7 +20,7 @@ export interface ISoundWaveProps {
   debug?: boolean;
 }
 
-export interface IZoomButtonsProps{
+export interface IZoomButtonsProps {
   handleZoomOut?: () => void;
   handleZoomIn?: () => void;
 }
@@ -35,13 +35,13 @@ export interface ISoundWavePropsWithDataAndCarrier extends ISoundWavePropsWithDa
 
 export type SoundName =
   "middle-c"
-| "c2"
-| "baby-cry"
-| "rock-and-knock-drum-loop"
-| "cut-beat"
-| "cosmic-arp"
-| "hard-base"
-| "scratch-sample"
-| "record-my-own";
+  | "c2"
+  | "baby-cry"
+  | "rock-and-knock-drum-loop"
+  | "cut-beat"
+  | "cosmic-arp"
+  | "hard-base"
+  | "scratch-sample"
+  | "record-my-own";
 
-export type Modulation = "" | "AM" | "FM" ;
+export type Modulation = "" | "AM" | "FM";
