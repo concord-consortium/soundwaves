@@ -171,25 +171,6 @@ BODY {
     border: $borderWidth solid $darkBorderColor;
     border-bottom-left-radius: $borderRadius;
     border-bottom-right-radius: $borderRadius;
-
-    .app-zoom-buttons-container {
-      width: 130px;
-      margin-top: -5px;
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-
-      .app-zoom-button {
-        width: 48px;
-        height: 48px;
-        cursor: pointer;
-        background-color: $controls;
-        border-radius: 15px;
-        svg {
-          fill: white
-        }
-      }
-    }
   }
 
 } // END OF: .app
