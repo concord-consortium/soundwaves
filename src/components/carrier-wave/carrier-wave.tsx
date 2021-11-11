@@ -42,7 +42,7 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
     if (audioBuffer && carrierFrequency !== 0 && modulation !== "") {
       const updateCarrierBuffer = async () => {
         const buffer = modulation === "AM" ?
-          await getAMCarrierWave(audioBuffer, carrierFrequency, volume) :
+          await getAMCarrierWave(audioBuffer, carrierFrequency) :
           await getFMCarrierWave(audioBuffer, carrierFrequency, volume);
         setCarrierBuffer(buffer);
       };
@@ -92,7 +92,7 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
             width={graphWidth}
             height={SOUND_WAVE_GRAPH_HEIGHT}
             audioBuffer={carrierBuffer}
-            volume={modulation === "AM" ? volume * 2 : 1}
+            volume={modulation === "AM" ? volume : 1}
             playbackProgress={playbackProgress}
             zoom={carrierZoom}
             zoomedInView={true}
@@ -106,7 +106,7 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
             width={graphWidth - ZOOM_BUTTONS_WIDTH}
             height={ZOOMED_OUT_GRAPH_HEIGHT}
             audioBuffer={carrierBuffer}
-            volume={modulation === "AM" ? volume * 2 : 1}
+            volume={modulation === "AM" ? volume : 1}
             playbackProgress={playbackProgress}
             zoom={carrierZoom}
             zoomedInView={false}

@@ -1,13 +1,3 @@
-export const getMaxAmplitude = (data: Float32Array) => {
-  let max = -Infinity;
-  for (let i = 0; i < data.length; i += 1) {
-    if (Math.abs(data[i]) > max) {
-      max = Math.abs(data[i]);
-    }
-  }
-  return max;
-};
-
 export const getMinValue = (data: Float32Array) => {
   let min = Infinity;
   for (let i = 0; i < data.length; i += 1) {
@@ -16,15 +6,6 @@ export const getMinValue = (data: Float32Array) => {
     }
   }
   return min;
-};
-
-export const normalizeData = (data: Float32Array) => {
-  const max = getMaxAmplitude(data);
-  const multiplier = 1 / max;
-  for (let i = 0; i < data.length; i += 1) {
-    data[i] *= multiplier;
-  }
-  return data;
 };
 
 const MIN_SAMPLE_RATE = 3000; // limit defined by Web Audio API
@@ -92,7 +73,7 @@ export const getFMCarrierWave = async (sourceBuffer: AudioBuffer, carrierFrequen
   return await offlineContext.startRendering();
 };
 
-export const getAMCarrierWave = async (sourceBuffer: AudioBuffer, carrierFrequency: number, volume: number): Promise<AudioBuffer> => {
+export const getAMCarrierWave = async (sourceBuffer: AudioBuffer, carrierFrequency: number): Promise<AudioBuffer> => {
   const bufferLengthInSeconds = sourceBuffer.length / sourceBuffer.sampleRate;
   const carrierBufferLength = CARRIER_SAMPLE_RATE * bufferLengthInSeconds;
 

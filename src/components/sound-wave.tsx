@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSoundWaveInteractions } from "../hooks/use-sound-wave-interactions";
 import { useSoundWaveRendering } from "../hooks/use-sound-wave-rendering";
 import { ISoundWaveProps } from "../types";
-import { downsampleAudioBuffer, normalizeData } from "../utils/audio";
+import { downsampleAudioBuffer } from "../utils/audio";
 import "./sound-wave.scss";
 
 // Performance - 20k seems to be reasonable limit (tested on desktop Chrome, Safari and iOS Safari)
@@ -29,11 +29,11 @@ export const SoundWave = (props: ISoundWaveProps) => {
     const maxPointsCount = MAX_GRAPH_POINTS * actualZoom;
     if (audioBuffer.length > maxPointsCount) {
       downsampleAudioBuffer(audioBuffer, maxPointsCount).then(result => {
-        setData(normalizeData(result));
+        setData(result);
       });
     } else {
       // Nothing to do, the original data isn't too large.
-      setData(normalizeData(audioBuffer.getChannelData(0)));
+      setData(audioBuffer.getChannelData(0));
     }
   }, [audioBuffer, zoom, zoomedInView]);
 
