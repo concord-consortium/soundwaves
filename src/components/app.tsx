@@ -211,24 +211,16 @@ export const App = () => {
             { playing ? <PauseIcon /> : <PlayIcon /> }
           </div>
           <div className="volume-controls">
-            <div className="volume-label">
-              Volume
+            <div>
+              <VolumeIcon className="volume-icon" />
             </div>
-            <div style={{ width: "100%" }}>
+            <div className="volume-slider-container">
               <Slider
                 className="volume-slider"
                 min={0} max={2} step={0.01}
                 value={volume}
                 onChange={handleVolumeChange}
               />
-            </div>
-            <div className="volume-icons">
-              <div><VolumeIcon className="volume-icon" /></div>
-              <div style={{ textAlign: "right" }}>
-                <VolumeIcon className="volume-icon" />
-                <VolumeIcon className="volume-icon" />
-                <VolumeIcon className="volume-icon" />
-              </div>
             </div>
           </div>
         </div>
