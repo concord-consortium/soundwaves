@@ -1,5 +1,3 @@
-import { ChangeEvent } from "react";
-
 export const ZOOM_BUTTONS_WIDTH = 130; // px, it should match width of zoom-buttons-container defined in CSS file
 const SIDE_MARGIN = 8; // Units: px. If changing; also change $margin, in vars.scss
 const BORDER_WIDTH = 2; // Units: px; If changing; also change: $borderWidth, in vars.scss
@@ -20,11 +18,6 @@ export interface ISoundWaveProps {
   onProgressUpdate?: (newProgress: number) => void;
   shouldDrawProgressMarker?: boolean;
   debug?: boolean;
-}
-
-export interface ICarrierWaveProps {
-  audioBuffer?: AudioBuffer; // This is the buffer for the user-chosen sound; and NOT the carrier wave
-  playbackProgress: number; // normalized, [0, 1]
 }
 
 export interface IZoomButtonsProps{
@@ -51,14 +44,4 @@ export type SoundName =
 | "scratch-sample"
 | "record-my-own";
 
-
-// export interface ICarrierWaveProps {
-//   carrierWaveSelection: string;
-//   wavelength: string;
-//   timesHigherThanHuman: string;
-//   modulation: string;
-//   handleCarrierChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
-// }
-
 export type Modulation = "" | "AM" | "FM" ;
-export type Frequency = 0 | 540e3 | 600e3 | 1200e3 | 897e5 | 1019e5 | 1081e5 ;

@@ -1,179 +1,55 @@
-import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
-import { ICarrierWaveProps, Frequency, Modulation, ISoundWavePropsWithDataAndCarrier, ISoundWaveProps, SIDE_MARGIN_PLUS_BORDER, ZOOM_BUTTONS_WIDTH, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT } from "../../types"
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { Modulation, ZOOM_BUTTONS_WIDTH, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT } from "../../types";
+import { getFMCarrierWave } from "../../utils/audio";
 import { SoundWave } from "../sound-wave";
-import { useAutoWidth } from "../../hooks/use-auto-width";
 import { ZoomButtons } from "../zoom-buttons/zoom-buttons";
 
 import "./carrier-wave.scss";
 
-
-type CarrierWave = {modulation: Modulation, frequency: Frequency};
+type CarrierWave = { modulation: Modulation, frequency: number };
 
 const carrierWaves: Record<string, CarrierWave> = {
-  "Choose . . .":   {modulation: "", frequency:  0},
-  "AM 540kHz":   {modulation: "AM", frequency:  540e3},
-  "AM 600kHz":   {modulation: "AM", frequency:  600e3},
-  "AM 1200kHz":  {modulation: "AM", frequency: 1200e3},
-  "FM 89.7MHz":  {modulation: "FM", frequency:  897e5},
-  "FM 101.9MHz": {modulation: "FM", frequency: 1019e5},
-  "FM 108.1MHz": {modulation: "FM", frequency: 1081e5},
+  "Choose . . .": { modulation: "", frequency: 0 },
+  // "AM 540kHz": { modulation: "AM", frequency: 540e3 },
+  // "AM 600kHz": { modulation: "AM", frequency: 600e3 },
+  // "AM 1200kHz": { modulation: "AM", frequency: 1200e3 },
+  "FM 2KHz": { modulation: "FM", frequency: 2e3 },
+  "FM 4KHz": { modulation: "FM", frequency: 4e3 },
+  "FM 8KHz": { modulation: "FM", frequency: 8e3 },
 };
 
+export interface ICarrierWaveProps {
+  audioBuffer?: AudioBuffer; // This is the buffer for the user-chosen sound; and NOT the carrier wave
+  playbackProgress: number; // normalized, [0, 1]
+  graphWidth: number;
+  volume: number;
+}
+
 export const CarrierWave = (props: ICarrierWaveProps) => {
-  const { audioBuffer, playbackProgress } = props;
-console.log('Into CarrierWave ctor');
-// console.log('audioBuffer', audioBuffer);
+  const { audioBuffer, playbackProgress, graphWidth, volume } = props;
 
-const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose . . .");
-  const [carrierWavelength, setCarrierWavelength] = useState<string>("");
-  const [carrierFrequency, setCarrierFrequency] = useState<number>(0);
-  const [timesHigherThanHuman, setTimesHigherThanHuman] = useState<string>("");
-  const [modulation, setModulation] = useState<string>("");
   const [carrierBuffer, setCarrierBuffer] = useState<AudioBuffer>();
-  const [graphWidth, setGraphWidth] = useState<number>(100);
   const [carrierZoom, setCarrierZoom] = useState<number>(16);
-  const [previousAudioBuffer, setPreviousAudioBuffer] = useState<AudioBuffer>();
+  const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose . . .");
 
-  const carrierContext = useRef<OfflineAudioContext>();
+  const carrierFrequency = carrierWaves[carrierWaveSelection].frequency;
+  const modulation = carrierWaves[carrierWaveSelection].modulation;
+  // Using 20kHz as upper range of human hearing
+  const timesHigherThanHuman = carrierFrequency !== 0 ? `${(carrierFrequency / 2e4).toString()}x` : "";
+  const carrierWavelength = carrierFrequency !== 0 ? `${((1 / carrierFrequency) * 1000).toPrecision(3)}ms` : "";
 
-  // Attempt 'D'
-  const renderCarrier = async () => {
-    console.log('Into CarrierWave renderCarrier()');
-    // console.log('audioBuffer', audioBuffer);
-
-        const numChannels = 1;
-        const carrierFrequency = 262; // TODO: set based on user selection (but SCALED???)
-        const carrierSampleRate = 48000; // WebAudio API's (minimum required) maximum rate is 96kHz
-        const carrierBufferLength = carrierSampleRate * 100; // 100 second(s)
-
-        carrierContext.current =
-          new OfflineAudioContext(numChannels, carrierBufferLength, carrierSampleRate);
-
-        const carrierOscillator = carrierContext.current.createOscillator();
-        carrierOscillator.type = "sine";
-        carrierOscillator.frequency.setValueAtTime(
-          carrierFrequency, carrierContext.current.currentTime);
-
-        carrierOscillator.connect(carrierContext.current.destination);
-
-    // const gainNode = new GainNode(carrierContext.current);
-    // gainNode.gain.value = 0.2;
-    // carrierOscillator.connect(gainNode);
-    // gainNode.connect(carrierContext.current.destination);
-
-        carrierOscillator.start();
-        const carrierBuffer = await carrierContext.current.startRendering();
-        setCarrierBuffer(carrierBuffer);
-//  console.log(carrierBuffer);
-
-        // OBSOLETE
-        // const carrierBuffer = carrierContext.current.createBuffer(
-        //   numChannels, carrierBufferLength, carrierSampleRate);
-        // setCarrierBuffer(carrierBuffer);
-        // const myArrayBuffer =
-        //   carrierContext.current.createBuffer(numChannels, carrierBufferLength, carrierSampleRate);
-        // const data = myArrayBuffer.getChannelData(0);
-        // const frameCount = carrierContext.current.sampleRate;
-        // for (var i = 0; i < frameCount; i++) {
-        //   // Math.random() is in [0; 1.0]
-        //    // audio needs to be in [-1.0; 1.0]
-        //   // data[i] = Math.random() * 2 - 1;
-        //   data[i] = Math.sin(i);
-        // }
-        // const source = carrierContext.current.createBufferSource();
-        // source.buffer = myArrayBuffer;
-        // setCarrierBuffer(myArrayBuffer);
-        // source.start();
-  };
-
-// console.log('previousAudioBuffer', previousAudioBuffer);
-// console.log('audioBuffer', audioBuffer);
-// console.log('carrierBuffer', carrierBuffer);
-  if (audioBuffer) {
-console.log('audioBuffer defined:', audioBuffer);
-console.log('carrierBuffer', carrierBuffer);
-if (!previousAudioBuffer) {
-console.log('previousAudioBuffer UN-defined');
-      setPreviousAudioBuffer(audioBuffer);
-      renderCarrier();
-    } else {
-console.log('previousAudioBuffer defined; length=', previousAudioBuffer.length);
-      if (previousAudioBuffer.length !== audioBuffer.length) {
-        setPreviousAudioBuffer(audioBuffer);
-        renderCarrier();
-      }
-    }
-  } else {
-console.log('audioBuffer UN-defined');
-  }
-
-  // if (audioBuffer && !previousAudioBuffer) {
-    // // if ( (!carrierBuffer) || (previousAudioBuffer !== audioBuffer) ) {
-    //   setPreviousAudioBuffer(audioBuffer);
-    // //   renderCarrier();
-    // // }
-    // } else {
-    //   console.log('previousAudioBuffer', previousAudioBuffer);
-    //   if (previousAudioBuffer?.length !== audioBuffer?.length) {
-    //     setPreviousAudioBuffer(audioBuffer);
-    //   }
-    // }
-
-  // // Attempt 'C'
-  // const renderCarrier = (audioBuffer: AudioBuffer): void => {
-  //   console.log('length', audioBuffer.length);
-  //   console.log('duration', audioBuffer.duration);
-
-  //   const numChannels = 1;
-  //   const sampleRate = 441000;
-  //   const length = sampleRate * 2; // 2 seconds
-
-  //   carrierContext.current = new OfflineAudioContext(numChannels, length, sampleRate);
-
-  //   // const carrierOscillator = carrierContext.current.createOscillator();
-  //   // carrierOscillator.type = "sine";
-  //   // carrierOscillator.frequency.setValueAtTime(440, carrierContext.current.currentTime);
-  //   // const carrierBuffer = carrierContext.current.createBuffer(numChannels, length, sampleRate)
-  //   // setCarrierBuffer(carrierBuffer);
-  //   // carrierOscillator.start();
-  // };
-
-  useAutoWidth({
-    container: document.body,
-    onWidthChange: useCallback(
-      (newWidth) => {setGraphWidth(newWidth - (2 * SIDE_MARGIN_PLUS_BORDER))}
-    , [])
-  });
-
-  useEffect( () => {
-console.log('Into CarrierWave useEffect(); playbackProgress: ', playbackProgress);
-    // renderCarrier();
-  }, [playbackProgress]);
-
-  const setupCarrierContext = async () => {
-    console.log('setupCarrierContext() - carrierFrequency', carrierFrequency);
+  useEffect(() => {
+    if (audioBuffer && carrierFrequency !== 0 && modulation === "FM") {
+      const updateCarrierBuffer = async () => {
+        setCarrierBuffer(await getFMCarrierWave(audioBuffer, carrierFrequency, volume));
       };
+      updateCarrierBuffer();
+    }
+  }, [audioBuffer, carrierFrequency, volume, modulation]);
 
-  const handleCarrierChange = ( (event: ChangeEvent<HTMLSelectElement>) => {
+  const handleCarrierChange = ((event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
     setCarrierWaveSelection(value);
-
-    const newModulationValue = carrierWaves[value].modulation;
-    setModulation(newModulationValue ? newModulationValue : "");
-
-    const frequency = carrierWaves[value].frequency;
-    setCarrierFrequency(frequency);
-    const wavelengthInMilliSeconds = ((1 / frequency) * 1000).toPrecision(3);
-
-    setTimesHigherThanHuman( (frequency !== 0)
-      ? `${(frequency / 2e4).toString()}x` // Using 20kHz as upper range of human hearing
-      : "");
-
-    setCarrierWavelength( (frequency !== 0)
-      ? `${wavelengthInMilliSeconds}ms`
-      : "");
-
-    // setupCarrierContext();
   });
 
   const handleZoomIn = () => {
@@ -192,10 +68,8 @@ console.log('Into CarrierWave useEffect(); playbackProgress: ', playbackProgress
     const optionElements = carrierWaveKeys.map((key) =>
       <option key={key} value={key}>{key}</option>
     );
-    return (optionElements);
+    return optionElements;
   };
-
-console.log('Into CarrierWave before returning JSX; carrierZoom=', carrierZoom);
 
   return (
     <div className="carrier-wave-container">

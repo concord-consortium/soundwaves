@@ -25,7 +25,6 @@ import PauseIcon from "../assets/icons/pause_circle_outline_black_48dp.svg";
 import VolumeIcon from "../assets/icons/volume_up_black_48dp.svg";
 import PlusIcon from "../assets/icons/add_black_48dp.svg";
 import MinusIcon from "../assets/icons/remove_black_48dp.svg";
-import { ZoomButtons } from "./zoom-buttons/zoom-buttons";
 
 
 const sounds: Record<SoundName, string> = {
@@ -42,7 +41,6 @@ const sounds: Record<SoundName, string> = {
 
 
 export const App = () => {
-// console.log('Into App ctor');
   const [selectedSound, setSelectedSound] = useState<SoundName>("middle-c");
   const [playing, setPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(1);
@@ -82,7 +80,6 @@ export const App = () => {
   };
 
   useEffect(() => {
-// console.log('Into App useEffect');
     // AudioContext is apparently unavailable in the node / jest environment.
     // So we bail out early, to prevent render test failure.
     if (!window.AudioContext) { return; }
@@ -177,8 +174,6 @@ export const App = () => {
     4: {style: null, label: "4"},
   };
 
-// console.log('Before App JSX return');
-
   return (
     <div className="app">
       <AppHeader/>
@@ -256,7 +251,6 @@ export const App = () => {
               interactive={!playing}
               onProgressUpdate={handleProgressUpdate}
             />
-            {/* <ZoomButtons /> */}
             <div className="app-zoom-buttons-container">
               <div className="app-zoom-button" onClick={handleZoomOut}><MinusIcon /></div>
               <div className="app-zoom-button" onClick={handleZoomIn}><PlusIcon /></div>
@@ -264,7 +258,12 @@ export const App = () => {
           </div>
         </div>
       </div>
-      <CarrierWave audioBuffer={audioBuffer} playbackProgress={playbackProgress} />
+      <CarrierWave
+        audioBuffer={audioBuffer}
+        playbackProgress={playbackProgress}
+        graphWidth={graphWidth}
+        volume={volume}
+      />
     </div>
   );
 };
