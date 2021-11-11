@@ -9,6 +9,7 @@ describe("CarrierWave", () => {
         playbackProgress={0}
         graphWidth={200}
         volume={1}
+        interactive={false}
       />);
     expect(screen.getByText("Radio Carrier Wave:")).toBeDefined();
   });
