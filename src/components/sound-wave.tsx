@@ -9,16 +9,9 @@ import "./sound-wave.scss";
 const MAX_GRAPH_POINTS = 20000;
 
 export const SoundWave = (props: ISoundWaveProps) => {
-  const { interactive, audioBuffer, zoom, zoomedInView, debug } = props;
+  const { interactive, audioBuffer, zoom, zoomedInView } = props;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [data, setData] = useState<Float32Array>(new Float32Array(0));
-
-  if (debug) {
-    console.log("interactive", interactive);
-    console.log("zoom", zoom);
-    console.log("audioBuffer", audioBuffer);
-    console.log("channelData", audioBuffer?.getChannelData(0));
-  }
 
   useEffect(() => {
     if (!audioBuffer) {
@@ -32,14 +25,10 @@ export const SoundWave = (props: ISoundWaveProps) => {
         setData(normalizeData(result));
       });
     } else {
-      // Nothing to do, the original data isn't too large.
+      // Nothing to do, the original data isn"t too large.
       setData(normalizeData(audioBuffer.getChannelData(0)));
     }
   }, [audioBuffer, zoom, zoomedInView]);
-
-  if (debug) {
-    console.log("data", data);
-  }
 
   useSoundWaveRendering(canvasRef, data, props);
   const { handlePointerDown, handlePointerMove } = useSoundWaveInteractions(canvasRef, data, props);

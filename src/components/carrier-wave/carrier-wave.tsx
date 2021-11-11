@@ -27,7 +27,6 @@ export interface ICarrierWaveProps {
 
 export const CarrierWave = (props: ICarrierWaveProps) => {
   const { audioBuffer, playbackProgress, graphWidth, volume } = props;
-
   const [carrierBuffer, setCarrierBuffer] = useState<AudioBuffer>();
   const [carrierZoom, setCarrierZoom] = useState<number>(16);
   const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose . . .");
@@ -66,7 +65,7 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
       carrierWaveKeys.push(key);
     }
     const optionElements = carrierWaveKeys.map((key) =>
-      <option key={key} value={key}>{key}</option>
+      <option key={key} value={key}>{ key }</option>
     );
     return optionElements;
   };
@@ -95,7 +94,6 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
             zoomedInView={true}
             shouldDrawProgressMarker={true}
             interactive={false}
-            debug={false}
           />
         </div>
         <div className="zoomed-out-graph-container">
@@ -109,14 +107,13 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
             zoomedInView={false}
             shouldDrawProgressMarker={false}
             interactive={false}
-            debug={false}
           />
           <ZoomButtons handleZoomIn={handleZoomIn} handleZoomOut={handleZoomOut} />
         </div>
       </div>
       <div className="wavelength-mod-container">
         <div>
-          Wavelength:&nbsp;<span className="value">{carrierWavelength}</span>
+          Wavelength:&nbsp;<span className="value">{ carrierWavelength }</span>
         </div>
         <div>
           &nbsp;Modulation:&nbsp;
@@ -130,7 +127,7 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
 
       <div className="times-higher-than-container">
         Higher than human hearing range by:&nbsp;
-        <span className="value">{timesHigherThanHuman}</span>
+        <span className="value">{ timesHigherThanHuman }</span>
       </div>
     </div>
   );
