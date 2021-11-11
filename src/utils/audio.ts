@@ -1,10 +1,25 @@
-export const normalizeData = (data: Float32Array) => {
+export const getMaxAmplitude = (data: Float32Array) => {
   let max = -Infinity;
   for (let i = 0; i < data.length; i += 1) {
     if (Math.abs(data[i]) > max) {
       max = Math.abs(data[i]);
     }
   }
+  return max;
+};
+
+export const getMinValue = (data: Float32Array) => {
+  let min = Infinity;
+  for (let i = 0; i < data.length; i += 1) {
+    if (data[i] < min) {
+      min = data[i];
+    }
+  }
+  return min;
+};
+
+export const normalizeData = (data: Float32Array) => {
+  const max = getMaxAmplitude(data);
   const multiplier = 1 / max;
   for (let i = 0; i < data.length; i += 1) {
     data[i] *= multiplier;
@@ -66,9 +81,38 @@ export const getFMCarrierWave = async (sourceBuffer: AudioBuffer, carrierFrequen
   const audioSource = offlineContext.createBufferSource();
   audioSource.buffer = sourceBuffer;
 
-  audioSource.connect(gainNode);
-  gainNode.connect(carrierOscillator.frequency);
+  audioSource
+    .connect(gainNode)
+    .connect(carrierOscillator.frequency);
   carrierOscillator.connect(offlineContext.destination);
+
+  audioSource.start();
+  carrierOscillator.start();
+
+  return await offlineContext.startRendering();
+};
+
+export const getAMCarrierWave = async (sourceBuffer: AudioBuffer, carrierFrequency: number, volume: number): Promise<AudioBuffer> => {
+  const bufferLengthInSeconds = sourceBuffer.length / sourceBuffer.sampleRate;
+  const carrierBufferLength = CARRIER_SAMPLE_RATE * bufferLengthInSeconds;
+
+  const offlineContext = new OfflineAudioContext(1, carrierBufferLength, CARRIER_SAMPLE_RATE);
+
+  const carrierOscillator = offlineContext.createOscillator();
+  carrierOscillator.type = "sine";
+  carrierOscillator.frequency.setValueAtTime(carrierFrequency, 0);
+
+  const gainNode = new GainNode(offlineContext);
+  // This will shift the source signal and ensure that all the values are positive.
+  gainNode.gain.value = -1 * getMinValue(sourceBuffer.getChannelData(0));
+
+  const audioSource = offlineContext.createBufferSource();
+  audioSource.buffer = sourceBuffer;
+
+  carrierOscillator
+    .connect(gainNode)
+    .connect(offlineContext.destination);
+  audioSource.connect(gainNode.gain);
 
   audioSource.start();
   carrierOscillator.start();
