@@ -35,6 +35,10 @@
         fill: $disabledButton;
         cursor: default;
       }
+
+      &.recording {
+        fill: red;
+      }
     }
   }
 }

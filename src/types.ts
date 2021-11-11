@@ -17,7 +17,6 @@ export interface ISoundWaveProps {
   interactive?: boolean;
   onProgressUpdate?: (newProgress: number) => void;
   shouldDrawProgressMarker?: boolean;
-  debug?: boolean;
 }
 
 export interface IZoomButtonsProps {

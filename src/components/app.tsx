@@ -61,6 +61,11 @@ export const App = () => {
       , [])
   });
 
+  const setupAudioContextFromRecording = (recordingBuffer: AudioBuffer) => {
+    setAudioBuffer(recordingBuffer);
+    setPlaybackProgress(0);
+  };
+
   const setupAudioContext = async (soundName: SoundName) => {
     if (audioSource.current && audioContext.current) {
       audioSource.current.stop();
@@ -68,6 +73,26 @@ export const App = () => {
       setPlaying(false);
     }
 
+    // When a user chooses to record their own sound, we don't start recording
+    // immediately. But we do want to clear out the old sound data here, and to
+    // update the playback progress indicator, so that it is clear that there
+    // is nothing recorded (yet).
+    if (soundName === "record-my-own") {
+      // Arbitrary value--it just needs to be in the legal range, per the API specification
+      const minSupportedSampleRate = 44100;
+
+      const emptyBuffer = new AudioBuffer({
+        length: 1,
+        sampleRate: minSupportedSampleRate
+      });
+      audioContext.current = new AudioContext();
+      gainNode.current = audioContext.current.createGain();
+      setAudioBuffer(emptyBuffer);
+      setPlaybackProgress(0);
+      return;
+    }
+
+    // Handle selection of 'canned' sounds...
     const response = await window.fetch(sounds[soundName]);
     const soundArrayBuffer = await response.arrayBuffer();
     audioContext.current = new AudioContext();
@@ -178,11 +203,12 @@ export const App = () => {
       <SoundPicker
         selectedSound={selectedSound}
         handleSoundChange={handleSoundChange}
+        onRecordingCompleted={setupAudioContextFromRecording}
       />
       <div className="main-controls-and-waves-container">
         <div className="playback-and-volume-controls">
           <div className="play-pause button" onClick={handlePlay}>
-            {playing ? <PauseIcon /> : <PlayIcon />}
+            { playing ? <PauseIcon /> : <PlayIcon /> }
           </div>
           <div className="volume-controls">
             <div className="volume-label">
