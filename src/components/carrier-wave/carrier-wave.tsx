@@ -98,9 +98,7 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
             playbackProgress={playbackProgress}
             zoom={carrierZoom}
             zoomedInView={true}
-            isCarrierWave={true}
             shouldDrawProgressMarker={true}
-            // shouldDrawTimeMarker={false}
             interactive={false}
           />
         </div>
@@ -113,9 +111,7 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
             playbackProgress={playbackProgress}
             zoom={carrierZoom}
             zoomedInView={false}
-            isCarrierWave={true}
             shouldDrawProgressMarker={false}
-            // shouldDrawTimeMarker={false}
             interactive={interactive}
             onProgressUpdate={onProgressUpdate}
           />

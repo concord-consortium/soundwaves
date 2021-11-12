@@ -25,8 +25,8 @@ const drawTimeCaptions = (props: IDrawHelperProps) => {
   const currentDataPointIdx = getCurrentSampleIdx(props);
   const zoomedInViewPointsCount = getZoomedInViewPointsCount(props);
   const leftRightOffsetInSamples = (zoomedInViewPointsCount / 2);
-  const leftRightOffsetInSeconds = timePerSample * leftRightOffsetInSamples;
-  const leftRightOffsetInMilliseconds = Math.round(leftRightOffsetInSeconds * 1000);
+  const leftRightOffsetInMilliseconds =
+    Math.round((timePerSample * leftRightOffsetInSamples) * 1000);
   const timeIndexInSeconds = timePerSample * currentDataPointIdx;
   const timeIndex = Math.round(timeIndexInSeconds * 1000);
   const timeIndexLeft = timeIndex - leftRightOffsetInMilliseconds;
@@ -96,7 +96,7 @@ const drawZoomAreaMarker = (props: IDrawHelperProps) => {
 };
 
 export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, data: Float32Array, props: ISoundWaveProps) => {
-  const { width, height, audioBuffer, volume, playbackProgress, zoom, zoomedInView, isCarrierWave, shouldDrawProgressMarker } = props;
+  const { width, height, audioBuffer, volume, playbackProgress, zoom, zoomedInView, shouldDrawProgressMarker } = props;
 
   useEffect(() => {
     if (!canvasRef.current) {
@@ -111,7 +111,7 @@ export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, d
     }
     // Just to keep things simple, provide one props object to all the helpers.
     const drawHelperProps: IDrawHelperProps = {
-      ctx, width, height, audioBuffer, data, volume, playbackProgress, zoom, zoomedInView, isCarrierWave
+      ctx, width, height, audioBuffer, data, volume, playbackProgress, zoom, zoomedInView
     };
 
     drawBackground(drawHelperProps);

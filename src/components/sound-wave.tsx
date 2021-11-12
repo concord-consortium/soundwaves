@@ -9,7 +9,7 @@ import "./sound-wave.scss";
 const MAX_GRAPH_POINTS = 20000;
 
 export const SoundWave = (props: ISoundWaveProps) => {
-  const { interactive, audioBuffer, zoom, zoomedInView, isCarrierWave } = props;
+  const { interactive, audioBuffer, zoom, zoomedInView } = props;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [data, setData] = useState<Float32Array>(new Float32Array(0));
 

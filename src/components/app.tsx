@@ -249,7 +249,6 @@ export const App = () => {
             playbackProgress={playbackProgress}
             zoom={zoom}
             zoomedInView={true}
-            isCarrierWave={false}
             shouldDrawProgressMarker={true}
           />
           <div className="zoomed-out-graph-container chosen-sound">
@@ -261,7 +260,6 @@ export const App = () => {
               playbackProgress={playbackProgress}
               zoom={zoom}
               zoomedInView={false}
-              isCarrierWave={false}
               shouldDrawProgressMarker={false}
               interactive={!playing}
               onProgressUpdate={handleProgressUpdate}

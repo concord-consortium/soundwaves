@@ -22,9 +22,7 @@ export interface ISoundWaveProps {
   zoomedInView: boolean;
   interactive?: boolean;
   onProgressUpdate?: (newProgress: number) => void;
-  isCarrierWave: boolean;
   shouldDrawProgressMarker?: boolean;
-  // shouldDrawTimeMarker?: boolean;
 }
 
 export interface IZoomButtonsProps {
