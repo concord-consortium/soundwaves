@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { Modulation, ZOOM_BUTTONS_WIDTH, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT } from "../../types";
-import { getFMCarrierWave } from "../../utils/audio";
+import { getAMCarrierWave, getFMCarrierWave } from "../../utils/audio";
 import { SoundWave } from "../sound-wave";
 import { ZoomButtons } from "../zoom-buttons/zoom-buttons";
 
@@ -10,12 +10,12 @@ type CarrierWave = { modulation: Modulation, frequency: number };
 
 const carrierWaves: Record<string, CarrierWave> = {
   "Choose . . .": { modulation: "", frequency: 0 },
-  // "AM 540kHz": { modulation: "AM", frequency: 540e3 },
-  // "AM 600kHz": { modulation: "AM", frequency: 600e3 },
-  // "AM 1200kHz": { modulation: "AM", frequency: 1200e3 },
-  "FM 2KHz": { modulation: "FM", frequency: 2e3 },
-  "FM 4KHz": { modulation: "FM", frequency: 4e3 },
-  "FM 8KHz": { modulation: "FM", frequency: 8e3 },
+  "AM 2kHz": { modulation: "AM", frequency: 2e3 },
+  "AM 4kHz": { modulation: "AM", frequency: 4e3 },
+  "AM 8kHz": { modulation: "AM", frequency: 8e3 },
+  "FM 2kHz": { modulation: "FM", frequency: 2e3 },
+  "FM 4kHz": { modulation: "FM", frequency: 4e3 },
+  "FM 8kHz": { modulation: "FM", frequency: 8e3 },
 };
 
 export interface ICarrierWaveProps {
@@ -23,10 +23,13 @@ export interface ICarrierWaveProps {
   playbackProgress: number; // normalized, [0, 1]
   graphWidth: number;
   volume: number;
+  onProgressUpdate?: (newProgress: number) => void;
+  interactive: boolean;
 }
 
 export const CarrierWave = (props: ICarrierWaveProps) => {
-  const { audioBuffer, playbackProgress, graphWidth, volume } = props;
+  const { audioBuffer, playbackProgress, graphWidth, volume, onProgressUpdate, interactive } = props;
+
   const [carrierBuffer, setCarrierBuffer] = useState<AudioBuffer>();
   const [carrierZoom, setCarrierZoom] = useState<number>(16);
   const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose . . .");
@@ -38,9 +41,12 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
   const carrierWavelength = carrierFrequency !== 0 ? `${((1 / carrierFrequency) * 1000).toPrecision(3)}ms` : "";
 
   useEffect(() => {
-    if (audioBuffer && carrierFrequency !== 0 && modulation === "FM") {
+    if (audioBuffer && carrierFrequency !== 0 && modulation !== "") {
       const updateCarrierBuffer = async () => {
-        setCarrierBuffer(await getFMCarrierWave(audioBuffer, carrierFrequency, volume));
+        const buffer = modulation === "AM" ?
+          await getAMCarrierWave(audioBuffer, carrierFrequency) :
+          await getFMCarrierWave(audioBuffer, carrierFrequency, volume);
+        setCarrierBuffer(buffer);
       };
       updateCarrierBuffer();
     }
@@ -88,7 +94,7 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
             width={graphWidth}
             height={SOUND_WAVE_GRAPH_HEIGHT}
             audioBuffer={carrierBuffer}
-            volume={1}
+            volume={modulation === "AM" ? volume : 1}
             playbackProgress={playbackProgress}
             zoom={carrierZoom}
             zoomedInView={true}
@@ -101,12 +107,13 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
             width={graphWidth - ZOOM_BUTTONS_WIDTH}
             height={ZOOMED_OUT_GRAPH_HEIGHT}
             audioBuffer={carrierBuffer}
-            volume={1}
+            volume={modulation === "AM" ? volume : 1}
             playbackProgress={playbackProgress}
             zoom={carrierZoom}
             zoomedInView={false}
             shouldDrawProgressMarker={false}
-            interactive={false}
+            interactive={interactive}
+            onProgressUpdate={onProgressUpdate}
           />
           <ZoomButtons handleZoomIn={handleZoomIn} handleZoomOut={handleZoomOut} />
         </div>
