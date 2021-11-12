@@ -63,7 +63,6 @@ export const App = () => {
 
   const setupAudioContextFromRecording = (recordingBuffer: AudioBuffer) => {
     setAudioBuffer(recordingBuffer);
-console.log("setupAudioContextFromRecording", {audioBuffer});
     setPlaybackProgress(0);
   };
 
@@ -86,7 +85,6 @@ console.log("setupAudioContextFromRecording", {audioBuffer});
       audioContext.current = new AudioContext();
       gainNode.current = audioContext.current.createGain();
       setAudioBuffer(emptyBuffer);
-console.log("setupAudioContext", {audioBuffer});
       setPlaybackProgress(0);
       return;
     }
@@ -98,7 +96,6 @@ console.log("setupAudioContext", {audioBuffer});
     gainNode.current = audioContext.current.createGain();
 
     setAudioBuffer(await audioContext.current.decodeAudioData(soundArrayBuffer));
-console.log("setupAudioContext() -- after decoding", {audioBuffer});
     setPlaybackProgress(0);
   };
 
@@ -254,7 +251,6 @@ console.log("setupAudioContext() -- after decoding", {audioBuffer});
             zoomedInView={true}
             isCarrierWave={false}
             shouldDrawProgressMarker={true}
-            // shouldDrawTimeMarker={!playing}
           />
           <div className="zoomed-out-graph-container chosen-sound">
             <SoundWave
@@ -269,7 +265,6 @@ console.log("setupAudioContext() -- after decoding", {audioBuffer});
               shouldDrawProgressMarker={false}
               interactive={!playing}
               onProgressUpdate={handleProgressUpdate}
-              // shouldDrawTimeMarker={false}
             />
             <ZoomButtons handleZoomIn={handleZoomIn} handleZoomOut={handleZoomOut} />
           </div>

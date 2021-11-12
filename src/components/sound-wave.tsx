@@ -10,9 +10,6 @@ const MAX_GRAPH_POINTS = 20000;
 
 export const SoundWave = (props: ISoundWaveProps) => {
   const { interactive, audioBuffer, zoom, zoomedInView, isCarrierWave } = props;
-if (zoomedInView && !isCarrierWave) {
-  console.log("SoundWave", {audioBuffer}, audioBuffer?.sampleRate);
-}
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [data, setData] = useState<Float32Array>(new Float32Array(0));
 

@@ -13,35 +13,24 @@ const drawBackground = (props: IDrawHelperProps) => {
 };
 
 const drawTimeCaptions = (props: IDrawHelperProps) => {
-  const { ctx, width, height, zoomedInView, zoom, isCarrierWave, data, audioBuffer } = props;
+  const { ctx, width, height, zoomedInView, audioBuffer } = props;
 
   // Only render time values for the zoomed in view.
   if (!zoomedInView) { return; }
-if (isCarrierWave) return;
-// console.log({playbackProgress});
-// console.log({isCarrierWave});
-// console.log({audioBuffer});
-// console.log({data});
 
   // Need the audioBuffer to calculate
   if (!audioBuffer) { return; }
+
   const timePerSample = 1 / audioBuffer.sampleRate;
   const currentDataPointIdx = getCurrentSampleIdx(props);
   const zoomedInViewPointsCount = getZoomedInViewPointsCount(props);
-  const leftRightOffset = (zoomedInViewPointsCount / 2)
-
-
-
+  const leftRightOffsetInSamples = (zoomedInViewPointsCount / 2);
+  const leftRightOffsetInSeconds = timePerSample * leftRightOffsetInSamples;
+  const leftRightOffsetInMilliseconds = Math.round(leftRightOffsetInSeconds * 1000);
   const timeIndexInSeconds = timePerSample * currentDataPointIdx;
   const timeIndex = Math.round(timeIndexInSeconds * 1000);
-  const timeIndexLeft = timeIndex - 50;
-  const timeIndexRight = timeIndex + 50;
-
-const pointsCount = getPointsCount(props);
-const xScale = width / getPointsCount(props);
-
-console.log({zoom}, data.length, {currentDataPointIdx});
-console.log({width}, {xScale}, {zoomedInViewPointsCount}, {pointsCount});
+  const timeIndexLeft = timeIndex - leftRightOffsetInMilliseconds;
+  const timeIndexRight = timeIndex + leftRightOffsetInMilliseconds;
 
   const textPadding = 4;
   const textLeftLocation = textPadding;
