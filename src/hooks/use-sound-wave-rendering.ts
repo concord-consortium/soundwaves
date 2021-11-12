@@ -1,4 +1,4 @@
-import { RefObject, useEffect } from "react";
+import { createContext, RefObject, useEffect } from "react";
 import { ISoundWaveProps } from "../types";
 import { getCurrentSampleIdx, getCurrentAmplitudeY, getZoomedInViewPointsCount, getPointsCount } from "../utils/sound-wave-helpers";
 
@@ -10,6 +10,52 @@ export interface IDrawHelperProps extends ISoundWaveProps {
 const drawBackground = (props: IDrawHelperProps) => {
   const { ctx, width, height } = props;
   ctx.clearRect(0, 0, width, height);
+};
+
+const drawTimeCaptions = (props: IDrawHelperProps) => {
+  const { ctx, width, height, zoomedInView, zoom, isCarrierWave, data, audioBuffer } = props;
+
+  // Only render time values for the zoomed in view.
+  if (!zoomedInView) { return; }
+if (isCarrierWave) return;
+// console.log({playbackProgress});
+// console.log({isCarrierWave});
+// console.log({audioBuffer});
+// console.log({data});
+
+  // Need the audioBuffer to calculate
+  if (!audioBuffer) { return; }
+  const timePerSample = 1 / audioBuffer.sampleRate;
+  const currentDataPointIdx = getCurrentSampleIdx(props);
+  const zoomedInViewPointsCount = getZoomedInViewPointsCount(props);
+  const leftRightOffset = (zoomedInViewPointsCount / 2)
+
+
+
+  const timeIndexInSeconds = timePerSample * currentDataPointIdx;
+  const timeIndex = Math.round(timeIndexInSeconds * 1000);
+  const timeIndexLeft = timeIndex - 50;
+  const timeIndexRight = timeIndex + 50;
+
+const pointsCount = getPointsCount(props);
+const xScale = width / getPointsCount(props);
+
+console.log({zoom}, data.length, {currentDataPointIdx});
+console.log({width}, {xScale}, {zoomedInViewPointsCount}, {pointsCount});
+
+  const textPadding = 4;
+  const textLeftLocation = textPadding;
+  const textRightLocation = width - textPadding;
+  const textCenterLocation = width / 2;
+  const textBaselineYlocation = height - (textPadding);
+
+  ctx.font = "'Comfortaa', cursive";
+  ctx.textAlign = "left";
+  ctx.fillText(`${timeIndexLeft} ms`, textLeftLocation, textBaselineYlocation);
+  ctx.textAlign = "center";
+  ctx.fillText(`${timeIndex} ms`, textCenterLocation, textBaselineYlocation);
+  ctx.textAlign = "right";
+  ctx.fillText(`${timeIndexRight} ms`, textRightLocation, textBaselineYlocation);
 };
 
 const drawSoundWaveLine = (props: IDrawHelperProps) => {
@@ -61,7 +107,7 @@ const drawZoomAreaMarker = (props: IDrawHelperProps) => {
 };
 
 export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, data: Float32Array, props: ISoundWaveProps) => {
-  const { width, height, volume, playbackProgress, zoom, zoomedInView, shouldDrawProgressMarker } = props;
+  const { width, height, audioBuffer, volume, playbackProgress, zoom, zoomedInView, isCarrierWave, shouldDrawProgressMarker } = props;
 
   useEffect(() => {
     if (!canvasRef.current) {
@@ -76,10 +122,11 @@ export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, d
     }
     // Just to keep things simple, provide one props object to all the helpers.
     const drawHelperProps: IDrawHelperProps = {
-      ctx, width, height, data, volume, playbackProgress, zoom, zoomedInView
+      ctx, width, height, audioBuffer, data, volume, playbackProgress, zoom, zoomedInView, isCarrierWave
     };
 
     drawBackground(drawHelperProps);
+    drawTimeCaptions(drawHelperProps);
     drawSoundWaveLine(drawHelperProps);
     if (zoomedInView && shouldDrawProgressMarker) {
       drawProgressMarker(drawHelperProps);

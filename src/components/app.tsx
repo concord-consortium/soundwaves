@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import Slider from "rc-slider";
 
-import { SIDE_MARGIN_PLUS_BORDER, SoundName, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT, ZOOM_BUTTONS_WIDTH } from "../types";
+import { SIDE_MARGIN_PLUS_BORDER, SoundName, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT, ZOOM_BUTTONS_WIDTH, SOUND_SAMPLE_RATE } from "../types";
 import { SoundWave } from "./sound-wave";
 import { CarrierWave } from "./carrier-wave/carrier-wave";
 import { AppHeader } from "./application-header/application-header";
@@ -63,6 +63,7 @@ export const App = () => {
 
   const setupAudioContextFromRecording = (recordingBuffer: AudioBuffer) => {
     setAudioBuffer(recordingBuffer);
+console.log("setupAudioContextFromRecording", {audioBuffer});
     setPlaybackProgress(0);
   };
 
@@ -78,16 +79,14 @@ export const App = () => {
     // update the playback progress indicator, so that it is clear that there
     // is nothing recorded (yet).
     if (soundName === "record-my-own") {
-      // Arbitrary value--it just needs to be in the legal range, per the API specification
-      const minSupportedSampleRate = 44100;
-
       const emptyBuffer = new AudioBuffer({
         length: 1,
-        sampleRate: minSupportedSampleRate
+        sampleRate: SOUND_SAMPLE_RATE
       });
       audioContext.current = new AudioContext();
       gainNode.current = audioContext.current.createGain();
       setAudioBuffer(emptyBuffer);
+console.log("setupAudioContext", {audioBuffer});
       setPlaybackProgress(0);
       return;
     }
@@ -99,6 +98,7 @@ export const App = () => {
     gainNode.current = audioContext.current.createGain();
 
     setAudioBuffer(await audioContext.current.decodeAudioData(soundArrayBuffer));
+console.log("setupAudioContext() -- after decoding", {audioBuffer});
     setPlaybackProgress(0);
   };
 
@@ -252,7 +252,9 @@ export const App = () => {
             playbackProgress={playbackProgress}
             zoom={zoom}
             zoomedInView={true}
+            isCarrierWave={false}
             shouldDrawProgressMarker={true}
+            // shouldDrawTimeMarker={!playing}
           />
           <div className="zoomed-out-graph-container chosen-sound">
             <SoundWave
@@ -263,9 +265,11 @@ export const App = () => {
               playbackProgress={playbackProgress}
               zoom={zoom}
               zoomedInView={false}
+              isCarrierWave={false}
               shouldDrawProgressMarker={false}
               interactive={!playing}
               onProgressUpdate={handleProgressUpdate}
+              // shouldDrawTimeMarker={false}
             />
             <ZoomButtons handleZoomIn={handleZoomIn} handleZoomOut={handleZoomOut} />
           </div>

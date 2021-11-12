@@ -5,6 +5,12 @@ export const SIDE_MARGIN_PLUS_BORDER = SIDE_MARGIN + BORDER_WIDTH; // Units: px;
 export const SOUND_WAVE_GRAPH_HEIGHT = 105;
 export const ZOOMED_OUT_GRAPH_HEIGHT = 45;
 
+// Arbitrary value (in Hz) -- but it needs to be in valid range, per the API specification.
+// The specification requires browsers to support a range of, at least: 8000..96000
+// See: https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer/AudioBuffer
+      // const minSupportedSampleRate = 44100;
+export const SOUND_SAMPLE_RATE = 44100;
+
 
 export interface ISoundWaveProps {
   width: number;
@@ -16,7 +22,9 @@ export interface ISoundWaveProps {
   zoomedInView: boolean;
   interactive?: boolean;
   onProgressUpdate?: (newProgress: number) => void;
+  isCarrierWave: boolean;
   shouldDrawProgressMarker?: boolean;
+  // shouldDrawTimeMarker?: boolean;
 }
 
 export interface IZoomButtonsProps {
