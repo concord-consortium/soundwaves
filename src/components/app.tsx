@@ -254,7 +254,7 @@ export const App = () => {
             zoomedInView={true}
             shouldDrawProgressMarker={true}
           />
-          <div className="zoomed-out-graph-container">
+          <div className="zoomed-out-graph-container chosen-sound">
             <SoundWave
               width={graphWidth - ZOOM_BUTTONS_WIDTH}
               height={ZOOMED_OUT_GRAPH_HEIGHT}
