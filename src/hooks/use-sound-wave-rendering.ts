@@ -1,4 +1,4 @@
-import { createContext, RefObject, useEffect } from "react";
+import { RefObject, useEffect } from "react";
 import { ISoundWaveProps } from "../types";
 import { getCurrentSampleIdx, getCurrentAmplitudeY, getZoomedInViewPointsCount, getPointsCount } from "../utils/sound-wave-helpers";
 
@@ -122,5 +122,5 @@ export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, d
     } else {
       drawZoomAreaMarker(drawHelperProps);
     }
-  }, [canvasRef, width, height, data, volume, playbackProgress, zoom, zoomedInView, shouldDrawProgressMarker]);
+  }, [canvasRef, width, height, audioBuffer, data, volume, playbackProgress, zoom, zoomedInView, shouldDrawProgressMarker]);
 };
