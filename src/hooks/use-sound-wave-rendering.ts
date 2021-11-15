@@ -95,8 +95,73 @@ const drawZoomAreaMarker = (props: IDrawHelperProps) => {
   ctx.fillRect(x * xScale + 0.5 * markerWidth, 0, 1, height); // line
 };
 
+// Used only in the zoomed in view.
+// const drawAmplitudeMarker = (props: IDrawHelperProps) => {
+//   const { ctx, width, height } = props;
+
+//   const captionX = (width / 2);
+//   const captionY = (height / 2) - 20; // TODO: set based on max waveform ehight; scaled by volume
+//   const textBoxHeight = 14;
+//   const textBoxWidth = 54;
+//   const textPadding = 4;
+
+//   const borderWidth = 2;
+//   ctx.strokeStyle = "#d0d0d080";// "fuchsia"; // "#ffffff";
+//   ctx.lineWidth = borderWidth;
+//   ctx.strokeRect(captionX + borderWidth, captionY + borderWidth,
+//     textBoxWidth, textBoxHeight);
+
+//   ctx.fillStyle = "#ffffffc0";
+//   ctx.fillRect(captionX + borderWidth + 1, captionY + borderWidth,
+//     textBoxWidth-2, textBoxHeight);
+
+//   const textLeftLocation = captionX + textPadding + 2;
+//   const textBaselineYlocation = captionY + textBoxHeight - (textPadding / 2);
+//   ctx.font = "'Comfortaa', cursive";
+//   ctx.textAlign = "left";
+//   ctx.fillStyle = "#303030";
+//   ctx.fillText(`Amplitude`, textLeftLocation, textBaselineYlocation);
+// };
+
+// Used only in the zoomed in view.
+const drawSoundMarkers = (props: IDrawHelperProps) => {
+  const { ctx, width, height } = props;
+
+  // Draw AMPLITUDE marker
+  const captionX = (width / 2);
+  const captionY = (height / 2) - 20; // TODO: set based on max waveform ehight; scaled by volume
+  const textBoxHeight = 14;
+  const textBoxWidth = 54;
+  const textPadding = 4;
+
+  const borderWidth = 2;
+  ctx.strokeStyle = "#d0d0d080";// "fuchsia"; // "#ffffff";
+  ctx.lineWidth = borderWidth;
+  ctx.strokeRect(captionX + borderWidth, captionY + borderWidth,
+    textBoxWidth, textBoxHeight);
+
+  ctx.fillStyle = "#ffffffc0";
+  ctx.fillRect(captionX + borderWidth + 1, captionY + borderWidth,
+    textBoxWidth-2, textBoxHeight);
+
+  const textLeftLocation = captionX + textPadding + 2;
+  const textBaselineYlocation = captionY + textBoxHeight - (textPadding / 2);
+  ctx.font = "'Comfortaa', cursive";
+  ctx.textAlign = "left";
+  ctx.fillStyle = "#303030";
+  ctx.fillText(`Amplitude`, textLeftLocation, textBaselineYlocation);
+
+// TODO: draw wavelength marker
+
+  // const { ctx, width, height } = props;
+  // ctx.font = "'Comfortaa', cursive";
+  // ctx.textAlign = "left";
+  // // ctx.fillText(`${timeIndexLeft} ms`, textLeftLocation, textBaselineYlocation);
+
+};
+
 export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, data: Float32Array, props: ISoundWaveProps) => {
-  const { width, height, audioBuffer, volume, playbackProgress, zoom, zoomedInView, shouldDrawProgressMarker } = props;
+  const { width, height, audioBuffer, volume, playbackProgress, zoom, zoomedInView, shouldDrawProgressMarker, shouldDrawAmplitudeWavelengthCaptions } = props;
 
   useEffect(() => {
     if (!canvasRef.current) {
@@ -117,8 +182,14 @@ export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, d
     drawBackground(drawHelperProps);
     drawTimeCaptions(drawHelperProps);
     drawSoundWaveLine(drawHelperProps);
-    if (zoomedInView && shouldDrawProgressMarker) {
-      drawProgressMarker(drawHelperProps);
+    if (zoomedInView) {
+      if (shouldDrawProgressMarker) {
+        drawProgressMarker(drawHelperProps);
+      }
+      if (shouldDrawAmplitudeWavelengthCaptions) {
+        // drawAmplitudeMarker(drawHelperProps);
+        drawSoundMarkers(drawHelperProps);
+      }
     } else {
       drawZoomAreaMarker(drawHelperProps);
     }

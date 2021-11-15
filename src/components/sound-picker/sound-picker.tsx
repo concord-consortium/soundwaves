@@ -12,6 +12,17 @@ export interface ISoundPickerProps {
   onRecordingCompleted?: (audioBuffer: AudioBuffer) => void;
 }
 
+export const isPureTone = (soundName: string) => {
+  switch (soundName) {
+    case "middle-c": return true;
+      break;
+    case "c2": return true;
+      break;
+    default:
+      return false;
+  }
+};
+
 export const SoundPicker = (props: ISoundPickerProps) => {
   const { selectedSound, handleSoundChange, onRecordingCompleted } = props;
 
@@ -125,17 +136,7 @@ export const SoundPicker = (props: ISoundPickerProps) => {
 
   const onSoundPickerChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const soundName = event.currentTarget.value as SoundName;
-    switch (soundName) {
-      case "middle-c":
-        setIsPureToneSelected(true);
-        break;
-      case "c2":
-        setIsPureToneSelected(true);
-        break;
-      default:
-        setIsPureToneSelected(false);
-    }
-
+    setIsPureToneSelected(isPureTone(soundName));
     const isUserRecordingSelected = soundName === "record-my-own";
     const hasMediaRecorder = !!(mediaRecorderRef.current);
     setIsReadyToRecord(hasMediaRecorder && isUserRecordingSelected);
@@ -145,7 +146,6 @@ export const SoundPicker = (props: ISoundPickerProps) => {
 
     handleSoundChange?.(event);
   };
-
 
   return (
     <div className="sound-picker-container">

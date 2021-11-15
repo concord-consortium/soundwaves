@@ -5,7 +5,7 @@ import { SIDE_MARGIN_PLUS_BORDER, SoundName, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT
 import { SoundWave } from "./sound-wave";
 import { CarrierWave } from "./carrier-wave/carrier-wave";
 import { AppHeader } from "./application-header/application-header";
-import { SoundPicker } from "./sound-picker/sound-picker";
+import { SoundPicker, isPureTone } from "./sound-picker/sound-picker";
 import { useAutoWidth } from "../hooks/use-auto-width";
 import { ZoomButtons } from "./zoom-buttons/zoom-buttons";
 
@@ -250,6 +250,7 @@ export const App = () => {
             zoom={zoom}
             zoomedInView={true}
             shouldDrawProgressMarker={true}
+            shouldDrawAmplitudeWavelengthCaptions={isPureTone(selectedSound)}
           />
           <div className="zoomed-out-graph-container chosen-sound">
             <SoundWave
@@ -260,7 +261,6 @@ export const App = () => {
               playbackProgress={playbackProgress}
               zoom={zoom}
               zoomedInView={false}
-              shouldDrawProgressMarker={false}
               interactive={!playing}
               onProgressUpdate={handleProgressUpdate}
             />
