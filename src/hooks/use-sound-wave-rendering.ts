@@ -13,7 +13,7 @@ const drawBackground = (props: IDrawHelperProps) => {
 };
 
 const drawTimeCaptions = (props: IDrawHelperProps) => {
-  const { ctx, width, height, zoomedInView, audioBuffer } = props;
+  const { ctx, width, height, audioBuffer } = props;
 
   // Need the audioBuffer to calculate
   if (!audioBuffer) { return; }
@@ -94,9 +94,10 @@ const drawZoomAreaMarker = (props: IDrawHelperProps) => {
 
 // Used only in the zoomed in view.
 const drawSoundMarkers = (props: IDrawHelperProps) => {
-  const { ctx, width, height, volume, zoomedInView } = props;
+  const { ctx, width, height, volume, zoomedInView, pureToneFrequency } = props;
 
-  // Draw AMPLITUDE marker
+  // Draw AMPLITUDE marker & label...
+
   const pointsCount = getPointsCount(props);
   const currentDataPointIdx = getCurrentSampleIdx(props);
   const zoomedInViewPointsCount = getZoomedInViewPointsCount(props);
@@ -116,7 +117,7 @@ const drawSoundMarkers = (props: IDrawHelperProps) => {
   // Ensure the Y coordinate is not negative, so that caption is visible
   const amplitudeCaptionY = Math.max(minAmplitude - (textBoxHeight), 0);
 
-console.log({captionY: amplitudeCaptionY},{volume},{height},{maxAmplitude: minAmplitude});
+// console.log({captionY: amplitudeCaptionY},{volume},{height},{maxAmplitude: minAmplitude});
 
   // Draw the text background's border
   // const borderWidth = 1;
@@ -142,18 +143,58 @@ console.log({captionY: amplitudeCaptionY},{volume},{height},{maxAmplitude: minAm
   ctx.fillStyle = "#303030";
   ctx.fillText(`Amplitude`, textLeftLocation, textBaselineYlocation);
 
+  if (!pureToneFrequency) { return; }
+  const wavelengthInMs = ((1 / pureToneFrequency) * 1000).toPrecision(3);
 
-// TODO: draw wavelength marker
+  // Draw the WAVELENGTH marker and label...
+  const wavelengthMargin = 0;
+  const wavelengthTextBoxWidth = 120;
+  const wavelengthCaptionX = (width / 2) + wavelengthMargin;
+  const wavelengthCaptionY = (height / 2) + wavelengthMargin;
 
-  // const { ctx, width, height } = props;
-  // ctx.font = "'Comfortaa', cursive";
-  // ctx.textAlign = "left";
-  // // ctx.fillText(`${timeIndexLeft} ms`, textLeftLocation, textBaselineYlocation);
+  // Draw (semi-opaque) background for the text
+  ctx.fillStyle = "#ffffffb0"; //"#f0f00080";
+  ctx.fillRect(wavelengthCaptionX, wavelengthCaptionY,
+  wavelengthTextBoxWidth, textBoxHeight);
 
+  // Draw label text
+  ctx.fillStyle = "#303030";
+  ctx.textAlign = "center";
+  ctx.fillText(`wavelength: ${wavelengthInMs}ms`,
+    wavelengthCaptionX + (wavelengthTextBoxWidth / 2) + (textPadding / 2),
+    wavelengthCaptionY + (textBoxHeight / 2) + (textPadding / 2));
+
+  // Draw wavelength arrow
+console.log({wavelengthInMs},{zoomedInViewPointsCount})
+  const arrowWidth = 35;
+  const arrowHeadWidth = 8;
+  const arrowHeadHeight = 3;
+  ctx.strokeStyle = "black";
+  ctx.fillRect(width / 2, (height / 2) - 1, arrowWidth, 2);
+
+  ctx.beginPath();
+  ctx.moveTo(width / 2, height / 2);
+  ctx.lineTo((width / 2) + arrowHeadWidth, (height / 2) + arrowHeadHeight);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(width / 2, height / 2);
+  ctx.lineTo((width / 2) + arrowHeadWidth, (height / 2) - arrowHeadHeight);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo((width / 2) + arrowWidth, height / 2);
+  ctx.lineTo((width / 2) + arrowWidth - arrowHeadWidth, (height / 2) + arrowHeadHeight);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo((width / 2) + arrowWidth, height / 2);
+  ctx.lineTo((width / 2) + arrowWidth - arrowHeadWidth, (height / 2) - arrowHeadHeight);
+  ctx.stroke();
 };
 
 export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, data: Float32Array, props: ISoundWaveProps) => {
-  const { width, height, audioBuffer, volume, playbackProgress, zoom, zoomedInView, shouldDrawProgressMarker, shouldDrawAmplitudeWavelengthCaptions } = props;
+  const { width, height, audioBuffer, volume, playbackProgress, zoom, zoomedInView, shouldDrawProgressMarker, shouldDrawAmplitudeWavelengthCaptions, pureToneFrequency } = props;
 
   useEffect(() => {
     if (!canvasRef.current) {
@@ -168,7 +209,7 @@ export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, d
     }
     // Just to keep things simple, provide one props object to all the helpers.
     const drawHelperProps: IDrawHelperProps = {
-      ctx, width, height, audioBuffer, data, volume, playbackProgress, zoom, zoomedInView
+      ctx, width, height, audioBuffer, data, volume, playbackProgress, zoom, zoomedInView, pureToneFrequency
     };
 
     drawBackground(drawHelperProps);

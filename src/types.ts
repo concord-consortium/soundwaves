@@ -23,6 +23,7 @@ export interface ISoundWaveProps {
   onProgressUpdate?: (newProgress: number) => void;
   shouldDrawProgressMarker?: boolean;
   shouldDrawAmplitudeWavelengthCaptions?: boolean;
+  pureToneFrequency?: number;
 }
 
 export interface IZoomButtonsProps {

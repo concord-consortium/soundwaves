@@ -5,7 +5,7 @@ import { SIDE_MARGIN_PLUS_BORDER, SoundName, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT
 import { SoundWave } from "./sound-wave";
 import { CarrierWave } from "./carrier-wave/carrier-wave";
 import { AppHeader } from "./application-header/application-header";
-import { SoundPicker, isPureTone } from "./sound-picker/sound-picker";
+import { SoundPicker, isPureTone, pureToneFrequencyFromSoundName } from "./sound-picker/sound-picker";
 import { useAutoWidth } from "../hooks/use-auto-width";
 import { ZoomButtons } from "./zoom-buttons/zoom-buttons";
 
@@ -36,7 +36,6 @@ const sounds: Record<SoundName, string> = {
   "scratch-sample": ScratchSampleSound,
   "record-my-own": "record-my-own",
 };
-
 
 export const App = () => {
   const [selectedSound, setSelectedSound] = useState<SoundName>("middle-c");
@@ -251,6 +250,7 @@ export const App = () => {
             zoomedInView={true}
             shouldDrawProgressMarker={true}
             shouldDrawAmplitudeWavelengthCaptions={isPureTone(selectedSound)}
+            pureToneFrequency={pureToneFrequencyFromSoundName(selectedSound)}
           />
           <div className="zoomed-out-graph-container chosen-sound">
             <SoundWave

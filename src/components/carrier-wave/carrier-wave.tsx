@@ -100,6 +100,7 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
             zoomedInView={true}
             shouldDrawProgressMarker={(modulation !== "")}
             shouldDrawAmplitudeWavelengthCaptions={(modulation !== "")}
+            pureToneFrequency={carrierFrequency}
             interactive={false}
           />
         </div>
