@@ -15,9 +15,6 @@ const drawBackground = (props: IDrawHelperProps) => {
 const drawTimeCaptions = (props: IDrawHelperProps) => {
   const { ctx, width, height, zoomedInView, audioBuffer } = props;
 
-  // Only render time values for the zoomed in view.
-  if (!zoomedInView) { return; }
-
   // Need the audioBuffer to calculate
   if (!audioBuffer) { return; }
 
@@ -96,60 +93,55 @@ const drawZoomAreaMarker = (props: IDrawHelperProps) => {
 };
 
 // Used only in the zoomed in view.
-// const drawAmplitudeMarker = (props: IDrawHelperProps) => {
-//   const { ctx, width, height } = props;
-
-//   const captionX = (width / 2);
-//   const captionY = (height / 2) - 20; // TODO: set based on max waveform ehight; scaled by volume
-//   const textBoxHeight = 14;
-//   const textBoxWidth = 54;
-//   const textPadding = 4;
-
-//   const borderWidth = 2;
-//   ctx.strokeStyle = "#d0d0d080";// "fuchsia"; // "#ffffff";
-//   ctx.lineWidth = borderWidth;
-//   ctx.strokeRect(captionX + borderWidth, captionY + borderWidth,
-//     textBoxWidth, textBoxHeight);
-
-//   ctx.fillStyle = "#ffffffc0";
-//   ctx.fillRect(captionX + borderWidth + 1, captionY + borderWidth,
-//     textBoxWidth-2, textBoxHeight);
-
-//   const textLeftLocation = captionX + textPadding + 2;
-//   const textBaselineYlocation = captionY + textBoxHeight - (textPadding / 2);
-//   ctx.font = "'Comfortaa', cursive";
-//   ctx.textAlign = "left";
-//   ctx.fillStyle = "#303030";
-//   ctx.fillText(`Amplitude`, textLeftLocation, textBaselineYlocation);
-// };
-
-// Used only in the zoomed in view.
 const drawSoundMarkers = (props: IDrawHelperProps) => {
-  const { ctx, width, height } = props;
+  const { ctx, width, height, volume, zoomedInView } = props;
 
   // Draw AMPLITUDE marker
-  const captionX = (width / 2);
-  const captionY = (height / 2) - 20; // TODO: set based on max waveform ehight; scaled by volume
+  const pointsCount = getPointsCount(props);
+  const currentDataPointIdx = getCurrentSampleIdx(props);
+  const zoomedInViewPointsCount = getZoomedInViewPointsCount(props);
+  const zoomedInViewPadding = Math.round(zoomedInViewPointsCount * 0.5);
+  const startIdx = zoomedInView ? currentDataPointIdx - zoomedInViewPadding : -zoomedInViewPadding;
+
+  let minAmplitude = height;
+  for (let i = 0; i < pointsCount; i++) {
+    minAmplitude = Math.min(minAmplitude, getCurrentAmplitudeY(props, i + startIdx));
+  }
+  minAmplitude = Math.round(minAmplitude);
+
   const textBoxHeight = 14;
   const textBoxWidth = 54;
   const textPadding = 4;
+  const amplitudeCaptionX = (width / 2);
+  // Ensure the Y coordinate is not negative, so that caption is visible
+  const amplitudeCaptionY = Math.max(minAmplitude - (textBoxHeight), 0);
 
-  const borderWidth = 2;
-  ctx.strokeStyle = "#d0d0d080";// "fuchsia"; // "#ffffff";
-  ctx.lineWidth = borderWidth;
-  ctx.strokeRect(captionX + borderWidth, captionY + borderWidth,
-    textBoxWidth, textBoxHeight);
+console.log({captionY: amplitudeCaptionY},{volume},{height},{maxAmplitude: minAmplitude});
 
-  ctx.fillStyle = "#ffffffc0";
-  ctx.fillRect(captionX + borderWidth + 1, captionY + borderWidth,
-    textBoxWidth-2, textBoxHeight);
+  // Draw the text background's border
+  // const borderWidth = 1;
+  // ctx.strokeStyle = "fuchsia"; // "#d0d0d080"; // "#ffffff";
+  // ctx.lineWidth = borderWidth;
+  // ctx.strokeRect(amplitudeCaptionX + borderWidth, amplitudeCaptionY + (textBoxHeight / 2),
+  //   textBoxWidth, textBoxHeight);
 
-  const textLeftLocation = captionX + textPadding + 2;
-  const textBaselineYlocation = captionY + textBoxHeight - (textPadding / 2);
+  // Draw (semi-opaque) background for the text
+  ctx.fillStyle = "#ffffffb0";
+  ctx.fillRect(amplitudeCaptionX + 2, amplitudeCaptionY + (textBoxHeight / 2) + 1,
+    textBoxWidth - (textPadding / 2), textBoxHeight - (textPadding / 2));
+
+  // Draw the amplitude line
+  ctx.fillStyle = "#303030";
+  ctx.fillRect(width / 2, minAmplitude, 3, (height / 2) - minAmplitude);
+
+  // Draw the amplitude label
+  const textLeftLocation = amplitudeCaptionX + textPadding + 2;
+  const textBaselineYlocation = amplitudeCaptionY + textBoxHeight + (textPadding);
   ctx.font = "'Comfortaa', cursive";
   ctx.textAlign = "left";
   ctx.fillStyle = "#303030";
   ctx.fillText(`Amplitude`, textLeftLocation, textBaselineYlocation);
+
 
 // TODO: draw wavelength marker
 
@@ -180,14 +172,13 @@ export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, d
     };
 
     drawBackground(drawHelperProps);
-    drawTimeCaptions(drawHelperProps);
     drawSoundWaveLine(drawHelperProps);
     if (zoomedInView) {
+      drawTimeCaptions(drawHelperProps);
       if (shouldDrawProgressMarker) {
         drawProgressMarker(drawHelperProps);
       }
       if (shouldDrawAmplitudeWavelengthCaptions) {
-        // drawAmplitudeMarker(drawHelperProps);
         drawSoundMarkers(drawHelperProps);
       }
     } else {
