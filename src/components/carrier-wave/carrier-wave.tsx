@@ -102,7 +102,7 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
             interactive={false}
           />
         </div>
-        <div className="zoomed-out-graph-container">
+        <div className="zoomed-out-graph-container chosen-carrier">
           <SoundWave
             width={graphWidth - ZOOM_BUTTONS_WIDTH}
             height={ZOOMED_OUT_GRAPH_HEIGHT}

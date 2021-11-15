@@ -61,6 +61,7 @@ BODY {
       height: 20px;
       width: 20px;
       margin-top: -7px;
+      border-color: $controls;
       background-color: $controls;
       &:active, &:hover {
         box-shadow: none;
@@ -101,10 +102,8 @@ BODY {
 
     .volume-controls {
       width: 100%;
-      margin-left: 12px;
+      margin-left: 6px;
       display: flex;
-      flex-direction: column;
-      align-items: center;
 
       & > * {
         margin: 0;
@@ -114,28 +113,18 @@ BODY {
         margin-right: 2px;
       }
 
-      .volume-label {
-        margin-bottom: 5px;
-        text-align: center;
-        font-size: 70%;
-        color: $controls;
+      .volume-icon {
+        height: 48px;
+        width: 48px;
       }
 
-      .volume-icons {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-
-        DIV {
-          flex: 1 1 auto;
-        }
-        .volume-icon {
-          height: 12px;
-          width: 12px;
-        }
+      .volume-slider-container {
+        width: calc(100% - 50px);
+        margin-top: 16px;
       }
 
       .volume-slider {
+        width: 40%;
         .rc-slider-track {
           background-color: $controls;
           height: 6px;
@@ -148,6 +137,7 @@ BODY {
           height: 20px;
           width: 20px;
           margin-top: -7px;
+          border-color: $controls;
           background-color: $controls;
           &:active, &:hover {
             box-shadow: none;
@@ -163,15 +153,21 @@ BODY {
 
   .zoomed-out-graph-container {
     margin: 0;
-    margin-top: -6px;
+    margin-top: -11px;
     display: flex;
     align-items: center;
     height: 60px;
     padding: 3px 5px 0 10px;
-    border: $borderWidth solid $darkBorderColor;
-    border-bottom-left-radius: $borderRadius;
-    border-bottom-right-radius: $borderRadius;
-  }
 
+    &.chosen-sound {
+      border: $borderWidth solid $darkBorderColor;
+      border-bottom-left-radius: $borderRadius;
+      border-bottom-right-radius: $borderRadius;
+    }
+
+    &.chosen-carrier {
+      border-bottom: $borderWidth solid $darkBorderColor;
+    }
+  }
 } // END OF: .app
 

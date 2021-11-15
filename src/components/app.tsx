@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import Slider from "rc-slider";
 
-import { SIDE_MARGIN_PLUS_BORDER, SoundName, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT, ZOOM_BUTTONS_WIDTH } from "../types";
+import { SIDE_MARGIN_PLUS_BORDER, SoundName, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT, ZOOM_BUTTONS_WIDTH, SOUND_SAMPLE_RATE } from "../types";
 import { SoundWave } from "./sound-wave";
 import { CarrierWave } from "./carrier-wave/carrier-wave";
 import { AppHeader } from "./application-header/application-header";
@@ -78,12 +78,9 @@ export const App = () => {
     // update the playback progress indicator, so that it is clear that there
     // is nothing recorded (yet).
     if (soundName === "record-my-own") {
-      // Arbitrary value--it just needs to be in the legal range, per the API specification
-      const minSupportedSampleRate = 44100;
-
       const emptyBuffer = new AudioBuffer({
         length: 1,
-        sampleRate: minSupportedSampleRate
+        sampleRate: SOUND_SAMPLE_RATE
       });
       audioContext.current = new AudioContext();
       gainNode.current = audioContext.current.createGain();
@@ -211,24 +208,16 @@ export const App = () => {
             { playing ? <PauseIcon /> : <PlayIcon /> }
           </div>
           <div className="volume-controls">
-            <div className="volume-label">
-              Volume
+            <div>
+              <VolumeIcon className="volume-icon" />
             </div>
-            <div style={{ width: "100%" }}>
+            <div className="volume-slider-container">
               <Slider
                 className="volume-slider"
                 min={0} max={2} step={0.01}
                 value={volume}
                 onChange={handleVolumeChange}
               />
-            </div>
-            <div className="volume-icons">
-              <div><VolumeIcon className="volume-icon" /></div>
-              <div style={{ textAlign: "right" }}>
-                <VolumeIcon className="volume-icon" />
-                <VolumeIcon className="volume-icon" />
-                <VolumeIcon className="volume-icon" />
-              </div>
             </div>
           </div>
         </div>
@@ -262,7 +251,7 @@ export const App = () => {
             zoomedInView={true}
             shouldDrawProgressMarker={true}
           />
-          <div className="zoomed-out-graph-container">
+          <div className="zoomed-out-graph-container chosen-sound">
             <SoundWave
               width={graphWidth - ZOOM_BUTTONS_WIDTH}
               height={ZOOMED_OUT_GRAPH_HEIGHT}

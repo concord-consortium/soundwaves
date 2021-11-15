@@ -12,6 +12,41 @@ const drawBackground = (props: IDrawHelperProps) => {
   ctx.clearRect(0, 0, width, height);
 };
 
+const drawTimeCaptions = (props: IDrawHelperProps) => {
+  const { ctx, width, height, zoomedInView, audioBuffer } = props;
+
+  // Only render time values for the zoomed in view.
+  if (!zoomedInView) { return; }
+
+  // Need the audioBuffer to calculate
+  if (!audioBuffer) { return; }
+
+  const timePerSample = 1 / audioBuffer.sampleRate;
+  const currentDataPointIdx = getCurrentSampleIdx(props);
+  const zoomedInViewPointsCount = getZoomedInViewPointsCount(props);
+  const leftRightOffsetInSamples = (zoomedInViewPointsCount / 2);
+  const leftRightOffsetInMilliseconds =
+    Math.round((timePerSample * leftRightOffsetInSamples) * 1000);
+  const timeIndexInSeconds = timePerSample * currentDataPointIdx;
+  const timeIndex = Math.round(timeIndexInSeconds * 1000);
+  const timeIndexLeft = timeIndex - leftRightOffsetInMilliseconds;
+  const timeIndexRight = timeIndex + leftRightOffsetInMilliseconds;
+
+  const textPadding = 4;
+  const textLeftLocation = textPadding;
+  const textRightLocation = width - textPadding;
+  const textCenterLocation = width / 2;
+  const textBaselineYlocation = height - (textPadding);
+
+  ctx.font = "'Comfortaa', cursive";
+  ctx.textAlign = "left";
+  ctx.fillText(`${timeIndexLeft} ms`, textLeftLocation, textBaselineYlocation);
+  ctx.textAlign = "center";
+  ctx.fillText(`${timeIndex} ms`, textCenterLocation, textBaselineYlocation);
+  ctx.textAlign = "right";
+  ctx.fillText(`${timeIndexRight} ms`, textRightLocation, textBaselineYlocation);
+};
+
 const drawSoundWaveLine = (props: IDrawHelperProps) => {
   const { ctx, width, zoomedInView } = props;
   const currentDataPointIdx = getCurrentSampleIdx(props);
@@ -61,7 +96,7 @@ const drawZoomAreaMarker = (props: IDrawHelperProps) => {
 };
 
 export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, data: Float32Array, props: ISoundWaveProps) => {
-  const { width, height, volume, playbackProgress, zoom, zoomedInView, shouldDrawProgressMarker } = props;
+  const { width, height, audioBuffer, volume, playbackProgress, zoom, zoomedInView, shouldDrawProgressMarker } = props;
 
   useEffect(() => {
     if (!canvasRef.current) {
@@ -76,15 +111,16 @@ export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, d
     }
     // Just to keep things simple, provide one props object to all the helpers.
     const drawHelperProps: IDrawHelperProps = {
-      ctx, width, height, data, volume, playbackProgress, zoom, zoomedInView
+      ctx, width, height, audioBuffer, data, volume, playbackProgress, zoom, zoomedInView
     };
 
     drawBackground(drawHelperProps);
+    drawTimeCaptions(drawHelperProps);
     drawSoundWaveLine(drawHelperProps);
     if (zoomedInView && shouldDrawProgressMarker) {
       drawProgressMarker(drawHelperProps);
     } else {
       drawZoomAreaMarker(drawHelperProps);
     }
-  }, [canvasRef, width, height, data, volume, playbackProgress, zoom, zoomedInView, shouldDrawProgressMarker]);
+  }, [canvasRef, width, height, audioBuffer, data, volume, playbackProgress, zoom, zoomedInView, shouldDrawProgressMarker]);
 };
