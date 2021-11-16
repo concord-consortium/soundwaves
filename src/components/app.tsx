@@ -39,6 +39,7 @@ const sounds: Record<SoundName, string> = {
 
 export const App = () => {
   const [selectedSound, setSelectedSound] = useState<SoundName>("middle-c");
+  const [drawWaveLabels, setDrawWaveLabels] = useState<boolean>(false);
   const [playing, setPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(1);
   const [zoom, setZoom] = useState<number>(16);
@@ -115,6 +116,10 @@ export const App = () => {
   const handleSoundChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const soundName = event.currentTarget.value as SoundName;
     setSelectedSound(soundName);
+  };
+
+  const handleDrawWaveLabelChange = () => {
+    setDrawWaveLabels(!drawWaveLabels);
   };
 
   const handleVolumeChange = (value: number) => {
@@ -198,7 +203,9 @@ export const App = () => {
       <AppHeader />
       <SoundPicker
         selectedSound={selectedSound}
+        drawWaveLabels={drawWaveLabels}
         handleSoundChange={handleSoundChange}
+        handleDrawWaveLabelChange={handleDrawWaveLabelChange}
         onRecordingCompleted={setupAudioContextFromRecording}
       />
       <div className="main-controls-and-waves-container">
@@ -249,7 +256,8 @@ export const App = () => {
             zoom={zoom}
             zoomedInView={true}
             shouldDrawProgressMarker={true}
-            shouldDrawAmplitudeWavelengthCaptions={isPureTone(selectedSound)}
+            shouldDrawWaveCaptions={
+              isPureTone(selectedSound) && drawWaveLabels}
             pureToneFrequency={pureToneFrequencyFromSoundName(selectedSound)}
           />
           <div className="zoomed-out-graph-container chosen-sound">
@@ -275,6 +283,7 @@ export const App = () => {
         volume={volume}
         interactive={!playing}
         onProgressUpdate={handleProgressUpdate}
+        shouldDrawWaveCaptions={isPureTone(selectedSound) && drawWaveLabels}
       />
     </div>
   );

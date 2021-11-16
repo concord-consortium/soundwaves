@@ -209,7 +209,7 @@ const drawSoundMarkers = (props: IDrawHelperProps) => {
 };
 
 export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, data: Float32Array, props: ISoundWaveProps) => {
-  const { width, height, audioBuffer, volume, playbackProgress, zoom, zoomedInView, shouldDrawProgressMarker, shouldDrawAmplitudeWavelengthCaptions, pureToneFrequency } = props;
+  const { width, height, audioBuffer, volume, playbackProgress, zoom, zoomedInView, shouldDrawProgressMarker, shouldDrawWaveCaptions: shouldDrawAmplitudeWavelengthCaptions, pureToneFrequency } = props;
 
   useEffect(() => {
     if (!canvasRef.current) {

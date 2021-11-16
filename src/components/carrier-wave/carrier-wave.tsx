@@ -25,10 +25,12 @@ export interface ICarrierWaveProps {
   volume: number;
   onProgressUpdate?: (newProgress: number) => void;
   interactive: boolean;
+  shouldDrawWaveCaptions: boolean;
 }
 
 export const CarrierWave = (props: ICarrierWaveProps) => {
-  const { audioBuffer, playbackProgress, graphWidth, volume, onProgressUpdate, interactive } = props;
+  const { audioBuffer, playbackProgress, graphWidth, volume,
+    onProgressUpdate, interactive, shouldDrawWaveCaptions } = props;
 
   const [carrierBuffer, setCarrierBuffer] = useState<AudioBuffer>();
   const [carrierZoom, setCarrierZoom] = useState<number>(16);
@@ -76,6 +78,10 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
     return optionElements;
   };
 
+  const shouldDrawCaptions = (): boolean => {
+    return shouldDrawWaveCaptions && (modulation !== "");
+  };
+
   return (
     <div className="carrier-wave-container">
       <div className="carrier-picker-container">
@@ -99,7 +105,7 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
             zoom={carrierZoom}
             zoomedInView={true}
             shouldDrawProgressMarker={(modulation !== "")}
-            shouldDrawAmplitudeWavelengthCaptions={(modulation !== "")}
+            shouldDrawWaveCaptions={shouldDrawCaptions()}
             pureToneFrequency={carrierFrequency}
             interactive={false}
           />
