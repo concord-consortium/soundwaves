@@ -160,52 +160,52 @@ const drawSoundMarkers = (props: IDrawHelperProps) => {
     wavelengthCaptionY + (textBoxHeight / 2) + (textPadding / 2));
 
   // Draw wavelength arrow
-  // const timePerSampleinMs = 1000 / audioBuffer.sampleRate;
-  // const samplesForOneWavelength = wavelengthInMs / timePerSampleinMs;
+  const timePerSampleinMs = 1000 / audioBuffer.sampleRate;
+  const samplesForOneWavelength = wavelengthInMs / timePerSampleinMs;
 
   // console.log({pureToneFrequency},{wavelengthInMs});
   // console.log({audioBuffer},{timePerSample: timePerSampleinMs},{samplesForOneWavelength})
 
-  // // const currentDataPointIdx = getCurrentSampleIdx(props);
+  // const currentDataPointIdx = getCurrentSampleIdx(props);
   // const zoomedInViewPointsCount = getZoomedInViewPointsCount(props);
-  // // const leftRightOffsetInSamples = (zoomedInViewPointsCount / 2);
-  // // const leftRightOffsetInMilliseconds =
-  // //   Math.round((timePerSample * leftRightOffsetInSamples) * 1000);
-  // // const samplesInView = zoomedInViewPointsCount;
+  // const leftRightOffsetInSamples = (zoomedInViewPointsCount / 2);
+  // const leftRightOffsetInMilliseconds =
+  //   Math.round((timePerSample * leftRightOffsetInSamples) * 1000);
+  // const samplesInView = zoomedInViewPointsCount;
   // const millisecondsInView =
   //   Math.round((timePerSampleinMs * zoomedInViewSamplesCount) * 1000);
 
   // const numberOfWavelengthsInView = millisecondsInView / wavelengthInMs;
   // const pointsPerMillisecond = zoomedInViewSamplesCount / millisecondsInView;
-  // // const pxPerWavelength = width / numberOfWavelengthsInView;
-  // const pxPerWavelength = (samplesForOneWavelength * zoom) / 200;
+  // const pxPerWavelength = width / numberOfWavelengthsInView;
+  const pxPerWavelength = (samplesForOneWavelength * zoom);
 
   // console.log({width},{pxPerWavelength})
   // console.log({wavelengthInMs},{millisecondsInView});
   // console.log({zoom},{numberOfWavelengthsInView});
   // console.log({zoomedInViewPointsCount},{pointsPerMillisecond});
 
-  // const arrowWidth = pxPerWavelength; // 35;
-  // const arrowHeadWidth = 8;
-  // const arrowHeadHeight = 3;
-  // ctx.strokeStyle = "black";
-  // ctx.fillRect(width / 2, (height / 2) - 1, arrowWidth, 2);
-  // ctx.beginPath();
-  // ctx.moveTo(width / 2, height / 2);
-  // ctx.lineTo((width / 2) + arrowHeadWidth, (height / 2) + arrowHeadHeight);
-  // ctx.stroke();
-  // ctx.beginPath();
-  // ctx.moveTo(width / 2, height / 2);
-  // ctx.lineTo((width / 2) + arrowHeadWidth, (height / 2) - arrowHeadHeight);
-  // ctx.stroke();
-  // ctx.beginPath();
-  // ctx.moveTo((width / 2) + arrowWidth, height / 2);
-  // ctx.lineTo((width / 2) + arrowWidth - arrowHeadWidth, (height / 2) + arrowHeadHeight);
-  // ctx.stroke();
-  // ctx.beginPath();
-  // ctx.moveTo((width / 2) + arrowWidth, height / 2);
-  // ctx.lineTo((width / 2) + arrowWidth - arrowHeadWidth, (height / 2) - arrowHeadHeight);
-  // ctx.stroke();
+  const arrowWidth = pxPerWavelength;
+  const arrowHeadWidth = 8;
+  const arrowHeadHeight = 3;
+  ctx.strokeStyle = "black";
+  ctx.fillRect(width / 2, (height / 2) - 1, arrowWidth, 2);
+  ctx.beginPath();
+  ctx.moveTo(width / 2, height / 2);
+  ctx.lineTo((width / 2) + arrowHeadWidth, (height / 2) + arrowHeadHeight);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(width / 2, height / 2);
+  ctx.lineTo((width / 2) + arrowHeadWidth, (height / 2) - arrowHeadHeight);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo((width / 2) + arrowWidth, height / 2);
+  ctx.lineTo((width / 2) + arrowWidth - arrowHeadWidth, (height / 2) + arrowHeadHeight);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo((width / 2) + arrowWidth, height / 2);
+  ctx.lineTo((width / 2) + arrowWidth - arrowHeadWidth, (height / 2) - arrowHeadHeight);
+  ctx.stroke();
 };
 
 export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, data: Float32Array, props: ISoundWaveProps) => {
