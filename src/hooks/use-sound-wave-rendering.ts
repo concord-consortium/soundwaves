@@ -94,15 +94,19 @@ const drawZoomAreaMarker = (props: IDrawHelperProps) => {
 
 // Used only in the zoomed in view.
 const drawSoundMarkers = (props: IDrawHelperProps) => {
-  const { ctx, width, height, volume, zoomedInView, pureToneFrequency } = props;
+  const { ctx, width, height, audioBuffer, zoomedInView, zoom, pureToneFrequency } = props;
+
+  // Need the audioBuffer to calculate
+  if (!audioBuffer) { return; }
 
   // Draw AMPLITUDE marker & label...
 
   const pointsCount = getPointsCount(props);
   const currentDataPointIdx = getCurrentSampleIdx(props);
-  const zoomedInViewPointsCount = getZoomedInViewPointsCount(props);
-  const zoomedInViewPadding = Math.round(zoomedInViewPointsCount * 0.5);
-  const startIdx = zoomedInView ? currentDataPointIdx - zoomedInViewPadding : -zoomedInViewPadding;
+  const zoomedInViewSamplesCount = getZoomedInViewPointsCount(props);
+  const zoomedInViewPadding = Math.round(zoomedInViewSamplesCount * 0.5);
+  const startIdx =
+    zoomedInView ? currentDataPointIdx - zoomedInViewPadding : -zoomedInViewPadding;
 
   let minAmplitude = height;
   for (let i = 0; i < pointsCount; i++) {
@@ -116,15 +120,6 @@ const drawSoundMarkers = (props: IDrawHelperProps) => {
   const amplitudeCaptionX = (width / 2);
   // Ensure the Y coordinate is not negative, so that caption is visible
   const amplitudeCaptionY = Math.max(minAmplitude - (textBoxHeight), 0);
-
-// console.log({captionY: amplitudeCaptionY},{volume},{height},{maxAmplitude: minAmplitude});
-
-  // Draw the text background's border
-  // const borderWidth = 1;
-  // ctx.strokeStyle = "fuchsia"; // "#d0d0d080"; // "#ffffff";
-  // ctx.lineWidth = borderWidth;
-  // ctx.strokeRect(amplitudeCaptionX + borderWidth, amplitudeCaptionY + (textBoxHeight / 2),
-  //   textBoxWidth, textBoxHeight);
 
   // Draw (semi-opaque) background for the text
   ctx.fillStyle = "#ffffffb0";
@@ -143,10 +138,11 @@ const drawSoundMarkers = (props: IDrawHelperProps) => {
   ctx.fillStyle = "#303030";
   ctx.fillText(`Amplitude`, textLeftLocation, textBaselineYlocation);
 
-  if (!pureToneFrequency) { return; }
-  const wavelengthInMs = ((1 / pureToneFrequency) * 1000).toPrecision(3);
-
   // Draw the WAVELENGTH marker and label...
+
+  if (!pureToneFrequency) { return; }
+
+  const wavelengthInMs = ((1 / pureToneFrequency) * 1000);
   const wavelengthMargin = 0;
   const wavelengthTextBoxWidth = 120;
   const wavelengthCaptionX = (width / 2) + wavelengthMargin;
@@ -154,43 +150,62 @@ const drawSoundMarkers = (props: IDrawHelperProps) => {
 
   // Draw (semi-opaque) background for the text
   ctx.fillStyle = "#ffffffb0"; //"#f0f00080";
-  ctx.fillRect(wavelengthCaptionX, wavelengthCaptionY,
-  wavelengthTextBoxWidth, textBoxHeight);
+  ctx.fillRect(wavelengthCaptionX, wavelengthCaptionY, wavelengthTextBoxWidth, textBoxHeight);
 
   // Draw label text
   ctx.fillStyle = "#303030";
   ctx.textAlign = "center";
-  ctx.fillText(`wavelength: ${wavelengthInMs}ms`,
+  ctx.fillText(`wavelength: ${wavelengthInMs.toPrecision(3)}ms`,
     wavelengthCaptionX + (wavelengthTextBoxWidth / 2) + (textPadding / 2),
     wavelengthCaptionY + (textBoxHeight / 2) + (textPadding / 2));
 
   // Draw wavelength arrow
-console.log({wavelengthInMs},{zoomedInViewPointsCount})
-  const arrowWidth = 35;
-  const arrowHeadWidth = 8;
-  const arrowHeadHeight = 3;
-  ctx.strokeStyle = "black";
-  ctx.fillRect(width / 2, (height / 2) - 1, arrowWidth, 2);
+  // const timePerSampleinMs = 1000 / audioBuffer.sampleRate;
+  // const samplesForOneWavelength = wavelengthInMs / timePerSampleinMs;
 
-  ctx.beginPath();
-  ctx.moveTo(width / 2, height / 2);
-  ctx.lineTo((width / 2) + arrowHeadWidth, (height / 2) + arrowHeadHeight);
-  ctx.stroke();
+  // console.log({pureToneFrequency},{wavelengthInMs});
+  // console.log({audioBuffer},{timePerSample: timePerSampleinMs},{samplesForOneWavelength})
 
-  ctx.beginPath();
-  ctx.moveTo(width / 2, height / 2);
-  ctx.lineTo((width / 2) + arrowHeadWidth, (height / 2) - arrowHeadHeight);
-  ctx.stroke();
+  // // const currentDataPointIdx = getCurrentSampleIdx(props);
+  // const zoomedInViewPointsCount = getZoomedInViewPointsCount(props);
+  // // const leftRightOffsetInSamples = (zoomedInViewPointsCount / 2);
+  // // const leftRightOffsetInMilliseconds =
+  // //   Math.round((timePerSample * leftRightOffsetInSamples) * 1000);
+  // // const samplesInView = zoomedInViewPointsCount;
+  // const millisecondsInView =
+  //   Math.round((timePerSampleinMs * zoomedInViewSamplesCount) * 1000);
 
-  ctx.beginPath();
-  ctx.moveTo((width / 2) + arrowWidth, height / 2);
-  ctx.lineTo((width / 2) + arrowWidth - arrowHeadWidth, (height / 2) + arrowHeadHeight);
-  ctx.stroke();
+  // const numberOfWavelengthsInView = millisecondsInView / wavelengthInMs;
+  // const pointsPerMillisecond = zoomedInViewSamplesCount / millisecondsInView;
+  // // const pxPerWavelength = width / numberOfWavelengthsInView;
+  // const pxPerWavelength = (samplesForOneWavelength * zoom) / 200;
 
-  ctx.beginPath();
-  ctx.moveTo((width / 2) + arrowWidth, height / 2);
-  ctx.lineTo((width / 2) + arrowWidth - arrowHeadWidth, (height / 2) - arrowHeadHeight);
-  ctx.stroke();
+  // console.log({width},{pxPerWavelength})
+  // console.log({wavelengthInMs},{millisecondsInView});
+  // console.log({zoom},{numberOfWavelengthsInView});
+  // console.log({zoomedInViewPointsCount},{pointsPerMillisecond});
+
+  // const arrowWidth = pxPerWavelength; // 35;
+  // const arrowHeadWidth = 8;
+  // const arrowHeadHeight = 3;
+  // ctx.strokeStyle = "black";
+  // ctx.fillRect(width / 2, (height / 2) - 1, arrowWidth, 2);
+  // ctx.beginPath();
+  // ctx.moveTo(width / 2, height / 2);
+  // ctx.lineTo((width / 2) + arrowHeadWidth, (height / 2) + arrowHeadHeight);
+  // ctx.stroke();
+  // ctx.beginPath();
+  // ctx.moveTo(width / 2, height / 2);
+  // ctx.lineTo((width / 2) + arrowHeadWidth, (height / 2) - arrowHeadHeight);
+  // ctx.stroke();
+  // ctx.beginPath();
+  // ctx.moveTo((width / 2) + arrowWidth, height / 2);
+  // ctx.lineTo((width / 2) + arrowWidth - arrowHeadWidth, (height / 2) + arrowHeadHeight);
+  // ctx.stroke();
+  // ctx.beginPath();
+  // ctx.moveTo((width / 2) + arrowWidth, height / 2);
+  // ctx.lineTo((width / 2) + arrowWidth - arrowHeadWidth, (height / 2) - arrowHeadHeight);
+  // ctx.stroke();
 };
 
 export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, data: Float32Array, props: ISoundWaveProps) => {
@@ -225,5 +240,5 @@ export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, d
     } else {
       drawZoomAreaMarker(drawHelperProps);
     }
-  }, [canvasRef, width, height, audioBuffer, data, volume, playbackProgress, zoom, zoomedInView, shouldDrawProgressMarker]);
+  }, [canvasRef, width, height, audioBuffer, data, volume, playbackProgress, zoom, zoomedInView, pureToneFrequency, shouldDrawAmplitudeWavelengthCaptions, shouldDrawProgressMarker]);
 };
