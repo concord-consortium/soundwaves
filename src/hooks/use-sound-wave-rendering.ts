@@ -138,7 +138,7 @@ const drawSoundMarkers = (props: IDrawHelperProps) => {
   ctx.fillStyle = "#303030";
   ctx.fillText(`Amplitude`, textLeftLocation, textBaselineYlocation);
 
-  // Draw the WAVELENGTH marker and label...
+  // Draw the WAVELENGTH label (ONLY, no marker line)...
 
   if (!pureToneFrequency) { return; }
 
@@ -158,54 +158,6 @@ const drawSoundMarkers = (props: IDrawHelperProps) => {
   ctx.fillText(`wavelength: ${wavelengthInMs.toPrecision(3)}ms`,
     wavelengthCaptionX + (wavelengthTextBoxWidth / 2) + (textPadding / 2),
     wavelengthCaptionY + (textBoxHeight / 2) + (textPadding / 2));
-
-  // Draw wavelength arrow
-  const timePerSampleinMs = 1000 / audioBuffer.sampleRate;
-  const samplesForOneWavelength = wavelengthInMs / timePerSampleinMs;
-
-  // console.log({pureToneFrequency},{wavelengthInMs});
-  // console.log({audioBuffer},{timePerSample: timePerSampleinMs},{samplesForOneWavelength})
-
-  // const currentDataPointIdx = getCurrentSampleIdx(props);
-  // const zoomedInViewPointsCount = getZoomedInViewPointsCount(props);
-  // const leftRightOffsetInSamples = (zoomedInViewPointsCount / 2);
-  // const leftRightOffsetInMilliseconds =
-  //   Math.round((timePerSample * leftRightOffsetInSamples) * 1000);
-  // const samplesInView = zoomedInViewPointsCount;
-  // const millisecondsInView =
-  //   Math.round((timePerSampleinMs * zoomedInViewSamplesCount) * 1000);
-
-  // const numberOfWavelengthsInView = millisecondsInView / wavelengthInMs;
-  // const pointsPerMillisecond = zoomedInViewSamplesCount / millisecondsInView;
-  // const pxPerWavelength = width / numberOfWavelengthsInView;
-  const pxPerWavelength = (samplesForOneWavelength * zoom);
-
-  // console.log({width},{pxPerWavelength})
-  // console.log({wavelengthInMs},{millisecondsInView});
-  // console.log({zoom},{numberOfWavelengthsInView});
-  // console.log({zoomedInViewPointsCount},{pointsPerMillisecond});
-
-  const arrowWidth = pxPerWavelength;
-  const arrowHeadWidth = 8;
-  const arrowHeadHeight = 3;
-  ctx.strokeStyle = "black";
-  ctx.fillRect(width / 2, (height / 2) - 1, arrowWidth, 2);
-  ctx.beginPath();
-  ctx.moveTo(width / 2, height / 2);
-  ctx.lineTo((width / 2) + arrowHeadWidth, (height / 2) + arrowHeadHeight);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(width / 2, height / 2);
-  ctx.lineTo((width / 2) + arrowHeadWidth, (height / 2) - arrowHeadHeight);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo((width / 2) + arrowWidth, height / 2);
-  ctx.lineTo((width / 2) + arrowWidth - arrowHeadWidth, (height / 2) + arrowHeadHeight);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo((width / 2) + arrowWidth, height / 2);
-  ctx.lineTo((width / 2) + arrowWidth - arrowHeadWidth, (height / 2) - arrowHeadHeight);
-  ctx.stroke();
 };
 
 export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, data: Float32Array, props: ISoundWaveProps) => {
