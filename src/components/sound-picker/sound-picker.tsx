@@ -16,16 +16,16 @@ export interface ISoundPickerProps {
 
 export const isPureTone = (soundName: string) => {
   switch (soundName) {
-    case "middle-c": return true; break;
-    case "c2": return true; break;
+    case "middle-c": return true;
+    case "c2": return true;
     default: return false;
   }
 };
 
 export const pureToneFrequencyFromSoundName = (soundName: string) => {
   switch (soundName) {
-    case "middle-c": return 261.65; break;
-    case "c2": return 65.41; break;
+    case "middle-c": return 261.65;
+    case "c2": return 65.41;
     default: return 0;
   }
 };
