@@ -8,10 +8,10 @@ export const getMinValue = (data: Float32Array) => {
   return min;
 };
 
-const MIN_SAMPLE_RATE = 3000; // limit defined by Web Audio API
+const MIN_SAMPLE_RATE = 8000; // limit defined by Web Audio API
+
 export const downsampleAudioBuffer = async (audioBuffer: AudioBuffer, newSamplesCount: number): Promise<Float32Array> => {
   const ratio = newSamplesCount / audioBuffer.length;
-  // audioBuffer.sampleRate
   const newSampleRate = Math.round(ratio * audioBuffer.sampleRate);
   const validSampleRate = Math.max(MIN_SAMPLE_RATE, newSampleRate);
 
