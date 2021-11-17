@@ -5,7 +5,7 @@ import { SIDE_MARGIN_PLUS_BORDER, SoundName, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT
 import { SoundWave } from "./sound-wave";
 import { CarrierWave } from "./carrier-wave/carrier-wave";
 import { AppHeader } from "./application-header/application-header";
-import { SoundPicker } from "./sound-picker/sound-picker";
+import { SoundPicker, isPureTone, pureToneFrequencyFromSoundName } from "./sound-picker/sound-picker";
 import { useAutoWidth } from "../hooks/use-auto-width";
 import { ZoomButtons } from "./zoom-buttons/zoom-buttons";
 
@@ -37,9 +37,9 @@ const sounds: Record<SoundName, string> = {
   "record-my-own": "record-my-own",
 };
 
-
 export const App = () => {
   const [selectedSound, setSelectedSound] = useState<SoundName>("middle-c");
+  const [drawWaveLabels, setDrawWaveLabels] = useState<boolean>(false);
   const [playing, setPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(1);
   const [zoom, setZoom] = useState<number>(16);
@@ -116,6 +116,10 @@ export const App = () => {
   const handleSoundChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const soundName = event.currentTarget.value as SoundName;
     setSelectedSound(soundName);
+  };
+
+  const handleDrawWaveLabelChange = () => {
+    setDrawWaveLabels(!drawWaveLabels);
   };
 
   const handleVolumeChange = (value: number) => {
@@ -199,7 +203,9 @@ export const App = () => {
       <AppHeader />
       <SoundPicker
         selectedSound={selectedSound}
+        drawWaveLabels={drawWaveLabels}
         handleSoundChange={handleSoundChange}
+        handleDrawWaveLabelChange={handleDrawWaveLabelChange}
         onRecordingCompleted={setupAudioContextFromRecording}
       />
       <div className="main-controls-and-waves-container">
@@ -250,6 +256,9 @@ export const App = () => {
             zoom={zoom}
             zoomedInView={true}
             shouldDrawProgressMarker={true}
+            shouldDrawWaveCaptions={
+              isPureTone(selectedSound) && drawWaveLabels}
+            pureToneFrequency={pureToneFrequencyFromSoundName(selectedSound)}
           />
           <div className="zoomed-out-graph-container chosen-sound">
             <SoundWave
@@ -260,7 +269,6 @@ export const App = () => {
               playbackProgress={playbackProgress}
               zoom={zoom}
               zoomedInView={false}
-              shouldDrawProgressMarker={false}
               interactive={!playing}
               onProgressUpdate={handleProgressUpdate}
             />
@@ -275,6 +283,7 @@ export const App = () => {
         volume={volume}
         interactive={!playing}
         onProgressUpdate={handleProgressUpdate}
+        shouldDrawWaveCaptions={isPureTone(selectedSound) && drawWaveLabels}
       />
     </div>
   );

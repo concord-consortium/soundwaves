@@ -7,17 +7,36 @@ import LabelsIcon from "../../assets/icons/sell_black_48dp.svg";
 import "./sound-picker.scss";
 
 export interface ISoundPickerProps {
-  selectedSound: SoundName
+  selectedSound: SoundName;
+  drawWaveLabels: boolean;
   handleSoundChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
   onRecordingCompleted?: (audioBuffer: AudioBuffer) => void;
+  handleDrawWaveLabelChange?: () => void;
 }
 
-export const SoundPicker = (props: ISoundPickerProps) => {
-  const { selectedSound, handleSoundChange, onRecordingCompleted } = props;
+export const isPureTone = (soundName: string) => {
+  switch (soundName) {
+    case "middle-c": return true;
+    case "c2": return true;
+    default: return false;
+  }
+};
 
-  // defaults to match default of Middle C selection
+export const pureToneFrequencyFromSoundName = (soundName: string) => {
+  switch (soundName) {
+    case "middle-c": return 261.65;
+    case "c2": return 65.41;
+    default: return 0;
+  }
+};
+
+export const SoundPicker = (props: ISoundPickerProps) => {
+  const { selectedSound, handleSoundChange, onRecordingCompleted, drawWaveLabels, handleDrawWaveLabelChange } = props;
+
+  // Set: isPureToneSelected, isReadyToRecord defaults, based on "middle-c" default selection
   const [isPureToneSelected, setIsPureToneSelected] = useState<boolean>(true);
   const [isReadyToRecord, setIsReadyToRecord] = useState<boolean>(false);
+
   const [isRecording, setIsRecording] = useState<boolean>(false);
 
   const recordingTimerRef = useRef<number>();
@@ -123,19 +142,15 @@ export const SoundPicker = (props: ISoundPickerProps) => {
     }
   };
 
+  const onLabelIconClicked = () => {
+    // Don't allow state change when non-pure tone sound selected
+    if (!isPureToneSelected) { return; }
+    handleDrawWaveLabelChange?.();
+  };
+
   const onSoundPickerChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const soundName = event.currentTarget.value as SoundName;
-    switch (soundName) {
-      case "middle-c":
-        setIsPureToneSelected(true);
-        break;
-      case "c2":
-        setIsPureToneSelected(true);
-        break;
-      default:
-        setIsPureToneSelected(false);
-    }
-
+    setIsPureToneSelected(isPureTone(soundName));
     const isUserRecordingSelected = soundName === "record-my-own";
     const hasMediaRecorder = !!(mediaRecorderRef.current);
     setIsReadyToRecord(hasMediaRecorder && isUserRecordingSelected);
@@ -145,7 +160,6 @@ export const SoundPicker = (props: ISoundPickerProps) => {
 
     handleSoundChange?.(event);
   };
-
 
   return (
     <div className="sound-picker-container">
@@ -166,10 +180,14 @@ export const SoundPicker = (props: ISoundPickerProps) => {
           <option value="record-my-own">(record my own . . .)</option>
         </select>
       </div>
-      <div className="sound-picker-icons-container">
-        <MicIcon className={`sound-picker-icon button ${isReadyToRecord ? "" : "disabled"} ${isRecording ? "recording" : ""}`}
+      <div className="icons-container">
+        <MicIcon className={
+          `icon button ${isReadyToRecord ? "" : "disabled"} ${isRecording ? "recording" : ""}`}
           onClick={onMicIconClicked} />
-        <LabelsIcon className={`sound-picker-icon button ${isPureToneSelected ? "" : "disabled"}`} />
+        <LabelsIcon className={
+            `icon button ${isPureToneSelected ? "" : "disabled"} ${drawWaveLabels ? "labelling" : ""}`
+          }
+          onClick={onLabelIconClicked} />
       </div>
     </div>
   );
