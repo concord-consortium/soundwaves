@@ -5,6 +5,6 @@ import { App } from "./app";
 describe("App", () => {
   it("shows the header", () => {
     render(<App />);
-    expect(screen.getByText("Sounds are waves")).toBeDefined();
+    expect(screen.getByText("Sound Visualizer")).toBeDefined();
   });
 });

@@ -8,7 +8,7 @@ export const AppHeader = () => {
   return (
     <div className="application-header-container">
       <img src={WavesLogo} alt="Waves Logo" />
-      &nbsp;&nbsp;Sounds are waves
+      &nbsp;&nbsp;Sound Visualizer
     </div>
   );
 };
