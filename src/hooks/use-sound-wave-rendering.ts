@@ -134,8 +134,8 @@ const drawAmplitudeMarker = (props: IDrawHelperProps) => {
     ctx.fillRect(xScaled - 0.5 * kIBeamWidth + 0.5 * kLineWidth, baseY - 0.5 * kLineWidth, kIBeamWidth, kLineWidth);
     // Draw (semi-opaque) background for the text
     const kTextTopPadding = 6;
-    const kTextFontSize = 15;
-    const kBoxWidth = 80;
+    const kTextFontSize = 14;
+    const kBoxWidth = 75;
     const kBoxHeight = kTextFontSize * 1.33;
     const textY = Math.max(18, amplitudeY - kTextTopPadding);
     ctx.fillStyle = "#ffffffb0";
@@ -195,16 +195,16 @@ const drawWaveLengthMarker = (props: IDrawHelperProps) => {
     ctx.fillRect(x1Scaled - kLineWidth, baseY - kIBeamWidth * 0.5, kLineWidth, kIBeamWidth);
     ctx.fillRect(x3Scaled, baseY - kIBeamWidth * 0.5, kLineWidth, kIBeamWidth);
     // Draw (semi-opaque) background for the text
-    const kTextFontSize = 15;
+    const kTextFontSize = 14;
     const kTextTopPadding = 40;
-    const kBoxWidth = 160;
+    const kBoxWidth = 150;
     const kBoxHeight = kTextFontSize * 1.33;
     ctx.fillStyle = "#ffffffb0";
-    ctx.fillRect((x1Scaled + x3Scaled) * 0.5 - 0.5 * kBoxWidth, baseY + 0.62 * kTextTopPadding, kBoxWidth, kBoxHeight);
+    ctx.fillRect((x1Scaled + x3Scaled) * 0.5 - 0.5 * kBoxWidth, baseY + 0.65 * kTextTopPadding, kBoxWidth, kBoxHeight);
     // Label
     ctx.fillStyle = "#892be2";
     ctx.textAlign = "center";
-    ctx.font = "15px Comfortaa, cursive";
+    ctx.font = `${kTextFontSize} Comfortaa, cursive`;
     const wavelengthInMs = 1 / (pureToneFrequency || 1) * 1000;
     ctx.fillText(`Wave length: ${wavelengthInMs.toFixed(2)}ms`, (x1Scaled + x3Scaled) * 0.5, baseY + kTextTopPadding);
   }

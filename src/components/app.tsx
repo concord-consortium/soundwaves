@@ -256,7 +256,7 @@ export const App = () => {
             zoom={zoom}
             zoomedInView={true}
             shouldDrawProgressMarker={true}
-            shouldDrawWaveCaptions={isPureTone(selectedSound) && drawWaveLabels}
+            shouldDrawWaveCaptions={!playing && isPureTone(selectedSound) && drawWaveLabels}
             pureToneFrequency={pureToneFrequencyFromSoundName(selectedSound)}
           />
           <div className="zoomed-out-graph-container chosen-sound">

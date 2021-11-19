@@ -9,7 +9,7 @@ import "./sound-wave.scss";
 const MAX_GRAPH_POINTS = 20000;
 
 export const SoundWave = (props: ISoundWaveProps) => {
-  const { interactive, audioBuffer, zoom, zoomedInView } = props;
+  const { interactive, audioBuffer, zoom, zoomedInView, shouldDrawWaveCaptions, pureToneFrequency } = props;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [data, setData] = useState<Float32Array>(new Float32Array(0));
 
@@ -38,6 +38,10 @@ export const SoundWave = (props: ISoundWaveProps) => {
 
   return (
     <div className={cssClasses}>
+      {
+        shouldDrawWaveCaptions && pureToneFrequency &&
+        <div className="frequency">Frequency: {pureToneFrequency} Hz</div>
+      }
       <canvas
         ref={canvasRef}
         onPointerDown={interactive ? handlePointerDown : undefined}
