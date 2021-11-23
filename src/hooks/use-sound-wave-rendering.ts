@@ -93,71 +93,121 @@ const drawZoomAreaMarker = (props: IDrawHelperProps) => {
 };
 
 // Used only in the zoomed in view.
-const drawSoundMarkers = (props: IDrawHelperProps) => {
-  const { ctx, width, height, audioBuffer, zoomedInView, zoom, pureToneFrequency } = props;
+const drawAmplitudeMarker = (props: IDrawHelperProps) => {
+  const { ctx, width, height, zoom } = props;
 
-  // Need the audioBuffer to calculate
-  if (!audioBuffer) { return; }
-
-  // Draw AMPLITUDE marker & label...
+  const markerPadding = Math.round(2000 / zoom); // X samples point away from the center
+  const kSampleDiff = 5;
+  const baseY = height * 0.5;
 
   const pointsCount = getPointsCount(props);
   const currentDataPointIdx = getCurrentSampleIdx(props);
-  const zoomedInViewSamplesCount = getZoomedInViewPointsCount(props);
-  const zoomedInViewPadding = Math.round(zoomedInViewSamplesCount * 0.5);
-  const startIdx =
-    zoomedInView ? currentDataPointIdx - zoomedInViewPadding : -zoomedInViewPadding;
 
-  let minAmplitude = height;
-  for (let i = 0; i < pointsCount; i++) {
-    minAmplitude = Math.min(minAmplitude, getCurrentAmplitudeY(props, i + startIdx));
+  const startIdx = currentDataPointIdx + markerPadding;
+
+  let amplitudeX = null;
+  let amplitudeY = null;
+  for (let i = startIdx; i < currentDataPointIdx + pointsCount * 0.5; i++) {
+    const y1 = getCurrentAmplitudeY(props, i - kSampleDiff);
+    const y2 = getCurrentAmplitudeY(props, i);
+    const y3 = getCurrentAmplitudeY(props, i + kSampleDiff);
+    // Find the local min (note that the Y axis is upside down -> 0 is at the top of the canvas).
+    if ((y1 > y2) && (y2 < y3)) {
+      amplitudeX = i;
+      amplitudeY = y2;
+      break;
+    }
   }
-  minAmplitude = Math.round(minAmplitude);
 
-  const textBoxHeight = 14;
-  const textBoxWidth = 54;
-  const textPadding = 4;
-  const amplitudeCaptionX = (width / 2);
-  // Ensure the Y coordinate is not negative, so that caption is visible
-  const amplitudeCaptionY = Math.max(minAmplitude - (textBoxHeight), 0);
+  if (amplitudeX !== null && amplitudeY !== null) {
+    const kLineWidth = 3;
+    const xScale = width / pointsCount;
+    const minPointIdx = currentDataPointIdx - 0.5 * pointsCount; // currentDataPointIdx is always in the middle
+    const xScaled = (amplitudeX - minPointIdx) * xScale - 0.5 * kLineWidth;
+    const amplitudeLineHeight = amplitudeY - baseY;
+    // Vertical line
+    ctx.fillStyle = "#892be2";
+    ctx.fillRect(xScaled, baseY, kLineWidth, amplitudeLineHeight);
+    // I-beam
+    const kIBeamWidth = 12;
+    ctx.fillRect(xScaled - 0.5 * kIBeamWidth + 0.5 * kLineWidth, amplitudeY - kLineWidth, kIBeamWidth, kLineWidth);
+    ctx.fillRect(xScaled - 0.5 * kIBeamWidth + 0.5 * kLineWidth, baseY - 0.5 * kLineWidth, kIBeamWidth, kLineWidth);
+    // Draw (semi-opaque) background for the text
+    const kTextTopPadding = 6;
+    const kTextFontSize = 14;
+    const kBoxWidth = 75;
+    const kBoxHeight = kTextFontSize * 1.33;
+    const textY = Math.max(18, amplitudeY - kTextTopPadding);
+    ctx.fillStyle = "#ffffffb0";
+    ctx.fillRect(xScaled + kIBeamWidth * 0.6, textY - kTextFontSize, kBoxWidth, kBoxHeight);
+    // Label
+    ctx.fillStyle = "#892be2";
+    ctx.textAlign = "left";
+    ctx.font = `${kTextFontSize}px Comfortaa, cursive`;
+    ctx.fillText("Amplitude", xScaled + kIBeamWidth * 0.6, textY);
+  }
+};
 
-  // Draw (semi-opaque) background for the text
-  ctx.fillStyle = "#ffffffb0";
-  ctx.fillRect(amplitudeCaptionX + 2, amplitudeCaptionY + (textBoxHeight / 2) + 1,
-    textBoxWidth - (textPadding / 2), textBoxHeight - (textPadding / 2));
+const drawWaveLengthMarker = (props: IDrawHelperProps) => {
+  const { ctx, width, height, zoom, data, pureToneFrequency } = props;
 
-  // Draw the amplitude line
-  ctx.fillStyle = "#303030";
-  ctx.fillRect(width / 2, minAmplitude, 3, (height / 2) - minAmplitude);
+  const kSampleDiff = 1;
+  const baseY = height * 0.5;
+  const pointsCount = getPointsCount(props);
+  // X samples point away from the center
+  const markerPadding = Math.min(pointsCount * 0.25, Math.round(20000 / zoom));
 
-  // Draw the amplitude label
-  const textLeftLocation = amplitudeCaptionX + textPadding + 2;
-  const textBaselineYlocation = amplitudeCaptionY + textBoxHeight + (textPadding);
-  ctx.font = "'Comfortaa', cursive";
-  ctx.textAlign = "left";
-  ctx.fillStyle = "#303030";
-  ctx.fillText(`Amplitude`, textLeftLocation, textBaselineYlocation);
+  const currentDataPointIdx = getCurrentSampleIdx(props);
 
-  // Draw the WAVELENGTH label (ONLY, no marker line)...
+  const startIdx = currentDataPointIdx + markerPadding;
 
-  if (!pureToneFrequency) { return; }
+  let waveX1 = null; // X coord of the first sign change
+  let waveX2 = null; // X coord of the second sign change
+  let waveX3 = null; // X coord of the third sign change
+  for (let i = startIdx; i < currentDataPointIdx + pointsCount * 0.5; i++) {
+    const y1 = data[i - kSampleDiff];
+    const y2 = data[i + kSampleDiff];
+    if (y1 !== undefined && y2 !== undefined && Math.sign(y1) !== Math.sign(y2)) {
+      if (waveX1 === null) {
+        waveX1 = i;
+        i += kSampleDiff * 2;
+      } else if (waveX2 === null) {
+        waveX2 = i;
+        i += kSampleDiff * 2;
+      } else {
+        waveX3 = i;
+        break;
+      }
+    }
+  }
 
-  const wavelengthInMs = ((1 / pureToneFrequency) * 1000);
-  const wavelengthMargin = 0;
-  const wavelengthTextBoxWidth = 120;
-  const wavelengthCaptionX = (width / 2) + wavelengthMargin;
-  const wavelengthCaptionY = (height / 2) + wavelengthMargin;
-
-  // Draw (semi-opaque) background for the text
-  ctx.fillStyle = "#ffffffb0"; //"#f0f00080";
-  ctx.fillRect(wavelengthCaptionX, wavelengthCaptionY, wavelengthTextBoxWidth, textBoxHeight);
-
-  // Draw label text
-  ctx.fillStyle = "#303030";
-  ctx.textAlign = "center";
-  ctx.fillText(`wavelength: ${wavelengthInMs.toPrecision(3)}ms`,
-    wavelengthCaptionX + (wavelengthTextBoxWidth / 2) + (textPadding / 2),
-    wavelengthCaptionY + (textBoxHeight / 2) + (textPadding / 2));
+  if (waveX1 !== null && waveX3 !== null) {
+    const kLineWidth = 3;
+    const xScale = width / pointsCount;
+    const minPointIdx = currentDataPointIdx - 0.5 * pointsCount; // currentDataPointIdx is always in the middle
+    const x1Scaled = (waveX1 - minPointIdx) * xScale;
+    const x3Scaled = (waveX3 - minPointIdx) * xScale;
+    // Horizontal line
+    ctx.fillStyle = "#892be2";
+    ctx.fillRect(x1Scaled, baseY - 0.5 * kLineWidth, (x3Scaled - x1Scaled), kLineWidth);
+    // I-beam
+    const kIBeamWidth = 12;
+    ctx.fillRect(x1Scaled - kLineWidth, baseY - kIBeamWidth * 0.5, kLineWidth, kIBeamWidth);
+    ctx.fillRect(x3Scaled, baseY - kIBeamWidth * 0.5, kLineWidth, kIBeamWidth);
+    // Draw (semi-opaque) background for the text
+    const kTextFontSize = 14;
+    const kTextTopPadding = 40;
+    const kBoxWidth = 150;
+    const kBoxHeight = kTextFontSize * 1.33;
+    ctx.fillStyle = "#ffffffb0";
+    ctx.fillRect((x1Scaled + x3Scaled) * 0.5 - 0.5 * kBoxWidth, baseY + 0.65 * kTextTopPadding, kBoxWidth, kBoxHeight);
+    // Label
+    ctx.fillStyle = "#892be2";
+    ctx.textAlign = "center";
+    ctx.font = `${kTextFontSize} Comfortaa, cursive`;
+    const wavelengthInMs = 1 / (pureToneFrequency || 1) * 1000;
+    ctx.fillText(`Wave length: ${wavelengthInMs.toFixed(2)}ms`, (x1Scaled + x3Scaled) * 0.5, baseY + kTextTopPadding);
+  }
 };
 
 export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, data: Float32Array, props: ISoundWaveProps) => {
@@ -187,7 +237,8 @@ export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, d
         drawProgressMarker(drawHelperProps);
       }
       if (shouldDrawAmplitudeWavelengthCaptions) {
-        drawSoundMarkers(drawHelperProps);
+        drawAmplitudeMarker(drawHelperProps);
+        drawWaveLengthMarker(drawHelperProps);
       }
     } else {
       drawZoomAreaMarker(drawHelperProps);

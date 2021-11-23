@@ -5,7 +5,7 @@ context("Test the overall app", () => {
 
   describe("Desktop functionalities", () => {
     it("renders with text", () => {
-      cy.get(".app").contains("Sounds are waves");
+      cy.get(".app").contains("Sound Visualizer");
     });
   });
 });
