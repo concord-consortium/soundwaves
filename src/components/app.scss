@@ -5,7 +5,7 @@ HTML {
 }
 
 BODY {
-  background-color: $controlsBackground;
+  background-color: $applicationBackground;
   height: 100%;
 }
 
@@ -32,6 +32,7 @@ BODY {
     margin-bottom: -2px;
     height: 50px;
     padding: 4px 15px 2px 15px;
+    background-color: $controlsBackground;
     border: $borderWidth solid $darkBorderColor;
 
     .speed-label {
@@ -70,16 +71,14 @@ BODY {
   }
 
   .speed-slider.disabled {
-    .rc-slider-rail, .rc-slider-handle {
-      background-color: $disabledButton;
-      border-color: $disabledButton;
-    }
+    background-color: transparent;
   }
 
   .playback-and-volume-controls {
     margin: 0;
     margin-bottom: -2px;
     display: flex;
+    background-color: $controlsBackground;
     border: $borderWidth solid $darkBorderColor;
     border-top-left-radius: $borderRadius;
     border-top-right-radius: $borderRadius;
@@ -147,6 +146,14 @@ BODY {
     }
   }
 
+  .rc-slider-mark-text, .rc-slider-mark-text-active {
+    color: $controls;
+  }
+
+  .rc-slider-disabled .rc-slider-mark-text, .rc-slider-disabled .rc-slider-mark-text-active {
+    color: $disabledButton;
+  }
+
   .sound-wave-container {
     margin: 0;
   }
@@ -158,6 +165,7 @@ BODY {
     align-items: center;
     height: 60px;
     padding: 3px 5px 0 10px;
+    background-color: $controls;
 
     &.chosen-sound {
       border: $borderWidth solid $darkBorderColor;

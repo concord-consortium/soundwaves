@@ -2,21 +2,11 @@
 
 .application-header-container {
     height: $applicationHeaderContainerHeight;
-    color: #fff;
-    background-color: #024059;
+    color: $controls;
+    background-color: $controlsBackground;
     font-size: 24px;
     line-height: 26px;
 
     display: flex;
     align-items: center;
-
-    svg {
-        width: 120px;
-        padding: 3px;
-        margin-right: 10px;
-
-        path, circle {
-        fill: #fff;
-        }
-    }
 }
