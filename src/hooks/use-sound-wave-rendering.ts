@@ -69,7 +69,7 @@ const drawProgressMarker = (props: IDrawHelperProps) => {
   const markerX = Math.round(width * 0.5);
   const markerY = getCurrentAmplitudeY(props, getCurrentSampleIdx(props));
 
-  ctx.fillStyle = "#88D3DD";
+  ctx.fillStyle = "#ea6d2f";
   ctx.fillRect(markerX, 0, 1, height); // line
   ctx.beginPath();
   ctx.arc(markerX, markerY, 5, 0, 2 * Math.PI); // dot
@@ -85,10 +85,17 @@ const drawZoomAreaMarker = (props: IDrawHelperProps) => {
   const xScale = width / pointsCount;
   const markerWidth = (zoomedInViewPointsCount / pointsCount) * width;
 
-  ctx.strokeStyle = "#333";
+  // Marker border
+  ctx.strokeStyle = "#ea6d2f";
   ctx.lineWidth = 2;
   ctx.strokeRect(x * xScale, 0, markerWidth, height);
-  ctx.fillStyle = "#88D3DDFF";
+
+  // Marker area highlight
+  ctx.fillStyle = "#ea6d2f40";
+  ctx.fillRect( (x * xScale) + 2 , 2, markerWidth - 4, height -4);
+
+  // Marker center hairline
+  ctx.fillStyle = "#ea6d2f80";
   ctx.fillRect(x * xScale + 0.5 * markerWidth, 0, 1, height); // line
 };
 
