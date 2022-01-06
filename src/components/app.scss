@@ -159,23 +159,23 @@ BODY {
   }
 
   .zoomed-out-graph-container {
-    margin: 0;
-    margin-top: -11px;
-    display: flex;
-    align-items: center;
+    // margin: 0;
+    // margin-top: -11px;
+    // display: flex;
+    // align-items: center;
     height: 60px;
-    padding: 3px 5px 0 10px;
+    // padding: 3px 5px 0 10px;
     background-color: $controls;
 
-    &.chosen-sound {
-      border: $borderWidth solid $darkBorderColor;
-      border-bottom-left-radius: $borderRadius;
-      border-bottom-right-radius: $borderRadius;
-    }
+    // &.chosen-sound {
+    //   border: $borderWidth solid $darkBorderColor;
+    //   border-bottom-left-radius: $borderRadius;
+    //   border-bottom-right-radius: $borderRadius;
+    // }
 
-    &.chosen-carrier {
-      border-bottom: $borderWidth solid $darkBorderColor;
-    }
+    // &.chosen-carrier {
+    //   border-bottom: $borderWidth solid $darkBorderColor;
+    // }
   }
 } // END OF: .app
 
