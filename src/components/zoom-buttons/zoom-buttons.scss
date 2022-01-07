@@ -5,22 +5,23 @@
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 130px;
+  width: 110px;
   display: flex;
   align-items: center;
   justify-content: space-around;
+  background-color: $zoomControlsContainerBackground;
+  border: 1px solid $zoomControlsContainerBorder;
 }
 
 .zoom-button-container {
   padding: 3px;
-  border: 3px solid $controlsBackground;
 }
 
 .zoom-button {
   width: 48px;
   height: 48px;
   cursor: pointer;
-  background-color: $controlsBackground;
+  background-color: $controlsAlternateBackground;
   border-radius: 12px;
   svg {
     fill: $controls;
