@@ -194,13 +194,16 @@ const drawWaveLengthMarker = (props: IDrawHelperProps) => {
     const minPointIdx = currentDataPointIdx - 0.5 * pointsCount; // currentDataPointIdx is always in the middle
     const x1Scaled = (waveX1 - minPointIdx) * xScale;
     const x3Scaled = (waveX3 - minPointIdx) * xScale;
+
     // Horizontal line
     ctx.fillStyle = "#892be2";
     ctx.fillRect(x1Scaled, baseY - 0.5 * kLineWidth, (x3Scaled - x1Scaled), kLineWidth);
+
     // I-beam
     const kIBeamWidth = 12;
     ctx.fillRect(x1Scaled - kLineWidth, baseY - kIBeamWidth * 0.5, kLineWidth, kIBeamWidth);
     ctx.fillRect(x3Scaled, baseY - kIBeamWidth * 0.5, kLineWidth, kIBeamWidth);
+
     // Draw (semi-opaque) background for the text
     const kTextFontSize = 14;
     const kTextTopPadding = 40;
@@ -208,6 +211,7 @@ const drawWaveLengthMarker = (props: IDrawHelperProps) => {
     const kBoxHeight = kTextFontSize * 1.33;
     ctx.fillStyle = "#ffffffb0";
     ctx.fillRect((x1Scaled + x3Scaled) * 0.5 - 0.5 * kBoxWidth, baseY + 0.65 * kTextTopPadding, kBoxWidth, kBoxHeight);
+
     // Label
     ctx.fillStyle = "#892be2";
     ctx.textAlign = "center";
@@ -244,8 +248,9 @@ export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, d
         drawProgressMarker(drawHelperProps);
       }
       if (shouldDrawAmplitudeWavelengthCaptions) {
-        drawAmplitudeMarker(drawHelperProps);
-        drawWaveLengthMarker(drawHelperProps);
+        // commented out, but deliberately not removed, per: PT #180792001
+        // drawAmplitudeMarker(drawHelperProps);
+        // drawWaveLengthMarker(drawHelperProps);
       }
     } else {
       drawZoomAreaMarker(drawHelperProps);

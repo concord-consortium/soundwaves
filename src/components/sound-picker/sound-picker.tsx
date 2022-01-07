@@ -142,11 +142,12 @@ export const SoundPicker = (props: ISoundPickerProps) => {
     }
   };
 
-  const onLabelIconClicked = () => {
-    // Don't allow state change when non-pure tone sound selected
-    if (!isPureToneSelected) { return; }
-    handleDrawWaveLabelChange?.();
-  };
+  // -- commented out, but deliberately not removed, per: PT #180792001
+  // const onLabelIconClicked = () => {
+  //   // Don't allow state change when non-pure tone sound selected
+  //   if (!isPureToneSelected) { return; }
+  //   handleDrawWaveLabelChange?.();
+  // };
 
   const onSoundPickerChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const soundName = event.currentTarget.value as SoundName;
@@ -184,10 +185,11 @@ export const SoundPicker = (props: ISoundPickerProps) => {
         <MicIcon className={
           `icon button ${isReadyToRecord ? "" : "disabled"} ${isRecording ? "recording" : ""}`}
           onClick={onMicIconClicked} />
-        <LabelsIcon className={
+        {/* // -- commented out, but deliberately not removed, per: PT #180792001 */}
+        {/* <LabelsIcon className={
             `icon button ${isPureToneSelected ? "" : "disabled"} ${drawWaveLabels ? "labelling" : ""}`
           }
-          onClick={onLabelIconClicked} />
+          onClick={onLabelIconClicked} /> */}
       </div>
     </div>
   );

@@ -119,7 +119,8 @@ export const App = () => {
   };
 
   const handleDrawWaveLabelChange = () => {
-    setDrawWaveLabels(!drawWaveLabels);
+    // -- commented out, but deliberately not removed, per: PT #180792001
+    // setDrawWaveLabels(!drawWaveLabels);
   };
 
   const handleVolumeChange = (value: number) => {

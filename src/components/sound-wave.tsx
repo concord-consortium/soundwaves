@@ -39,8 +39,9 @@ export const SoundWave = (props: ISoundWaveProps) => {
   return (
     <div className={cssClasses}>
       {
-        shouldDrawWaveCaptions && pureToneFrequency &&
-        <div className="frequency">Frequency: {pureToneFrequency} Hz</div>
+        //  -- commented out, but deliberately not removed, per: PT #180792001
+        // shouldDrawWaveCaptions && pureToneFrequency &&
+        // <div className="frequency">Frequency: {pureToneFrequency} Hz</div>
       }
       <canvas
         ref={canvasRef}
