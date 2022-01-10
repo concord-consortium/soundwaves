@@ -3,13 +3,15 @@ import { useSoundWaveInteractions } from "../hooks/use-sound-wave-interactions";
 import { useSoundWaveRendering } from "../hooks/use-sound-wave-rendering";
 import { ISoundWaveProps } from "../types";
 import { downsampleAudioBuffer } from "../utils/audio";
+import { ZoomButtons } from "./zoom-buttons/zoom-buttons";
+
 import "./sound-wave.scss";
 
 // Performance - 20k seems to be reasonable limit (tested on desktop Chrome, Safari and iOS Safari)
 const MAX_GRAPH_POINTS = 20000;
 
 export const SoundWave = (props: ISoundWaveProps) => {
-  const { interactive, audioBuffer, zoom, zoomedInView, shouldDrawWaveCaptions, pureToneFrequency } = props;
+  const { interactive, audioBuffer, zoom, zoomedInView, shouldDrawWaveCaptions, pureToneFrequency, handleZoomIn, handleZoomOut } = props;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [data, setData] = useState<Float32Array>(new Float32Array(0));
 
@@ -48,6 +50,10 @@ export const SoundWave = (props: ISoundWaveProps) => {
         onPointerDown={interactive ? handlePointerDown : undefined}
         onPointerMove={interactive ? handlePointerMove : undefined}
       />
+      {
+        zoomedInView &&
+          <ZoomButtons handleZoomIn={handleZoomIn} handleZoomOut={handleZoomOut}/>
+      }
     </div>
   );
 };

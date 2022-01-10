@@ -3,7 +3,7 @@ const SIDE_MARGIN = 8; // Units: px. If changing; also change $margin, in vars.s
 const BORDER_WIDTH = 2; // Units: px; If changing; also change: $borderWidth, in vars.scss
 export const SIDE_MARGIN_PLUS_BORDER = SIDE_MARGIN + BORDER_WIDTH; // Units: px;
 export const SOUND_WAVE_GRAPH_HEIGHT = 105;
-export const ZOOMED_OUT_GRAPH_HEIGHT = 45;
+export const ZOOMED_OUT_GRAPH_HEIGHT = 35;
 
 // Arbitrary value (in Hz) -- but it needs to be in the valid range, per the API specification.
 // Note: the specification requires browsers to support a range of, at least: 8000..96000
@@ -24,6 +24,8 @@ export interface ISoundWaveProps {
   shouldDrawProgressMarker?: boolean;
   shouldDrawWaveCaptions?: boolean;
   pureToneFrequency?: number;
+  handleZoomOut?: () => void;
+  handleZoomIn?: () => void;
 }
 
 export interface IZoomButtonsProps {

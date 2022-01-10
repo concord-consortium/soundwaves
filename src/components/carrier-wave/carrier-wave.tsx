@@ -103,11 +103,14 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
             shouldDrawProgressMarker={(modulation !== "")}
             pureToneFrequency={carrierFrequency}
             interactive={false}
+            handleZoomIn={handleZoomIn}
+            handleZoomOut={handleZoomOut}
           />
         </div>
+        {/* <ZoomButtons handleZoomIn={handleZoomIn} handleZoomOut={handleZoomOut} /> */}
         <div className="zoomed-out-graph-container chosen-carrier">
           <SoundWave
-            width={graphWidth - ZOOM_BUTTONS_WIDTH}
+            width={graphWidth}
             height={ZOOMED_OUT_GRAPH_HEIGHT}
             audioBuffer={carrierBuffer}
             volume={modulation === "AM" ? volume : 1}
@@ -117,7 +120,6 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
             interactive={interactive}
             onProgressUpdate={onProgressUpdate}
           />
-          <ZoomButtons handleZoomIn={handleZoomIn} handleZoomOut={handleZoomOut} />
         </div>
       </div>
       <div className="wavelength-mod-container">

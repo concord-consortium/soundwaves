@@ -1,19 +1,30 @@
 @import "../vars.scss";
 
 .zoom-buttons-container {
-  width: 130px;
+  z-index: 2;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 30px;
+  height: 54px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: space-around;
+  padding: 2px 0px;
+  background-color: $zoomControlsContainerBackground;
+  border: 1px solid $zoomControlsContainerBorder;
 }
 
 .zoom-button {
-  width: 48px;
-  height: 48px;
+  height: 24px;
+  width: 24px;
   cursor: pointer;
-  background-color: $controlsBackground;
-  border-radius: 15px;
+  background-color: $controlsAlternateBackground;
+  border-radius: 6px;
   svg {
     fill: $controls;
+    height: 24px;
+    width: 24px;
   }
 }
