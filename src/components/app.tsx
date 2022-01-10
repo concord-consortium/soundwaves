@@ -205,6 +205,7 @@ export const App = () => {
       <SoundPicker
         selectedSound={selectedSound}
         drawWaveLabels={drawWaveLabels}
+        playing={playing}
         handleSoundChange={handleSoundChange}
         handleDrawWaveLabelChange={handleDrawWaveLabelChange}
         onRecordingCompleted={setupAudioContextFromRecording}

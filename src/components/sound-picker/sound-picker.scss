@@ -28,9 +28,11 @@
       width: 24px;
       margin-left: 5px;
       cursor: pointer;
+      fill: red;
 
       &.recording {
-        fill: red;
+        // fill: red;
+        fill: lawngreen;
       }
 
       &.labelling {

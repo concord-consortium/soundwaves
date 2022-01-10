@@ -2,13 +2,15 @@ import React, { ChangeEvent, useRef, useState } from "react";
 
 import { SoundName } from "../../types";
 import MicIcon from "../../assets/icons/mic_black_48dp.svg";
-import LabelsIcon from "../../assets/icons/sell_black_48dp.svg";
+  // -- commented out, but deliberately not removed, per: PT #180792001
+  // import LabelsIcon from "../../assets/icons/sell_black_48dp.svg";
 
 import "./sound-picker.scss";
 
 export interface ISoundPickerProps {
   selectedSound: SoundName;
   drawWaveLabels: boolean;
+  playing: boolean;
   handleSoundChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
   onRecordingCompleted?: (audioBuffer: AudioBuffer) => void;
   handleDrawWaveLabelChange?: () => void;
@@ -31,12 +33,19 @@ export const pureToneFrequencyFromSoundName = (soundName: string) => {
 };
 
 export const SoundPicker = (props: ISoundPickerProps) => {
-  const { selectedSound, handleSoundChange, onRecordingCompleted, drawWaveLabels, handleDrawWaveLabelChange } = props;
+  const {
+    selectedSound,
+    playing,
+    handleSoundChange,
+    onRecordingCompleted,
+    // -- commented out, but deliberately not removed, per: PT #180792001
+    // drawWaveLabels,
+    handleDrawWaveLabelChange
+  } = props;
 
   // Set: isPureToneSelected, isReadyToRecord defaults, based on "middle-c" default selection
   const [isPureToneSelected, setIsPureToneSelected] = useState<boolean>(true);
-  const [isReadyToRecord, setIsReadyToRecord] = useState<boolean>(false);
-
+  const [isReadyToRecord, setIsReadyToRecord] = useState<boolean>(true);
   const [isRecording, setIsRecording] = useState<boolean>(false);
 
   const recordingTimerRef = useRef<number>();
@@ -125,21 +134,31 @@ export const SoundPicker = (props: ISoundPickerProps) => {
   };
 
   const onMicIconClicked = () => {
+console.log({mediaRecorderRef})
     const maximumRecordingLengthInMilliseconds = 1000 * 5;
 
-    // Ignore this event, if it happens when "(record my own) is NOT selected"
-    if (!isReadyToRecord) { return; }
-
-    if (mediaRecorderRef.current?.state === "inactive") {
-
-      // Use a one-shot timer, to ensure recording does not exceed the maximum length
-      recordingTimerRef.current = setTimeout(onTimedOutRecording, maximumRecordingLengthInMilliseconds);
-
-      mediaRecorderRef.current?.start();
-      setIsRecording(true);
-    } else {
+    if (isRecording) {
       doFinishedRecording();
+      return;
     }
+
+    const isRecordingConfirmed = window.confirm("Press OK to begin recording for 5 seconds.");
+    if (!isRecordingConfirmed) { return; }
+
+    setIsRecording(true);
+    // Use a one-shot timer, to ensure recording does not exceed the maximum length
+    recordingTimerRef.current =
+      setTimeout(onTimedOutRecording, maximumRecordingLengthInMilliseconds);
+
+
+    // if (mediaRecorderRef.current?.state === "inactive") {
+    //   // Use a one-shot timer, to ensure recording does not exceed the maximum length
+    //   recordingTimerRef.current = setTimeout(onTimedOutRecording, maximumRecordingLengthInMilliseconds);
+    //   mediaRecorderRef.current?.start();
+    //   setIsRecording(true);
+    // } else {
+    //   doFinishedRecording();
+    // }
   };
 
   // -- commented out, but deliberately not removed, per: PT #180792001
@@ -178,12 +197,12 @@ export const SoundPicker = (props: ISoundPickerProps) => {
           <option value="cosmic-arp">Cosmic Arp</option>
           <option value="hard-base">Hard Base</option>
           <option value="scratch-sample">Scratch Sample</option>
-          <option value="record-my-own">(record my own . . .)</option>
+          <option value="record-my-own">(My Recording)</option>
         </select>
       </div>
       <div className="icons-container">
         <MicIcon className={
-          `icon button ${isReadyToRecord ? "" : "disabled"} ${isRecording ? "recording" : ""}`}
+          `icon button ${playing ? "disabled" : ""} ${isRecording ? "recording" : ""}`}
           onClick={onMicIconClicked} />
         {/* // -- commented out, but deliberately not removed, per: PT #180792001 */}
         {/* <LabelsIcon className={
