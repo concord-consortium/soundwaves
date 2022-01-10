@@ -1,4 +1,3 @@
-export const ZOOM_BUTTONS_WIDTH = 130; // px, it should match width of zoom-buttons-container defined in CSS file
 const SIDE_MARGIN = 8; // Units: px. If changing; also change $margin, in vars.scss
 const BORDER_WIDTH = 2; // Units: px; If changing; also change: $borderWidth, in vars.scss
 export const SIDE_MARGIN_PLUS_BORDER = SIDE_MARGIN + BORDER_WIDTH; // Units: px;

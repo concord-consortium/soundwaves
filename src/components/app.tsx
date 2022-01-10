@@ -1,13 +1,12 @@
 import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import Slider from "rc-slider";
 
-import { SIDE_MARGIN_PLUS_BORDER, SoundName, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT, ZOOM_BUTTONS_WIDTH, SOUND_SAMPLE_RATE } from "../types";
+import { SIDE_MARGIN_PLUS_BORDER, SoundName, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT, SOUND_SAMPLE_RATE } from "../types";
 import { SoundWave } from "./sound-wave";
 import { CarrierWave } from "./carrier-wave/carrier-wave";
 import { AppHeader } from "./application-header/application-header";
 import { SoundPicker, isPureTone, pureToneFrequencyFromSoundName } from "./sound-picker/sound-picker";
 import { useAutoWidth } from "../hooks/use-auto-width";
-import { ZoomButtons } from "./zoom-buttons/zoom-buttons";
 
 import "./app.scss";
 import "rc-slider/assets/index.css";
@@ -264,7 +263,6 @@ export const App = () => {
             handleZoomIn={handleZoomIn}
             handleZoomOut={handleZoomOut}
         />
-          {/* <ZoomButtons handleZoomIn={handleZoomIn} handleZoomOut={handleZoomOut} /> */}
           <div className="zoomed-out-graph-container chosen-sound">
             <SoundWave
               width={graphWidth}
