@@ -19,7 +19,7 @@
   }
 
   .icons-container {
-    width: 74px;
+    width: 35px;
     height: 32px;
     text-align: right;
 
@@ -31,8 +31,9 @@
       fill: red;
 
       &.recording {
-        // fill: red;
-        fill: lawngreen;
+        animation-name: pulse;
+        animation-duration: 1.5s;
+        animation-iteration-count: infinite;
       }
 
       &.labelling {
@@ -44,5 +45,14 @@
         cursor: default;
       }
     }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
   }
 }

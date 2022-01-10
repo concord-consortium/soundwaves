@@ -47,6 +47,7 @@ export const SoundPicker = (props: ISoundPickerProps) => {
   const [isPureToneSelected, setIsPureToneSelected] = useState<boolean>(true);
   const [isReadyToRecord, setIsReadyToRecord] = useState<boolean>(true);
   const [isRecording, setIsRecording] = useState<boolean>(false);
+  const [hasRecording, setHasRecording] = useState<boolean>(false);
 
   const recordingTimerRef = useRef<number>();
   const mediaRecorderRef = useRef<MediaRecorder>();
@@ -127,6 +128,8 @@ export const SoundPicker = (props: ISoundPickerProps) => {
 
     mediaRecorderRef.current?.stop();
     setIsRecording(false);
+console.log("setting hasRecording to true")
+    setHasRecording(true);
   };
 
   const onTimedOutRecording = () => {
@@ -197,7 +200,7 @@ console.log({mediaRecorderRef})
           <option value="cosmic-arp">Cosmic Arp</option>
           <option value="hard-base">Hard Base</option>
           <option value="scratch-sample">Scratch Sample</option>
-          <option value="record-my-own">(My Recording)</option>
+          <option value="record-my-own" disabled={!hasRecording}>(My Recording)</option>
         </select>
       </div>
       <div className="icons-container">
