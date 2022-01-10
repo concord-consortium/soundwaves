@@ -20,7 +20,6 @@
   }
 
   .carrier-wave-graph-container {
-    height:  180px;
     margin: 5px 0 5px -2px;
   }
 
@@ -30,16 +29,12 @@
       font-size: $selectFontSize;
       color: $controls;
       border-color: $darkBorderColor;
-      background-color: $controlsBackgroundSolid;
+      background-color: $controlsBackgroundSemiTransparent;
     }
 
     span.value {
       color: $controls;
     }
-  }
-
-  DIV.zoomed-in-view {
-    margin-bottom: 5px;
   }
 
   DIV.freq-mod-container {

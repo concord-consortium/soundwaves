@@ -259,10 +259,13 @@ export const App = () => {
             shouldDrawProgressMarker={true}
             shouldDrawWaveCaptions={!playing && isPureTone(selectedSound) && drawWaveLabels}
             pureToneFrequency={pureToneFrequencyFromSoundName(selectedSound)}
-          />
+            handleZoomIn={handleZoomIn}
+            handleZoomOut={handleZoomOut}
+        />
+          {/* <ZoomButtons handleZoomIn={handleZoomIn} handleZoomOut={handleZoomOut} /> */}
           <div className="zoomed-out-graph-container chosen-sound">
             <SoundWave
-              width={graphWidth - ZOOM_BUTTONS_WIDTH}
+              width={graphWidth}
               height={ZOOMED_OUT_GRAPH_HEIGHT}
               audioBuffer={audioBuffer}
               volume={volume}
@@ -272,7 +275,6 @@ export const App = () => {
               interactive={!playing}
               onProgressUpdate={handleProgressUpdate}
             />
-            <ZoomButtons handleZoomIn={handleZoomIn} handleZoomOut={handleZoomOut} />
           </div>
         </div>
       </div>
