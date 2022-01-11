@@ -46,6 +46,8 @@ export const App = () => {
   const [playbackRate, setPlaybackRate] = useState<number>(1);
   const [graphWidth, setGraphWidth] = useState<number>(100);
   const [audioBuffer, setAudioBuffer] = useState<AudioBuffer>();
+  const [recordingAudioBuffer, setRecordingAudioBuffer] =
+    useState<AudioBuffer>(new AudioBuffer({length: 3000, sampleRate: 3000}));
 
   const audioContext = useRef<AudioContext>();
   const audioSource = useRef<AudioBufferSourceNode>();
@@ -61,6 +63,7 @@ export const App = () => {
   });
 
   const setupAudioContextFromRecording = (recordingBuffer: AudioBuffer) => {
+console.log("setupAudioContextFromRecording");
     setAudioBuffer(recordingBuffer);
     setPlaybackProgress(0);
   };
@@ -76,19 +79,26 @@ export const App = () => {
     // immediately. But we do want to clear out the old sound data here, and to
     // update the playback progress indicator, so that it is clear that there
     // is nothing recorded (yet).
+console.log("setupAudioContext", {soundName});
     if (soundName === "record-my-own") {
-      const emptyBuffer = new AudioBuffer({
-        length: 1,
-        sampleRate: SOUND_SAMPLE_RATE
-      });
+console.log("setupAudioContext(), soundName is: 'record-my-own'");
+      // const emptyBuffer = new AudioBuffer({
+      //   length: 1,
+      //   sampleRate: SOUND_SAMPLE_RATE
+      // });
+      // audioContext.current = new AudioContext();
+      // gainNode.current = audioContext.current.createGain();
+      // setAudioBuffer(emptyBuffer);
       audioContext.current = new AudioContext();
       gainNode.current = audioContext.current.createGain();
-      setAudioBuffer(emptyBuffer);
+      setAudioBuffer(recordingAudioBuffer);
+
       setPlaybackProgress(0);
       return;
     }
 
     // Handle selection of 'canned' sounds...
+console.log("Getting 'canned' sound...");
     const response = await window.fetch(sounds[soundName]);
     const soundArrayBuffer = await response.arrayBuffer();
     audioContext.current = new AudioContext();
@@ -102,7 +112,7 @@ export const App = () => {
     // AudioContext is apparently unavailable in the node / jest environment.
     // So we bail out early, to prevent render test failure.
     if (!window.AudioContext) { return; }
-
+console.log("useEffect()", {selectedSound});
     setupAudioContext(selectedSound);
   }, [selectedSound]);
 
@@ -203,11 +213,14 @@ export const App = () => {
       <AppHeader />
       <SoundPicker
         selectedSound={selectedSound}
+        setSelectedSound={setSelectedSound}
+        recordingAudioBuffer={recordingAudioBuffer}
+        setRecordingAudioBuffer={setRecordingAudioBuffer}
         drawWaveLabels={drawWaveLabels}
         playing={playing}
         handleSoundChange={handleSoundChange}
         handleDrawWaveLabelChange={handleDrawWaveLabelChange}
-        onRecordingCompleted={setupAudioContextFromRecording}
+        onMyRecordingChosen={setupAudioContextFromRecording}
       />
       <div className="main-controls-and-waves-container">
         <div className="playback-and-volume-controls">
