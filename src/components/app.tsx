@@ -1,7 +1,7 @@
-import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Slider from "rc-slider";
 
-import { SIDE_MARGIN_PLUS_BORDER, SoundName, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT, SOUND_SAMPLE_RATE } from "../types";
+import { SIDE_MARGIN_PLUS_BORDER, SoundName, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT } from "../types";
 import { SoundWave } from "./sound-wave";
 import { CarrierWave } from "./carrier-wave/carrier-wave";
 import { AppHeader } from "./application-header/application-header";
@@ -107,13 +107,15 @@ export const App = () => {
     setPlaybackProgress(0);
   };
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
     // AudioContext is apparently unavailable in the node / jest environment.
     // So we bail out early, to prevent render test failure.
     if (!window.AudioContext) { return; }
     setupAudioContext(selectedSound);
-  }, [selectedSound]);
+  },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectedSound]
+  );
 
   useEffect(() => {
     if (gainNode.current) {
