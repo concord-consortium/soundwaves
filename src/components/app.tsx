@@ -48,8 +48,7 @@ export const App = () => {
   const [playbackRate, setPlaybackRate] = useState<number>(1);
   const [graphWidth, setGraphWidth] = useState<number>(100);
   const [audioBuffer, setAudioBuffer] = useState<AudioBuffer>();
-  const [recordingAudioBuffer, setRecordingAudioBuffer] =
-    useState<AudioBuffer>(new AudioBuffer({length: 5 * SOUND_SAMPLE_RATE, sampleRate: SOUND_SAMPLE_RATE}));
+  const [recordingAudioBuffer, setRecordingAudioBuffer] = useState<AudioBuffer>();
 
   const audioContext = useRef<AudioContext>();
   const audioSource = useRef<AudioBufferSourceNode>();

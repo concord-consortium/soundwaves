@@ -10,7 +10,7 @@ import "./sound-picker.scss";
 export interface ISoundPickerProps {
   selectedSound: SoundName;
   setSelectedSound: (soundName: SoundName) => void;
-  recordingAudioBuffer: AudioBuffer;
+  recordingAudioBuffer: AudioBuffer | undefined;
   setRecordingAudioBuffer: (audioBuffer: AudioBuffer) => void;
   drawWaveLabels: boolean;
   playing: boolean;
@@ -179,7 +179,7 @@ export const SoundPicker = (props: ISoundPickerProps) => {
     const soundName = event.currentTarget.value as SoundName;
     const isUserRecordingSelected = (soundName === "record-my-own");
     const hasMediaRecorder = !!(mediaRecorderRef.current);
-    if (isUserRecordingSelected && !hasMediaRecorder) {
+    if (isUserRecordingSelected && !hasMediaRecorder && recordingAudioBuffer) {
         accessRecordingStream();
         onMyRecordingChosen(recordingAudioBuffer);
       }
