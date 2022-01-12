@@ -65,7 +65,6 @@ export const App = () => {
   });
 
   const setupAudioContextFromRecording = (recordingBuffer: AudioBuffer) => {
-console.log("setupAudioContextFromRecording");
     setAudioBuffer(recordingBuffer);
     setPlaybackProgress(0);
   };
@@ -81,9 +80,7 @@ console.log("setupAudioContextFromRecording");
     // immediately. But we do want to clear out the old sound data here, and to
     // update the playback progress indicator, so that it is clear that there
     // is nothing recorded (yet).
-console.log("setupAudioContext", {soundName});
     if (soundName === "record-my-own") {
-console.log("setupAudioContext(), soundName is: 'record-my-own'");
       // const emptyBuffer = new AudioBuffer({
       //   length: 1,
       //   sampleRate: SOUND_SAMPLE_RATE
@@ -100,7 +97,6 @@ console.log("setupAudioContext(), soundName is: 'record-my-own'");
     }
 
     // Handle selection of 'canned' sounds...
-console.log("Getting 'canned' sound...");
     const response = await window.fetch(sounds[soundName]);
     const soundArrayBuffer = await response.arrayBuffer();
     audioContext.current = new AudioContext();
@@ -110,14 +106,13 @@ console.log("Getting 'canned' sound...");
     setPlaybackProgress(0);
   };
 
-  useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(() => {
     // AudioContext is apparently unavailable in the node / jest environment.
     // So we bail out early, to prevent render test failure.
     if (!window.AudioContext) { return; }
-console.log("useEffect()", {selectedSound});
     setupAudioContext(selectedSound);
   }, [selectedSound]);
-  // }, [selectedSound, setupAudioContext]);
 
   useEffect(() => {
     if (gainNode.current) {
