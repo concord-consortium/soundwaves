@@ -46,12 +46,9 @@ export const SoundPicker = (props: ISoundPickerProps) => {
     onMyRecordingChosen,
     // -- commented out, but deliberately not removed, per: PT #180792001
     // drawWaveLabels,
-    handleDrawWaveLabelChange
+    // handleDrawWaveLabelChange
   } = props;
 
-  // Set: isPureToneSelected, isReadyToRecord defaults, based on "middle-c" default selection
-  const [isPureToneSelected, setIsPureToneSelected] = useState<boolean>(true);
-  const [isReadyToRecord, setIsReadyToRecord] = useState<boolean>(true);
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [hasRecording, setHasRecording] = useState<boolean>(false);
 
@@ -100,10 +97,7 @@ console.log("onstop");
       const blob = new Blob(audioRecordingChunks, { "type" : recorder.mimeType });
       const audioURL = window.URL.createObjectURL(blob);
       const arrayBuffer = await (await fetch(audioURL)).arrayBuffer();
-      // let audioBuffer = await (new AudioContext()).decodeAudioData(arrayBuffer);
-      // audioBuffer2.current = await (new AudioContext()).decodeAudioData(arrayBuffer);
       let recordingAudioBuffer = await (new AudioContext()).decodeAudioData(arrayBuffer);
-      // setRecordingAudioBuffer(recordingAudioBuffer);
 
       // let channelData = audioBuffer.getChannelData(0);
       // let channelData = audioBuffer2.current.getChannelData(0);
@@ -129,44 +123,28 @@ console.log("onstop");
       // sounds of interest.
       if (firstSoundIndex !== -1) {
         const extraSamplesOffset =
-          // audioBuffer.sampleRate * 0.2; // 200 milliseconds of samples
-          // (audioBuffer2 && audioBuffer2.current && audioBuffer2.current.sampleRate)
-          //   ? (audioBuffer2.current.sampleRate * 0.2) // 200 milliseconds of samples
-          //   : 0;
           recordingAudioBuffer.sampleRate * 0.2; // 200 milliseconds of samples
 
         const adjustedSoundIndex = Math.max(0, (firstSoundIndex - extraSamplesOffset));
         channelData = channelData.slice(firstSoundIndex);
 
-        // audioBuffer = new AudioBuffer({
-        //   length: audioBuffer.length - adjustedSoundIndex,
-        //   sampleRate: audioBuffer.sampleRate
-        // });
-        // audioBuffer2.current = new AudioBuffer({
-        //   length: audioBuffer2.current.length - adjustedSoundIndex,
-        //   sampleRate: audioBuffer2.current.sampleRate
-        // });
         recordingAudioBuffer = new AudioBuffer({
           length: recordingAudioBuffer.length - adjustedSoundIndex,
           sampleRate: recordingAudioBuffer.sampleRate
         });
         setRecordingAudioBuffer(recordingAudioBuffer);
 
-        // audioBuffer.copyToChannel(channelData, 0);
-        // audioBuffer2.current.copyToChannel(channelData, 0);
         recordingAudioBuffer.copyToChannel(channelData, 0);
       }
 
       // When a recording is completed, we choose it automatically (PT #180792001).
-      // onMyRecordingChosen(audioBuffer);
-      // onMyRecordingChosen(audioBuffer2.current);
       onMyRecordingChosen(recordingAudioBuffer);
 
       audioRecordingChunks = [];
     };
 
     mediaRecorderRef.current = recorder;
-    setIsReadyToRecord(true);
+    // setIsReadyToRecord(true);
 console.log("is ready to record...");
   };
 
@@ -225,15 +203,11 @@ console.log(mediaRecorderRef.current);
 
   const onSoundPickerChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const soundName = event.currentTarget.value as SoundName;
-    setIsPureToneSelected(isPureTone(soundName));
     const isUserRecordingSelected = (soundName === "record-my-own");
     const hasMediaRecorder = !!(mediaRecorderRef.current);
 console.log("onSoundPickerChange", {mediaRecorderRef}, {hasMediaRecorder});
-// setIsReadyToRecord(hasMediaRecorder && isUserRecordingSelected);
     if (isUserRecordingSelected && !hasMediaRecorder) {
         accessRecordingStream();
-        // onMyRecordingChosen(audioBuffer);
-        // onMyRecordingChosen(audioBuffer2.current);
         onMyRecordingChosen(recordingAudioBuffer);
       }
 

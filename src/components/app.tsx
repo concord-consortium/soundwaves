@@ -38,7 +38,9 @@ const sounds: Record<SoundName, string> = {
 
 export const App = () => {
   const [selectedSound, setSelectedSound] = useState<SoundName>("middle-c");
-  const [drawWaveLabels, setDrawWaveLabels] = useState<boolean>(false);
+  // -- commented out, but deliberately not removed, per: PT #180792001
+  // const [drawWaveLabels, setDrawWaveLabels] = useState<boolean>(false);
+  const drawWaveLabels = false;
   const [playing, setPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(1);
   const [zoom, setZoom] = useState<number>(16);
@@ -47,7 +49,7 @@ export const App = () => {
   const [graphWidth, setGraphWidth] = useState<number>(100);
   const [audioBuffer, setAudioBuffer] = useState<AudioBuffer>();
   const [recordingAudioBuffer, setRecordingAudioBuffer] =
-    useState<AudioBuffer>(new AudioBuffer({length: 3000, sampleRate: 3000}));
+    useState<AudioBuffer>(new AudioBuffer({length: 5 * SOUND_SAMPLE_RATE, sampleRate: SOUND_SAMPLE_RATE}));
 
   const audioContext = useRef<AudioContext>();
   const audioSource = useRef<AudioBufferSourceNode>();
@@ -115,6 +117,7 @@ console.log("Getting 'canned' sound...");
 console.log("useEffect()", {selectedSound});
     setupAudioContext(selectedSound);
   }, [selectedSound]);
+  // }, [selectedSound, setupAudioContext]);
 
   useEffect(() => {
     if (gainNode.current) {

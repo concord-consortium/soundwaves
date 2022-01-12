@@ -11,7 +11,17 @@ import "./sound-wave.scss";
 const MAX_GRAPH_POINTS = 20000;
 
 export const SoundWave = (props: ISoundWaveProps) => {
-  const { interactive, audioBuffer, zoom, zoomedInView, shouldDrawWaveCaptions, pureToneFrequency, handleZoomIn, handleZoomOut } = props;
+  const {
+    interactive,
+    audioBuffer,
+    zoom,
+    zoomedInView,
+    // -- commented out, but deliberately not removed, per: PT #180792001
+    // shouldDrawWaveCaptions,
+    // pureToneFrequency,
+    handleZoomIn,
+    handleZoomOut
+  } = props;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [data, setData] = useState<Float32Array>(new Float32Array(0));
 
