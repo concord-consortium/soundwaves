@@ -41,7 +41,8 @@ export interface ISoundWavePropsWithDataAndCarrier extends ISoundWavePropsWithDa
 }
 
 export type SoundName =
-  "middle-c"
+  "pick-sound"
+  | "middle-c"
   | "c2"
   | "baby-cry"
   | "rock-and-knock-drum-loop"

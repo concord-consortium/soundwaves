@@ -25,6 +25,7 @@ import PauseIcon from "../assets/icons/pause_circle_outline_black_48dp.svg";
 import VolumeIcon from "../assets/icons/volume_up_black_48dp.svg";
 
 const sounds: Record<SoundName, string> = {
+  "pick-sound": "pick-sound",
   "middle-c": MiddleCSound,
   "c2": C2Sound,
   "baby-cry": BabyCrySound,
@@ -37,7 +38,7 @@ const sounds: Record<SoundName, string> = {
 };
 
 export const App = () => {
-  const [selectedSound, setSelectedSound] = useState<SoundName>("middle-c");
+  const [selectedSound, setSelectedSound] = useState<SoundName>("pick-sound");
   // -- commented out, but deliberately not removed, per: PT #180792001
   // const [drawWaveLabels, setDrawWaveLabels] = useState<boolean>(false);
   const drawWaveLabels = false;
@@ -80,17 +81,18 @@ export const App = () => {
     // update the playback progress indicator, so that it is clear that there
     // is nothing recorded (yet).
     if (soundName === "record-my-own") {
-      // const emptyBuffer = new AudioBuffer({
-      //   length: 1,
-      //   sampleRate: SOUND_SAMPLE_RATE
-      // });
-      // audioContext.current = new AudioContext();
-      // gainNode.current = audioContext.current.createGain();
-      // setAudioBuffer(emptyBuffer);
       audioContext.current = new AudioContext();
       gainNode.current = audioContext.current.createGain();
       setAudioBuffer(recordingAudioBuffer);
+      setPlaybackProgress(0);
+      return;
+    }
 
+    if (soundName === "pick-sound") {
+      audioContext.current = new AudioContext();
+      gainNode.current = audioContext.current.createGain();
+      const emptyAudioBuffer = new AudioBuffer({length: 1, sampleRate: 8000});
+      setAudioBuffer(emptyAudioBuffer);
       setPlaybackProgress(0);
       return;
     }
@@ -119,11 +121,6 @@ export const App = () => {
     }
   }, [volume]);
 
-  const handleSoundChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const soundName = event.currentTarget.value as SoundName;
-    setSelectedSound(soundName);
-  };
-
   const handleDrawWaveLabelChange = () => {
     // -- commented out, but deliberately not removed, per: PT #180792001
     // setDrawWaveLabels(!drawWaveLabels);
@@ -134,6 +131,9 @@ export const App = () => {
   };
 
   const handlePlay = () => {
+    // If user hasn't chosen a canned or recorded sound, then there's nothing to do here.
+    if (selectedSound === "pick-sound") { return; }
+
     setPlaying(!playing);
     // It needs to be updated immediately so #measureProgress works correctly.
     playingRef.current = !playing;
@@ -215,14 +215,18 @@ export const App = () => {
         setRecordingAudioBuffer={setRecordingAudioBuffer}
         drawWaveLabels={drawWaveLabels}
         playing={playing}
-        handleSoundChange={handleSoundChange}
         handleDrawWaveLabelChange={handleDrawWaveLabelChange}
         onMyRecordingChosen={setupAudioContextFromRecording}
       />
       <div className="main-controls-and-waves-container">
         <div className="playback-and-volume-controls">
-          <div className="play-pause button" onClick={handlePlay}>
-            { playing ? <PauseIcon /> : <PlayIcon /> }
+          <div
+            className={`play-pause button${(selectedSound === "pick-sound") ? " disabled" : ""}`}
+            onClick={handlePlay}>
+              { playing
+                ? <PauseIcon className="pause-play-icons" />
+                : <PlayIcon className="pause-play-icons" />
+              }
           </div>
           <div className="volume-controls">
             <div>

@@ -82,10 +82,19 @@ BODY {
     border: $borderWidth solid $darkBorderColor;
     border-top-left-radius: $borderRadius;
     border-top-right-radius: $borderRadius;
-    padding: 4px 10px 0px 5px;
+    padding: 4px 2px 0px 2px;
 
-    * {
-      fill: $controls;
+    .play-pause {
+      margin-right: 2px;
+
+      &.disabled > svg {
+        fill: $disabledButton;
+        cursor: default;
+      }
+
+      .pause-play-icons {
+        fill: $controls;
+      }
     }
 
     .button {
@@ -101,20 +110,17 @@ BODY {
 
     .volume-controls {
       width: 100%;
-      margin-left: 6px;
+      margin-left: 10px;
       display: flex;
 
       & > * {
         margin: 0;
       }
 
-      .play-pause {
-        margin-right: 2px;
-      }
-
       .volume-icon {
         height: 48px;
         width: 48px;
+        fill: $controls;
       }
 
       .volume-slider-container {
@@ -123,7 +129,7 @@ BODY {
       }
 
       .volume-slider {
-        width: 40%;
+        width: 60%;
         .rc-slider-track {
           background-color: $controls;
           height: 6px;

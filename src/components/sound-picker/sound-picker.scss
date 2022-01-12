@@ -2,31 +2,55 @@
 
 .sound-picker-container {
   height: $soundPickerContainerHeight;
-  padding: 15px 18px 5px 22px;
+  padding: 10px 12px 10px 12px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+
+  .sound-picker-mid-label {
+    padding: 0 5px;
+    font-size: 110%;
+  }
 
   .sound-picker-select-container {
     width: 100%;
-    // leave some whitespace between this and the icons
-    margin-right: 5px;
 
     .sound-picker {
-      font-size: $selectFontSize;
       width: 100%;
-      border-color: $darkBorderColor;
+      height: 28px;
+      font-size: $selectFontSize;
+      background-color: $controlsBackground;
+      color: $graphBackgroundColor;
       }
   }
 
   .icons-container {
-    width: 35px;
-    height: 32px;
-    text-align: right;
+    button {
+      width: 110px;
+      height: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-direction: row;
+
+      border-radius: 10px;
+      line-height: 1;
+      background-color: $controlsBackground;
+      color: $graphBackgroundColor;
+
+      &[disabled] {
+        color: $disabledButton;
+      }
+
+      div {
+        font-size: 130%;
+      }
+    }
 
     .icon {
       height: 24px;
       width: 24px;
-      margin-left: 5px;
+      margin-top: 4px;
       cursor: pointer;
       fill: red;
 

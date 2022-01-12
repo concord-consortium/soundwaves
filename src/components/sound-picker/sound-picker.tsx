@@ -14,7 +14,6 @@ export interface ISoundPickerProps {
   setRecordingAudioBuffer: (audioBuffer: AudioBuffer) => void;
   drawWaveLabels: boolean;
   playing: boolean;
-  handleSoundChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
   onMyRecordingChosen: (audioBuffer: AudioBuffer) => void;
   handleDrawWaveLabelChange?: () => void;
 }
@@ -42,7 +41,6 @@ export const SoundPicker = (props: ISoundPickerProps) => {
     recordingAudioBuffer,
     setRecordingAudioBuffer,
     playing,
-    handleSoundChange,
     onMyRecordingChosen,
     // -- commented out, but deliberately not removed, per: PT #180792001
     // drawWaveLabels,
@@ -53,7 +51,6 @@ export const SoundPicker = (props: ISoundPickerProps) => {
   const [hasRecording, setHasRecording] = useState<boolean>(false);
   const recordingTimerRef = useRef<number>();
   const mediaRecorderRef = useRef<MediaRecorder>();
-
 
   const accessRecordingStream = async () => {
 
@@ -83,9 +80,6 @@ export const SoundPicker = (props: ISoundPickerProps) => {
       const audioURL = window.URL.createObjectURL(blob);
       const arrayBuffer = await (await fetch(audioURL)).arrayBuffer();
       let aRecordingAudioBuffer = await (new AudioContext()).decodeAudioData(arrayBuffer);
-
-      // let channelData = audioBuffer.getChannelData(0);
-      // let channelData = audioBuffer2.current.getChannelData(0);
       let channelData = aRecordingAudioBuffer.getChannelData(0);
 
       // In testing, the API seems to be adding some 'dead time' at the
@@ -178,23 +172,50 @@ export const SoundPicker = (props: ISoundPickerProps) => {
   const onSoundPickerChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const soundName = event.currentTarget.value as SoundName;
     const isUserRecordingSelected = (soundName === "record-my-own");
+    const isNoSoundSelected = (soundName === "pick-sound");
     const hasMediaRecorder = !!(mediaRecorderRef.current);
+
+    if (isNoSoundSelected) {
+      setSelectedSound(soundName);
+      return;
+    }
+
     if (isUserRecordingSelected && !hasMediaRecorder && recordingAudioBuffer) {
         accessRecordingStream();
         onMyRecordingChosen(recordingAudioBuffer);
       }
-    handleSoundChange?.(event);
+    setSelectedSound(soundName);
   };
 
 
   return (
     <div className="sound-picker-container">
+
+      <div className="icons-container">
+        <button disabled={playing} onClick={onMicIconClicked}>
+          <div>
+            <MicIcon className={
+              `icon button ${playing ? "disabled" : ""} ${isRecording ? "recording" : ""}`}
+              />
+          </div>
+          <div>Record</div>
+        </button>
+        {/* // -- commented out, but deliberately not removed, per: PT #180792001 */}
+        {/* <LabelsIcon className={
+            `icon button ${isPureToneSelected ? "" : "disabled"} ${drawWaveLabels ? "labelling" : ""}`
+          }
+          onClick={onLabelIconClicked} /> */}
+      </div>
+
+      <div className="sound-picker-mid-label">OR</div>
+
       <div className="sound-picker-select-container">
         <select className="sound-picker"
           disabled={isRecording}
           value={selectedSound}
           onChange={onSoundPickerChange}
         >
+          <option value="pick-sound">Pick Sound</option>
           <option value="middle-c">Middle C (261.65Hz)</option>
           <option value="c2">Lower C (65.41 Hz)</option>
           <option value="baby-cry">Baby Cry</option>
@@ -205,16 +226,6 @@ export const SoundPicker = (props: ISoundPickerProps) => {
           <option value="scratch-sample">Scratch Sample</option>
           <option value="record-my-own" disabled={!hasRecording}>(My Recording)</option>
         </select>
-      </div>
-      <div className="icons-container">
-        <MicIcon className={
-          `icon button ${playing ? "disabled" : ""} ${isRecording ? "recording" : ""}`}
-          onClick={onMicIconClicked} />
-        {/* // -- commented out, but deliberately not removed, per: PT #180792001 */}
-        {/* <LabelsIcon className={
-            `icon button ${isPureToneSelected ? "" : "disabled"} ${drawWaveLabels ? "labelling" : ""}`
-          }
-          onClick={onLabelIconClicked} /> */}
       </div>
     </div>
   );
