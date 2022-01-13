@@ -37,6 +37,56 @@ const sounds: Record<SoundName, string> = {
   "record-my-own": "record-my-own",
 };
 
+const setupAudioContext = async (
+  audioSource: React.MutableRefObject<AudioBufferSourceNode | undefined>,
+  audioContext: React.MutableRefObject<AudioContext | undefined>,
+  setPlaying: React.Dispatch<React.SetStateAction<boolean>>,
+  gainNode: React.MutableRefObject<GainNode | undefined>,
+  setAudioBuffer: React.Dispatch<React.SetStateAction<AudioBuffer | undefined>>,
+  recordingAudioBuffer: AudioBuffer,
+  setPlaybackProgress: React.Dispatch<React.SetStateAction<number>>,
+  soundName: SoundName
+  ) => {
+  if (audioSource.current && audioContext.current) {
+    // const audioSourceGainNode = audioSource.current;
+    // audioSourceGainNode.stop();
+    audioSource.current.stop();
+    await audioContext.current.close();
+    setPlaying(false);
+  }
+
+  // When a user chooses to record their own sound, we don't start recording
+  // immediately. But we do want to clear out the old sound data here, and to
+  // update the playback progress indicator, so that it is clear that there
+  // is nothing recorded (yet).
+  if (soundName === "record-my-own") {
+    audioContext.current = new AudioContext();
+    gainNode.current = audioContext.current.createGain();
+    setAudioBuffer(recordingAudioBuffer);
+    setPlaybackProgress(0);
+    return;
+  }
+
+  if (soundName === "pick-sound") {
+    audioContext.current = new AudioContext();
+    gainNode.current = audioContext.current.createGain();
+    const emptyAudioBuffer = new AudioBuffer({length: 1, sampleRate: 8000});
+    setAudioBuffer(emptyAudioBuffer);
+    setPlaybackProgress(0);
+    return;
+  }
+
+  // Handle selection of 'canned' sounds...
+  const response = await window.fetch(sounds[soundName]);
+  const soundArrayBuffer = await response.arrayBuffer();
+  audioContext.current = new AudioContext();
+  gainNode.current = audioContext.current.createGain();
+
+  setAudioBuffer(await audioContext.current.decodeAudioData(soundArrayBuffer));
+  setPlaybackProgress(0);
+};
+
+
 export const App = () => {
   const [selectedSound, setSelectedSound] = useState<SoundName>("pick-sound");
   const [playing, setPlaying] = useState<boolean>(false);
@@ -66,52 +116,27 @@ export const App = () => {
     setPlaybackProgress(0);
   };
 
-  const setupAudioContext = async (soundName: SoundName) => {
-    if (audioSource.current && audioContext.current) {
-      audioSource.current.stop();
-      await audioContext.current.close();
-      setPlaying(false);
-    }
-
-    // When a user chooses to record their own sound, we don't start recording
-    // immediately. But we do want to clear out the old sound data here, and to
-    // update the playback progress indicator, so that it is clear that there
-    // is nothing recorded (yet).
-    if (soundName === "record-my-own") {
-      audioContext.current = new AudioContext();
-      gainNode.current = audioContext.current.createGain();
-      setAudioBuffer(recordingAudioBuffer);
-      setPlaybackProgress(0);
-      return;
-    }
-
-    if (soundName === "pick-sound") {
-      audioContext.current = new AudioContext();
-      gainNode.current = audioContext.current.createGain();
-      const emptyAudioBuffer = new AudioBuffer({length: 1, sampleRate: 8000});
-      setAudioBuffer(emptyAudioBuffer);
-      setPlaybackProgress(0);
-      return;
-    }
-
-    // Handle selection of 'canned' sounds...
-    const response = await window.fetch(sounds[soundName]);
-    const soundArrayBuffer = await response.arrayBuffer();
-    audioContext.current = new AudioContext();
-    gainNode.current = audioContext.current.createGain();
-
-    setAudioBuffer(await audioContext.current.decodeAudioData(soundArrayBuffer));
-    setPlaybackProgress(0);
-  };
+  const setupAudioContextCallback = useCallback((
+    audioSource,
+    audioContext,
+    setPlaying,
+    gainNode,
+    setAudioBuffer,
+    recordingAudioBuffer,
+    setPlaybackProgress,
+    soundName) => {
+      setupAudioContext(audioSource, audioContext, setPlaying, gainNode, setAudioBuffer, recordingAudioBuffer, setPlaybackProgress, soundName);
+    },
+    [],
+  );
 
   useEffect(() => {
     // AudioContext is apparently unavailable in the node / jest environment.
     // So we bail out early, to prevent render test failure.
     if (!window.AudioContext) { return; }
-    setupAudioContext(selectedSound);
+
+    setupAudioContextCallback(audioSource, audioContext, setPlaying, gainNode, setAudioBuffer, recordingAudioBuffer, setPlaybackProgress, selectedSound);
   },
-    // Not including setupAudioContext() in dependency array; to avoid render loop.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [selectedSound]
   );
 
