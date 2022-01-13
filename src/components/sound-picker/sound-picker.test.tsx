@@ -7,11 +7,11 @@ describe("SoundPicker", () => {
   it("shows the elements and text", () => {
     render(<SoundPicker
       selectedSound={"pick-sound" as SoundName}
-      setSelectedSound={() => {}}
+      setSelectedSound={() => { /* NO-OP */ }}
       recordingAudioBuffer={undefined}
-      setRecordingAudioBuffer={() => {}}
+      setRecordingAudioBuffer={() => { /* NO-OP */ }}
       playing={false}
-      onMyRecordingChosen={() => {}}
+      onMyRecordingChosen={() => { /* NO-OP */ }}
       />);
     expect(screen.getByText("Record")).toBeDefined();
     expect(screen.getByText("OR")).toBeDefined();
