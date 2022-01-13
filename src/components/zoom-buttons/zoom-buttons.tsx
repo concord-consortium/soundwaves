@@ -13,13 +13,21 @@ export const ZoomButtons = (props: IZoomButtonsProps) => {
       className="zoom-buttons-container"
     >
       <div className="zoom-button-container">
-        <div className="zoom-button" onClick={handleZoomIn} >
+        <div
+          data-testid="zoom-in-button"
+          className="zoom-button"
+          onClick={handleZoomIn}
+          >
           <PlusIcon />
         </div>
       </div>
 
       <div className="zoom-button-container">
-        <div className="zoom-button" onClick={handleZoomOut} >
+        <div
+          data-testid="zoom-out-button"
+          className="zoom-button"
+          onClick={handleZoomOut}
+          >
           <MinusIcon />
         </div>
       </div>
