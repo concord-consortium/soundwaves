@@ -43,7 +43,7 @@ const setupAudioContext = async (
   setPlaying: React.Dispatch<React.SetStateAction<boolean>>,
   gainNode: React.MutableRefObject<GainNode | undefined>,
   setAudioBuffer: React.Dispatch<React.SetStateAction<AudioBuffer | undefined>>,
-  recordingAudioBuffer: AudioBuffer,
+  recordingAudioBuffer: AudioBuffer | undefined,
   setPlaybackProgress: React.Dispatch<React.SetStateAction<number>>,
   soundName: SoundName
   ) => {
@@ -117,27 +117,18 @@ export const App = () => {
   };
 
   const setupAudioContextCallback = useCallback((
-    audioSource,
-    audioContext,
-    setPlaying,
-    gainNode,
-    setAudioBuffer,
-    recordingAudioBuffer,
-    setPlaybackProgress,
     soundName) => {
-      setupAudioContext(audioSource, audioContext, setPlaying, gainNode, setAudioBuffer, recordingAudioBuffer, setPlaybackProgress, soundName);
-    },
-    [],
-  );
+        setupAudioContext(audioSource, audioContext, setPlaying, gainNode, setAudioBuffer, recordingAudioBuffer, setPlaybackProgress, soundName);
+    }, [recordingAudioBuffer]);
 
   useEffect(() => {
     // AudioContext is apparently unavailable in the node / jest environment.
     // So we bail out early, to prevent render test failure.
     if (!window.AudioContext) { return; }
 
-    setupAudioContextCallback(audioSource, audioContext, setPlaying, gainNode, setAudioBuffer, recordingAudioBuffer, setPlaybackProgress, selectedSound);
+    setupAudioContextCallback(selectedSound);
   },
-    [selectedSound]
+    [selectedSound, setupAudioContextCallback]
   );
 
   useEffect(() => {
