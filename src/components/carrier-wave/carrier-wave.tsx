@@ -24,7 +24,6 @@ export interface ICarrierWaveProps {
   volume: number;
   onProgressUpdate?: (newProgress: number) => void;
   interactive: boolean;
-  shouldDrawWaveCaptions: boolean;
 }
 
 export const CarrierWave = (props: ICarrierWaveProps) => {

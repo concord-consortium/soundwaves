@@ -5,7 +5,7 @@ HTML {
 }
 
 BODY {
-  background-color: $applicationBackground;
+  background-color: $applicationBackgroundColor;
   height: 100%;
 }
 
@@ -32,17 +32,17 @@ BODY {
     margin-bottom: -2px;
     height: 50px;
     padding: 4px 15px 2px 15px;
-    background-color: $controlsBackground;
+    background-color: $controlsBackgroundColor;
     border: $borderWidth solid $darkBorderColor;
 
     .speed-label {
       margin-bottom: 5px;
       text-align: center;
       font-size: $smallLabelFontSize;
-      color: $controls;
+      color: $controlsColor;
 
       &.disabled {
-        color: $disabledButton;
+        color: $disabledButtonColor;
       }
     }
   }
@@ -50,20 +50,20 @@ BODY {
   .speed-slider {
     width: 100%;
     .rc-slider-track {
-      background-color: $controls;
+      background-color: $controlsColor;
       height: 6px;
     }
     .rc-slider-rail {
-      background-color: $controls;
+      background-color: $controlsColor;
       height: 6px;
     }
     .rc-slider-handle {
-      fill: $controls;
+      fill: $controlsColor;
       height: 20px;
       width: 20px;
       margin-top: -7px;
-      border-color: $controls;
-      background-color: $controls;
+      border-color: $controlsColor;
+      background-color: $controlsColor;
       &:active, &:hover {
         box-shadow: none;
       }
@@ -78,7 +78,7 @@ BODY {
     margin: 0;
     margin-bottom: -2px;
     display: flex;
-    background-color: $controlsBackground;
+    background-color: $controlsBackgroundColor;
     border: $borderWidth solid $darkBorderColor;
     border-top-left-radius: $borderRadius;
     border-top-right-radius: $borderRadius;
@@ -88,12 +88,12 @@ BODY {
       margin-right: 2px;
 
       &.disabled > svg {
-        fill: $disabledButton;
+        fill: $disabledButtonColor;
         cursor: default;
       }
 
       .pause-play-icons {
-        fill: $controls;
+        fill: $controlsColor;
       }
     }
 
@@ -103,7 +103,7 @@ BODY {
       cursor: pointer;
 
       &.disabled {
-        fill: $disabledButton;
+        fill: $disabledButtonColor;
         cursor: default;
       }
     }
@@ -120,7 +120,7 @@ BODY {
       .volume-icon {
         height: 48px;
         width: 48px;
-        fill: $controls;
+        fill: $controlsColor;
       }
 
       .volume-slider-container {
@@ -131,19 +131,19 @@ BODY {
       .volume-slider {
         width: 60%;
         .rc-slider-track {
-          background-color: $controls;
+          background-color: $controlsColor;
           height: 6px;
         }
         .rc-slider-rail {
-          background-color: $controls;
+          background-color: $controlsColor;
           height: 6px;
         }
         .rc-slider-handle {
           height: 20px;
           width: 20px;
           margin-top: -7px;
-          border-color: $controls;
-          background-color: $controls;
+          border-color: $controlsColor;
+          background-color: $controlsColor;
           &:active, &:hover {
             box-shadow: none;
           }
@@ -153,11 +153,11 @@ BODY {
   }
 
   .rc-slider-mark-text, .rc-slider-mark-text-active {
-    color: $controls;
+    color: $controlsColor;
   }
 
   .rc-slider-disabled .rc-slider-mark-text, .rc-slider-disabled .rc-slider-mark-text-active {
-    color: $disabledButton;
+    color: $disabledButtonColor;
   }
 
   .sound-wave-container {
@@ -166,7 +166,7 @@ BODY {
 
   .zoomed-out-graph-container {
     height: 40px;
-    background-color: $controls;
+    background-color: $controlsColor;
   }
 } // END OF: .app
 

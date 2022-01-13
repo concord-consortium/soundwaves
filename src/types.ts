@@ -21,7 +21,6 @@ export interface ISoundWaveProps {
   interactive?: boolean;
   onProgressUpdate?: (newProgress: number) => void;
   shouldDrawProgressMarker?: boolean;
-  shouldDrawWaveCaptions?: boolean;
   pureToneFrequency?: number;
   handleZoomOut?: () => void;
   handleZoomIn?: () => void;

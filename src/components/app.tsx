@@ -39,9 +39,6 @@ const sounds: Record<SoundName, string> = {
 
 export const App = () => {
   const [selectedSound, setSelectedSound] = useState<SoundName>("pick-sound");
-  // -- commented out, but deliberately not removed, per: PT #180792001
-  // const [drawWaveLabels, setDrawWaveLabels] = useState<boolean>(false);
-  const drawWaveLabels = false;
   const [playing, setPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(1);
   const [zoom, setZoom] = useState<number>(16);
@@ -107,12 +104,13 @@ export const App = () => {
     setPlaybackProgress(0);
   };
 
-    useEffect(() => {
+  useEffect(() => {
     // AudioContext is apparently unavailable in the node / jest environment.
     // So we bail out early, to prevent render test failure.
     if (!window.AudioContext) { return; }
     setupAudioContext(selectedSound);
   },
+    // Not including setupAudioContext() in dependency array; to avoid render loop.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [selectedSound]
   );
@@ -122,11 +120,6 @@ export const App = () => {
       gainNode.current.gain.value = volume;
     }
   }, [volume]);
-
-  const handleDrawWaveLabelChange = () => {
-    // -- commented out, but deliberately not removed, per: PT #180792001
-    // setDrawWaveLabels(!drawWaveLabels);
-  };
 
   const handleVolumeChange = (value: number) => {
     setVolume(value);
@@ -215,20 +208,19 @@ export const App = () => {
         setSelectedSound={setSelectedSound}
         recordingAudioBuffer={recordingAudioBuffer}
         setRecordingAudioBuffer={setRecordingAudioBuffer}
-        drawWaveLabels={drawWaveLabels}
         playing={playing}
-        handleDrawWaveLabelChange={handleDrawWaveLabelChange}
         onMyRecordingChosen={setupAudioContextFromRecording}
       />
       <div className="main-controls-and-waves-container">
         <div className="playback-and-volume-controls">
           <div
             className={`play-pause button${(selectedSound === "pick-sound") ? " disabled" : ""}`}
-            onClick={handlePlay}>
-              { playing
-                ? <PauseIcon className="pause-play-icons" />
-                : <PlayIcon className="pause-play-icons" />
-              }
+            onClick={handlePlay}
+            >
+            { playing
+              ? <PauseIcon className="pause-play-icons" />
+              : <PlayIcon className="pause-play-icons" />
+            }
           </div>
           <div className="volume-controls">
             <div>
@@ -274,7 +266,6 @@ export const App = () => {
             zoom={zoom}
             zoomedInView={true}
             shouldDrawProgressMarker={true}
-            shouldDrawWaveCaptions={!playing && isPureTone(selectedSound) && drawWaveLabels}
             pureToneFrequency={pureToneFrequencyFromSoundName(selectedSound)}
             handleZoomIn={handleZoomIn}
             handleZoomOut={handleZoomOut}
@@ -301,7 +292,6 @@ export const App = () => {
         volume={volume}
         interactive={!playing}
         onProgressUpdate={handleProgressUpdate}
-        shouldDrawWaveCaptions={isPureTone(selectedSound) && drawWaveLabels}
       />
     </div>
   );

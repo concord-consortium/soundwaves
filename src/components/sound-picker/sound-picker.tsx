@@ -2,8 +2,6 @@ import React, { ChangeEvent, useRef, useState } from "react";
 
 import { SoundName } from "../../types";
 import MicIcon from "../../assets/icons/mic_black_48dp.svg";
-  // -- commented out, but deliberately not removed, per: PT #180792001
-  // import LabelsIcon from "../../assets/icons/sell_black_48dp.svg";
 
 import "./sound-picker.scss";
 
@@ -12,7 +10,6 @@ export interface ISoundPickerProps {
   setSelectedSound: (soundName: SoundName) => void;
   recordingAudioBuffer: AudioBuffer | undefined;
   setRecordingAudioBuffer: (audioBuffer: AudioBuffer) => void;
-  drawWaveLabels: boolean;
   playing: boolean;
   onMyRecordingChosen: (audioBuffer: AudioBuffer) => void;
   handleDrawWaveLabelChange?: () => void;
@@ -42,9 +39,6 @@ export const SoundPicker = (props: ISoundPickerProps) => {
     setRecordingAudioBuffer,
     playing,
     onMyRecordingChosen,
-    // -- commented out, but deliberately not removed, per: PT #180792001
-    // drawWaveLabels,
-    // handleDrawWaveLabelChange
   } = props;
 
   const [isRecording, setIsRecording] = useState<boolean>(false);
@@ -161,13 +155,6 @@ export const SoundPicker = (props: ISoundPickerProps) => {
       setTimeout(onTimedOutRecording, maximumRecordingLengthInMilliseconds);
   };
 
-  // -- commented out, but deliberately not removed, per: PT #180792001
-  // const onLabelIconClicked = () => {
-  //   // Don't allow state change when non-pure tone sound selected
-  //   if (!isPureToneSelected) { return; }
-  //   handleDrawWaveLabelChange?.();
-  // };
-
 
   const onSoundPickerChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const soundName = event.currentTarget.value as SoundName;
@@ -181,9 +168,9 @@ export const SoundPicker = (props: ISoundPickerProps) => {
     }
 
     if (isUserRecordingSelected && !hasMediaRecorder && recordingAudioBuffer) {
-        accessRecordingStream();
-        onMyRecordingChosen(recordingAudioBuffer);
-      }
+      accessRecordingStream();
+      onMyRecordingChosen(recordingAudioBuffer);
+    }
     setSelectedSound(soundName);
   };
 
@@ -200,11 +187,6 @@ export const SoundPicker = (props: ISoundPickerProps) => {
           </div>
           <div>Record</div>
         </button>
-        {/* // -- commented out, but deliberately not removed, per: PT #180792001 */}
-        {/* <LabelsIcon className={
-            `icon button ${isPureToneSelected ? "" : "disabled"} ${drawWaveLabels ? "labelling" : ""}`
-          }
-          onClick={onLabelIconClicked} /> */}
       </div>
 
       <div className="sound-picker-mid-label">OR</div>

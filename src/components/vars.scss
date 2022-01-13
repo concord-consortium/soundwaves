@@ -1,4 +1,3 @@
-$applicationBackground: white;
 $applicationHeaderContainerHeight: 50px;
 $soundPickerContainerHeight: 30px;
 $soundWaveContainerHeight: 270px;
@@ -9,17 +8,17 @@ $borderRadius: 10px;
 $selectFontSize: 18px;
 $smallLabelFontSize: 70%;
 
+$applicationBackgroundColor: white;
 $darkGray: #494949;
 $borderColor: #e0e0e0;
 $darkBorderColor: #d0d0ff;
-$controls: white;
-$controlsBackground: #024059;
-$controlsAlternateBackground: #3377BD;
-$controlsBackgroundSemiTransparent: #ffffff20;
-$zoomControlsContainerBackground: #ffffffb0;
-$zoomControlsContainerBorder: #3377BDe0;
-$disabledButton: #aaa;
-$waveGraphMarker: #ea6d2f;
-
+$controlsColor: white;
+$controlsBackgroundColor: #024059;
+$controlsAlternateBackgroundColor: #3377BD;
+$controlsBackgroundSemiTransparentColor: #ffffff20;
+$zoomControlsContainerBackgroundColor: #ffffffb0;
+$zoomControlsContainerBorderColor: #3377BDe0;
+$disabledButtonColor: #aaa;
+$waveGraphMarkerColor: #ea6d2f;
 $graphBackgroundColor: white;
 $zoomedOutGraphBackgroundColor: #F0F0F0;
