@@ -5,11 +5,15 @@ import "./button-group.scss";
 
 
 export const ButtonGroup = (props: IButtonGroupProps) => {
-  const { buttons, onButtonClicked } = props;
-  const [clickedId, setClickedId] = useState(-1);
+  const { buttons, selectedButtonLabel, onButtonClicked } = props;
+  const selectionId = buttons.indexOf(selectedButtonLabel);
+  const [selectedButtonId, setSelectedButtonId] = useState(selectionId);
 
   const handleClick = ( event: React.MouseEvent<HTMLButtonElement, MouseEvent>, i: number) => {
-    setClickedId(i);
+    // If user clicks on the already selected button, it's a no-op
+    if (i === selectedButtonId) { return; }
+
+    setSelectedButtonId(i);
     onButtonClicked && onButtonClicked(i, buttons[i]);
   };
 
@@ -20,7 +24,7 @@ export const ButtonGroup = (props: IButtonGroupProps) => {
           key={i}
           name={buttonLabel}
           className={
-            (i === clickedId) ? "buttonGroupButton active" : "buttonGroupButton"
+            (i === selectedButtonId) ? "buttonGroupButton active" : "buttonGroupButton"
             }
           onClick={ (event) => { handleClick(event, i); } }
           >
@@ -30,14 +34,3 @@ export const ButtonGroup = (props: IButtonGroupProps) => {
     </>
   );
 };
-
-// export const ZoomButtons = () => {
-//   // const { handleZoomOut, handleZoomIn } = props;
-
-//   return (
-//     <div
-//       className="zoom-buttons-container"
-//     >
-//     </div>
-//   );
-// };

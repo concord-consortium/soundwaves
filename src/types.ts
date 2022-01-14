@@ -33,6 +33,7 @@ export interface IZoomButtonsProps {
 
 export interface IButtonGroupProps {
   buttons: string[];
+  selectedButtonLabel: string;
   onButtonClicked?: (buttonIndex: number, buttonLabel: string) => void;
 }
 

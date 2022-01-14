@@ -81,7 +81,7 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
           Modulation
         </div>
         <div className="freq-mod-container">
-          <ButtonGroup buttons={["AM","FM","C"]}/>
+          <ButtonGroup buttons={["AM","FM","C"]} selectedButtonLabel={""}/>
         </div>
         <div className="carrier-picker-caption">
           Carrier Frequency

@@ -11,7 +11,6 @@ describe("CarrierWave", () => {
         volume={1}
         interactive={false}
       />);
-    expect(screen.getByText("Radio Carrier Wave:")).toBeDefined();
     expect(screen.getByText("Choose . . .")).toBeDefined();
   });
 });
