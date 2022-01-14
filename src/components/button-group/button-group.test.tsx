@@ -32,14 +32,6 @@ describe("ButtonGroup", () => {
     expect(mockCallback).toHaveBeenCalledWith(1, "b");
   });
 
-  it("the call-back function is NOT invoked, when the SELECTED button is clicked", () => {
-    const mockCallback = jest.fn();
-
-    render(<ButtonGroup buttons={["a", "b"]} selectedButtonLabel={"a"} onButtonClicked={mockCallback} />);
-    fireEvent.click(screen.getByText("a"));
-    expect(mockCallback).not.toHaveBeenCalled();
-  });
-
   it("it has no selected item, by default", () => {
     const mockCallback = jest.fn();
 

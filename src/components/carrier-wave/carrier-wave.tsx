@@ -34,9 +34,9 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
   const [carrierBuffer, setCarrierBuffer] = useState<AudioBuffer>();
   const [carrierZoom, setCarrierZoom] = useState<number>(16);
   const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose . . .");
-
-  const carrierFrequency = carrierWaves[carrierWaveSelection].frequency;
-  const modulation = carrierWaves[carrierWaveSelection].modulation;
+  const [carrierFrequency, setCarrierFrequency] = useState<number>(carrierWaves[carrierWaveSelection].frequency);
+  const [modulation, setModulation] = useState<string>(carrierWaves[carrierWaveSelection].modulation);
+console.log({modulation}, {carrierFrequency});
 
   useEffect(() => {
     if (audioBuffer && carrierFrequency !== 0 && modulation !== "") {
@@ -53,6 +53,9 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
   const handleCarrierChange = ((event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
     setCarrierWaveSelection(value);
+    setCarrierFrequency(carrierWaves[value].frequency);
+    setModulation(carrierWaves[value].modulation);
+console.log({modulation}, {carrierFrequency});
   });
 
   const handleZoomIn = () => {
@@ -76,22 +79,35 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
 
   return (
     <div className="carrier-wave-container">
+
       <div className="carrier-picker-container">
-        <div className="carrier-picker-caption">
-          Modulation
+
+        <div className="modulation-container">
+          <div className="carrier-picker-caption">
+            Modulation
+          </div>
+          <div className="freq-mod-container">
+            <ButtonGroup buttons={["AM", "FM"]} selectedButtonLabel={ modulation } />
+          </div>
         </div>
-        <div className="freq-mod-container">
-          <ButtonGroup buttons={["AM","FM","C"]} selectedButtonLabel={""}/>
+
+        <div className="frequency-container">
+          <div className="carrier-picker-caption">
+            Carrier Frequency
+          </div>
+          <div className="freq-mod-container">
+            <ButtonGroup buttons={["2", "4", "8"]}
+              selectedButtonLabel={ (carrierFrequency / 1000).toString() } />
+            &nbsp;kHz
+          </div>
         </div>
-        <div className="carrier-picker-caption">
-          Carrier Frequency
-        </div>
-        <div className="freq-mod-container">
-          <select value={carrierWaveSelection} onChange={handleCarrierChange}>
-            <CarrierWaveOptions />
-          </select>
-        </div>
+
       </div>
+
+      <select value={carrierWaveSelection} onChange={handleCarrierChange}>
+        <CarrierWaveOptions />
+      </select>
+
       <div className="carrier-wave-graph-container">
         <div className="zoomed-in-view">
           <SoundWave
