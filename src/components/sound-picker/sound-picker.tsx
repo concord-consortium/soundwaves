@@ -2,15 +2,16 @@ import React, { ChangeEvent, useRef, useState } from "react";
 
 import { SoundName } from "../../types";
 import MicIcon from "../../assets/icons/mic_black_48dp.svg";
-import LabelsIcon from "../../assets/icons/sell_black_48dp.svg";
 
 import "./sound-picker.scss";
 
 export interface ISoundPickerProps {
   selectedSound: SoundName;
-  drawWaveLabels: boolean;
-  handleSoundChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
-  onRecordingCompleted?: (audioBuffer: AudioBuffer) => void;
+  setSelectedSound: (soundName: SoundName) => void;
+  recordingAudioBuffer: AudioBuffer | undefined;
+  setRecordingAudioBuffer: (audioBuffer: AudioBuffer) => void;
+  playing: boolean;
+  onMyRecordingChosen: (audioBuffer: AudioBuffer) => void;
   handleDrawWaveLabelChange?: () => void;
 }
 
@@ -31,14 +32,17 @@ export const pureToneFrequencyFromSoundName = (soundName: string) => {
 };
 
 export const SoundPicker = (props: ISoundPickerProps) => {
-  const { selectedSound, handleSoundChange, onRecordingCompleted, drawWaveLabels, handleDrawWaveLabelChange } = props;
-
-  // Set: isPureToneSelected, isReadyToRecord defaults, based on "middle-c" default selection
-  const [isPureToneSelected, setIsPureToneSelected] = useState<boolean>(true);
-  const [isReadyToRecord, setIsReadyToRecord] = useState<boolean>(false);
+  const {
+    selectedSound,
+    setSelectedSound,
+    recordingAudioBuffer,
+    setRecordingAudioBuffer,
+    playing,
+    onMyRecordingChosen,
+  } = props;
 
   const [isRecording, setIsRecording] = useState<boolean>(false);
-
+  const [hasRecording, setHasRecording] = useState<boolean>(false);
   const recordingTimerRef = useRef<number>();
   const mediaRecorderRef = useRef<MediaRecorder>();
 
@@ -69,8 +73,8 @@ export const SoundPicker = (props: ISoundPickerProps) => {
       const blob = new Blob(audioRecordingChunks, { "type" : recorder.mimeType });
       const audioURL = window.URL.createObjectURL(blob);
       const arrayBuffer = await (await fetch(audioURL)).arrayBuffer();
-      let audioBuffer = await (new AudioContext()).decodeAudioData(arrayBuffer);
-      let channelData = audioBuffer.getChannelData(0);
+      let aRecordingAudioBuffer = await (new AudioContext()).decodeAudioData(arrayBuffer);
+      let channelData = aRecordingAudioBuffer.getChannelData(0);
 
       // In testing, the API seems to be adding some 'dead time' at the
       // beginning of the recording. The code below attempts to detect
@@ -92,83 +96,108 @@ export const SoundPicker = (props: ISoundPickerProps) => {
       // sounds of interest.
       if (firstSoundIndex !== -1) {
         const extraSamplesOffset =
-          audioBuffer.sampleRate * 0.2; // 200 milliseconds of samples
-        const adjustedSoundIndex =
-          Math.max(0, (firstSoundIndex - extraSamplesOffset));
+          aRecordingAudioBuffer.sampleRate * 0.2; // 200 milliseconds of samples
+
+        const adjustedSoundIndex = Math.max(0, (firstSoundIndex - extraSamplesOffset));
         channelData = channelData.slice(firstSoundIndex);
-        audioBuffer = new AudioBuffer({
-          length: audioBuffer.length - adjustedSoundIndex,
-          sampleRate: audioBuffer.sampleRate
+
+        aRecordingAudioBuffer = new AudioBuffer({
+          length: aRecordingAudioBuffer.length - adjustedSoundIndex,
+          sampleRate: aRecordingAudioBuffer.sampleRate
         });
-        audioBuffer.copyToChannel(channelData, 0);
+        setRecordingAudioBuffer(aRecordingAudioBuffer);
+
+        aRecordingAudioBuffer.copyToChannel(channelData, 0);
       }
 
-      // Invoke the callback for recording completion
-      onRecordingCompleted?.(audioBuffer);
+      // When a recording is completed, we choose it automatically (PT #180792001).
+      onMyRecordingChosen(aRecordingAudioBuffer);
+
       audioRecordingChunks = [];
     };
 
     mediaRecorderRef.current = recorder;
-    setIsReadyToRecord(true);
-    window.alert("Click on the microphone to start/stop recording (up to: 5 seconds).");
   };
+
 
   const doFinishedRecording = () => {
     clearTimeout(recordingTimerRef.current);
 
     mediaRecorderRef.current?.stop();
     setIsRecording(false);
+    setHasRecording(true);
+    setSelectedSound("record-my-own");
   };
+
 
   const onTimedOutRecording = () => {
     doFinishedRecording();
   };
 
-  const onMicIconClicked = () => {
+
+  const onMicIconClicked = async () => {
     const maximumRecordingLengthInMilliseconds = 1000 * 5;
 
-    // Ignore this event, if it happens when "(record my own) is NOT selected"
-    if (!isReadyToRecord) { return; }
-
-    if (mediaRecorderRef.current?.state === "inactive") {
-
-      // Use a one-shot timer, to ensure recording does not exceed the maximum length
-      recordingTimerRef.current = setTimeout(onTimedOutRecording, maximumRecordingLengthInMilliseconds);
-
-      mediaRecorderRef.current?.start();
-      setIsRecording(true);
-    } else {
+    if (isRecording) {
       doFinishedRecording();
+      return;
     }
+
+    const isRecordingConfirmed = window.confirm("Press OK to begin recording for 5 seconds.");
+    if (!isRecordingConfirmed) { return; }
+
+    setIsRecording(true);
+    await accessRecordingStream();
+    mediaRecorderRef.current?.start();
+
+    // Use a one-shot timer, to ensure recording does not exceed the maximum length
+    recordingTimerRef.current =
+      setTimeout(onTimedOutRecording, maximumRecordingLengthInMilliseconds);
   };
 
-  const onLabelIconClicked = () => {
-    // Don't allow state change when non-pure tone sound selected
-    if (!isPureToneSelected) { return; }
-    handleDrawWaveLabelChange?.();
-  };
 
   const onSoundPickerChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const soundName = event.currentTarget.value as SoundName;
-    setIsPureToneSelected(isPureTone(soundName));
-    const isUserRecordingSelected = soundName === "record-my-own";
+    const isUserRecordingSelected = (soundName === "record-my-own");
+    const isNoSoundSelected = (soundName === "pick-sound");
     const hasMediaRecorder = !!(mediaRecorderRef.current);
-    setIsReadyToRecord(hasMediaRecorder && isUserRecordingSelected);
-    if (isUserRecordingSelected && !hasMediaRecorder) {
-        accessRecordingStream();
+
+    if (isNoSoundSelected) {
+      setSelectedSound(soundName);
+      return;
     }
 
-    handleSoundChange?.(event);
+    if (isUserRecordingSelected && !hasMediaRecorder && recordingAudioBuffer) {
+      accessRecordingStream();
+      onMyRecordingChosen(recordingAudioBuffer);
+    }
+    setSelectedSound(soundName);
   };
+
 
   return (
     <div className="sound-picker-container">
+
+      <div className="icons-container">
+        <button disabled={playing} onClick={onMicIconClicked}>
+          <div>
+            <MicIcon className={
+              `icon button ${playing ? "disabled" : ""} ${isRecording ? "recording" : ""}`}
+              />
+          </div>
+          <div>Record</div>
+        </button>
+      </div>
+
+      <div className="sound-picker-mid-label">OR</div>
+
       <div className="sound-picker-select-container">
         <select className="sound-picker"
           disabled={isRecording}
           value={selectedSound}
           onChange={onSoundPickerChange}
         >
+          <option value="pick-sound">Pick Sound</option>
           <option value="middle-c">Middle C (261.65Hz)</option>
           <option value="c2">Lower C (65.41 Hz)</option>
           <option value="baby-cry">Baby Cry</option>
@@ -177,17 +206,8 @@ export const SoundPicker = (props: ISoundPickerProps) => {
           <option value="cosmic-arp">Cosmic Arp</option>
           <option value="hard-base">Hard Base</option>
           <option value="scratch-sample">Scratch Sample</option>
-          <option value="record-my-own">(record my own . . .)</option>
+          <option value="record-my-own" disabled={!hasRecording}>(My Recording)</option>
         </select>
-      </div>
-      <div className="icons-container">
-        <MicIcon className={
-          `icon button ${isReadyToRecord ? "" : "disabled"} ${isRecording ? "recording" : ""}`}
-          onClick={onMicIconClicked} />
-        <LabelsIcon className={
-            `icon button ${isPureToneSelected ? "" : "disabled"} ${drawWaveLabels ? "labelling" : ""}`
-          }
-          onClick={onLabelIconClicked} />
       </div>
     </div>
   );

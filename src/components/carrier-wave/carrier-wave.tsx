@@ -1,8 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { Modulation, ZOOM_BUTTONS_WIDTH, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT } from "../../types";
+import { Modulation, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT } from "../../types";
 import { getAMCarrierWave, getFMCarrierWave } from "../../utils/audio";
 import { SoundWave } from "../sound-wave";
-import { ZoomButtons } from "../zoom-buttons/zoom-buttons";
 
 import "./carrier-wave.scss";
 
@@ -25,7 +24,6 @@ export interface ICarrierWaveProps {
   volume: number;
   onProgressUpdate?: (newProgress: number) => void;
   interactive: boolean;
-  shouldDrawWaveCaptions: boolean;
 }
 
 export const CarrierWave = (props: ICarrierWaveProps) => {
@@ -107,7 +105,6 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
             handleZoomOut={handleZoomOut}
           />
         </div>
-        {/* <ZoomButtons handleZoomIn={handleZoomIn} handleZoomOut={handleZoomOut} /> */}
         <div className="zoomed-out-graph-container chosen-carrier">
           <SoundWave
             width={graphWidth}

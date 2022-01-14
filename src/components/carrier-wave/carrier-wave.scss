@@ -4,10 +4,10 @@
   margin: 10px 8px 0 8px;
   padding: 5px 0px 5px 0px;
   font-size: 80%; // 85%;
-  color: $controls;
+  color: $controlsColor;
   border: 2px solid $darkBorderColor;
   border-radius: $borderRadius;
-  background-color: $controlsBackground;
+  background-color: $controlsBackgroundColor;
 
   .carrier-picker-container {
     display: flex;
@@ -27,13 +27,13 @@
     select {
       width: 100%;
       font-size: $selectFontSize;
-      color: $controls;
+      color: $controlsColor;
       border-color: $darkBorderColor;
-      background-color: $controlsBackgroundSemiTransparent;
+      background-color: $controlsBackgroundSemiTransparentColor;
     }
 
     span.value {
-      color: $controls;
+      color: $controlsColor;
     }
   }
 

@@ -1,13 +1,12 @@
-import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Slider from "rc-slider";
 
-import { SIDE_MARGIN_PLUS_BORDER, SoundName, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT, ZOOM_BUTTONS_WIDTH, SOUND_SAMPLE_RATE } from "../types";
+import { SIDE_MARGIN_PLUS_BORDER, SoundName, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT } from "../types";
 import { SoundWave } from "./sound-wave";
 import { CarrierWave } from "./carrier-wave/carrier-wave";
 import { AppHeader } from "./application-header/application-header";
-import { SoundPicker, isPureTone, pureToneFrequencyFromSoundName } from "./sound-picker/sound-picker";
+import { SoundPicker, pureToneFrequencyFromSoundName } from "./sound-picker/sound-picker";
 import { useAutoWidth } from "../hooks/use-auto-width";
-import { ZoomButtons } from "./zoom-buttons/zoom-buttons";
 
 import "./app.scss";
 import "rc-slider/assets/index.css";
@@ -26,6 +25,7 @@ import PauseIcon from "../assets/icons/pause_circle_outline_black_48dp.svg";
 import VolumeIcon from "../assets/icons/volume_up_black_48dp.svg";
 
 const sounds: Record<SoundName, string> = {
+  "pick-sound": "pick-sound",
   "middle-c": MiddleCSound,
   "c2": C2Sound,
   "baby-cry": BabyCrySound,
@@ -37,9 +37,58 @@ const sounds: Record<SoundName, string> = {
   "record-my-own": "record-my-own",
 };
 
+const setupAudioContext = async (
+  audioSource: React.MutableRefObject<AudioBufferSourceNode | undefined>,
+  audioContext: React.MutableRefObject<AudioContext | undefined>,
+  setPlaying: React.Dispatch<React.SetStateAction<boolean>>,
+  gainNode: React.MutableRefObject<GainNode | undefined>,
+  setAudioBuffer: React.Dispatch<React.SetStateAction<AudioBuffer | undefined>>,
+  recordingAudioBuffer: AudioBuffer | undefined,
+  setPlaybackProgress: React.Dispatch<React.SetStateAction<number>>,
+  soundName: SoundName
+  ) => {
+  if (audioSource.current && audioContext.current) {
+    // const audioSourceGainNode = audioSource.current;
+    // audioSourceGainNode.stop();
+    audioSource.current.stop();
+    await audioContext.current.close();
+    setPlaying(false);
+  }
+
+  // When a user chooses to record their own sound, we don't start recording
+  // immediately. But we do want to clear out the old sound data here, and to
+  // update the playback progress indicator, so that it is clear that there
+  // is nothing recorded (yet).
+  if (soundName === "record-my-own") {
+    audioContext.current = new AudioContext();
+    gainNode.current = audioContext.current.createGain();
+    setAudioBuffer(recordingAudioBuffer);
+    setPlaybackProgress(0);
+    return;
+  }
+
+  if (soundName === "pick-sound") {
+    audioContext.current = new AudioContext();
+    gainNode.current = audioContext.current.createGain();
+    const emptyAudioBuffer = new AudioBuffer({length: 1, sampleRate: 8000});
+    setAudioBuffer(emptyAudioBuffer);
+    setPlaybackProgress(0);
+    return;
+  }
+
+  // Handle selection of 'canned' sounds...
+  const response = await window.fetch(sounds[soundName]);
+  const soundArrayBuffer = await response.arrayBuffer();
+  audioContext.current = new AudioContext();
+  gainNode.current = audioContext.current.createGain();
+
+  setAudioBuffer(await audioContext.current.decodeAudioData(soundArrayBuffer));
+  setPlaybackProgress(0);
+};
+
+
 export const App = () => {
-  const [selectedSound, setSelectedSound] = useState<SoundName>("middle-c");
-  const [drawWaveLabels, setDrawWaveLabels] = useState<boolean>(false);
+  const [selectedSound, setSelectedSound] = useState<SoundName>("pick-sound");
   const [playing, setPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(1);
   const [zoom, setZoom] = useState<number>(16);
@@ -47,6 +96,7 @@ export const App = () => {
   const [playbackRate, setPlaybackRate] = useState<number>(1);
   const [graphWidth, setGraphWidth] = useState<number>(100);
   const [audioBuffer, setAudioBuffer] = useState<AudioBuffer>();
+  const [recordingAudioBuffer, setRecordingAudioBuffer] = useState<AudioBuffer>();
 
   const audioContext = useRef<AudioContext>();
   const audioSource = useRef<AudioBufferSourceNode>();
@@ -66,46 +116,20 @@ export const App = () => {
     setPlaybackProgress(0);
   };
 
-  const setupAudioContext = async (soundName: SoundName) => {
-    if (audioSource.current && audioContext.current) {
-      audioSource.current.stop();
-      await audioContext.current.close();
-      setPlaying(false);
-    }
-
-    // When a user chooses to record their own sound, we don't start recording
-    // immediately. But we do want to clear out the old sound data here, and to
-    // update the playback progress indicator, so that it is clear that there
-    // is nothing recorded (yet).
-    if (soundName === "record-my-own") {
-      const emptyBuffer = new AudioBuffer({
-        length: 1,
-        sampleRate: SOUND_SAMPLE_RATE
-      });
-      audioContext.current = new AudioContext();
-      gainNode.current = audioContext.current.createGain();
-      setAudioBuffer(emptyBuffer);
-      setPlaybackProgress(0);
-      return;
-    }
-
-    // Handle selection of 'canned' sounds...
-    const response = await window.fetch(sounds[soundName]);
-    const soundArrayBuffer = await response.arrayBuffer();
-    audioContext.current = new AudioContext();
-    gainNode.current = audioContext.current.createGain();
-
-    setAudioBuffer(await audioContext.current.decodeAudioData(soundArrayBuffer));
-    setPlaybackProgress(0);
-  };
+  const setupAudioContextCallback = useCallback((
+    soundName) => {
+        setupAudioContext(audioSource, audioContext, setPlaying, gainNode, setAudioBuffer, recordingAudioBuffer, setPlaybackProgress, soundName);
+    }, [recordingAudioBuffer]);
 
   useEffect(() => {
     // AudioContext is apparently unavailable in the node / jest environment.
     // So we bail out early, to prevent render test failure.
     if (!window.AudioContext) { return; }
 
-    setupAudioContext(selectedSound);
-  }, [selectedSound]);
+    setupAudioContextCallback(selectedSound);
+  },
+    [selectedSound, setupAudioContextCallback]
+  );
 
   useEffect(() => {
     if (gainNode.current) {
@@ -113,20 +137,14 @@ export const App = () => {
     }
   }, [volume]);
 
-  const handleSoundChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const soundName = event.currentTarget.value as SoundName;
-    setSelectedSound(soundName);
-  };
-
-  const handleDrawWaveLabelChange = () => {
-    setDrawWaveLabels(!drawWaveLabels);
-  };
-
   const handleVolumeChange = (value: number) => {
     setVolume(value);
   };
 
   const handlePlay = () => {
+    // If user hasn't chosen a canned or recorded sound, then there's nothing to do here.
+    if (selectedSound === "pick-sound") { return; }
+
     setPlaying(!playing);
     // It needs to be updated immediately so #measureProgress works correctly.
     playingRef.current = !playing;
@@ -203,15 +221,22 @@ export const App = () => {
       <AppHeader />
       <SoundPicker
         selectedSound={selectedSound}
-        drawWaveLabels={drawWaveLabels}
-        handleSoundChange={handleSoundChange}
-        handleDrawWaveLabelChange={handleDrawWaveLabelChange}
-        onRecordingCompleted={setupAudioContextFromRecording}
+        setSelectedSound={setSelectedSound}
+        recordingAudioBuffer={recordingAudioBuffer}
+        setRecordingAudioBuffer={setRecordingAudioBuffer}
+        playing={playing}
+        onMyRecordingChosen={setupAudioContextFromRecording}
       />
       <div className="main-controls-and-waves-container">
         <div className="playback-and-volume-controls">
-          <div className="play-pause button" onClick={handlePlay}>
-            { playing ? <PauseIcon /> : <PlayIcon /> }
+          <div
+            className={`play-pause button${(selectedSound === "pick-sound") ? " disabled" : ""}`}
+            onClick={handlePlay}
+            >
+            { playing
+              ? <PauseIcon className="pause-play-icons" />
+              : <PlayIcon className="pause-play-icons" />
+            }
           </div>
           <div className="volume-controls">
             <div>
@@ -257,12 +282,10 @@ export const App = () => {
             zoom={zoom}
             zoomedInView={true}
             shouldDrawProgressMarker={true}
-            shouldDrawWaveCaptions={!playing && isPureTone(selectedSound) && drawWaveLabels}
             pureToneFrequency={pureToneFrequencyFromSoundName(selectedSound)}
             handleZoomIn={handleZoomIn}
             handleZoomOut={handleZoomOut}
         />
-          {/* <ZoomButtons handleZoomIn={handleZoomIn} handleZoomOut={handleZoomOut} /> */}
           <div className="zoomed-out-graph-container chosen-sound">
             <SoundWave
               width={graphWidth}
@@ -285,7 +308,6 @@ export const App = () => {
         volume={volume}
         interactive={!playing}
         onProgressUpdate={handleProgressUpdate}
-        shouldDrawWaveCaptions={isPureTone(selectedSound) && drawWaveLabels}
       />
     </div>
   );
