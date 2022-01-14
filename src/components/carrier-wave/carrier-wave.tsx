@@ -36,9 +36,6 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
 
   const carrierFrequency = carrierWaves[carrierWaveSelection].frequency;
   const modulation = carrierWaves[carrierWaveSelection].modulation;
-  // Using 20kHz as upper range of human hearing
-  const timesHigherThanHuman = carrierFrequency !== 0 ? `${(carrierFrequency / 2e4).toString()}x` : "";
-  const carrierWavelength = carrierFrequency !== 0 ? `${((1 / carrierFrequency) * 1000).toPrecision(3)}ms` : "";
 
   useEffect(() => {
     if (audioBuffer && carrierFrequency !== 0 && modulation !== "") {
@@ -118,24 +115,6 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
             onProgressUpdate={onProgressUpdate}
           />
         </div>
-      </div>
-      <div className="wavelength-mod-container">
-        <div>
-          Wavelength:&nbsp;<span className="value">{ carrierWavelength }</span>
-        </div>
-        <div>
-          &nbsp;Modulation:&nbsp;
-          <span className="value">
-            {
-              modulation && ((modulation === "FM") ? "Frequency" : "Amplitude")
-            }
-          </span>
-        </div>
-      </div>
-
-      <div className="times-higher-than-container">
-        Higher than human hearing range by:&nbsp;
-        <span className="value">{ timesHigherThanHuman }</span>
       </div>
     </div>
   );
