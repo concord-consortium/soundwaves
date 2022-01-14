@@ -31,6 +31,11 @@ export interface IZoomButtonsProps {
   handleZoomIn?: () => void;
 }
 
+export interface IButtonGroupProps {
+  buttons: string[];
+  onButtonClicked?: (buttonIndex: number, buttonLabel: string) => void;
+}
+
 export interface ISoundWavePropsWithData extends ISoundWaveProps {
   data: Float32Array;
 }

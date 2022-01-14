@@ -11,11 +11,12 @@
 
   .carrier-picker-container {
     display: flex;
-    padding: 0 15px;
+    // padding: 0 15px;
+    padding: 0;
 
     .carrier-picker-caption {
-      margin-top: 3px;
-      font-size: $selectFontSize;
+      // margin-top: 3px;
+      font-size: 12px;
     }
   }
 
@@ -38,7 +39,7 @@
   }
 
   DIV.freq-mod-container {
-    margin-top: 1px;
+    // margin-top: 1px;
   }
 }
 

@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { Modulation, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT } from "../../types";
 import { getAMCarrierWave, getFMCarrierWave } from "../../utils/audio";
+import { ButtonGroup } from "../button-group/button-group";
 import { SoundWave } from "../sound-wave";
 
 import "./carrier-wave.scss";
@@ -77,7 +78,13 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
     <div className="carrier-wave-container">
       <div className="carrier-picker-container">
         <div className="carrier-picker-caption">
-          Radio Carrier Wave:&nbsp;
+          Modulation
+        </div>
+        <div className="freq-mod-container">
+          <ButtonGroup buttons={["AM","FM","C"]}/>
+        </div>
+        <div className="carrier-picker-caption">
+          Carrier Frequency
         </div>
         <div className="freq-mod-container">
           <select value={carrierWaveSelection} onChange={handleCarrierChange}>

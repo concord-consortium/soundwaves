@@ -13,8 +13,5 @@ describe("CarrierWave", () => {
       />);
     expect(screen.getByText("Radio Carrier Wave:")).toBeDefined();
     expect(screen.getByText("Choose . . .")).toBeDefined();
-    expect(screen.getByText("Wavelength:")).toBeDefined();
-    expect(screen.getByText("Modulation:")).toBeDefined();
-    expect(screen.getByText("Higher than human hearing range by:")).toBeDefined();
   });
 });
