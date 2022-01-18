@@ -5,12 +5,21 @@ import "./button-group.scss";
 
 
 export const ButtonGroup = (props: IButtonGroupProps) => {
-  const { buttons, selectedButtonLabel, onButtonClicked } = props;
+  const { buttons, selectedButtonLabel, disabled, onButtonClicked } = props;
 
-  const handleClick = ( event: React.MouseEvent<HTMLButtonElement, MouseEvent>, i: number) => {
+  const handleClick = (i: number) => {
     if (onButtonClicked) {
       onButtonClicked(i, buttons[i]);
     }
+  };
+
+  const cssClasses = (buttonLabel: string, isDisabled = false) => {
+    let classes = "buttonGroupButton";
+
+    if (buttonLabel === selectedButtonLabel) { classes += " active"; }
+    if (isDisabled) { classes += " disabled"; }
+
+    return classes;
   };
 
   return (
@@ -19,10 +28,9 @@ export const ButtonGroup = (props: IButtonGroupProps) => {
         <button
           key={i}
           name={buttonLabel}
-          className={
-            (buttonLabel === selectedButtonLabel) ? "buttonGroupButton active" : "buttonGroupButton"
-            }
-            onClick={ (event) => { handleClick(event, i); } }
+          disabled={disabled}
+          className={cssClasses(buttonLabel, disabled)}
+          onClick={ (event) => { handleClick(i); } }
           >
           {buttonLabel}
         </button>

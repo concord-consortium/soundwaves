@@ -11,7 +11,11 @@
   color: white;
   border: 1.5px solid $darkBorderColor;
   cursor: pointer;
+
+  &.disabled {
+    color: $disabledButtonColor;
   }
+}
 
 .active {
   background-color: white;

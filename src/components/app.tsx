@@ -202,10 +202,6 @@ export const App = () => {
     setPlaybackRate(boundedSpeed);
   };
 
-  const handleSpeedChange = (speed: number) => {
-    setPlaybackSpeedTo(speed);
-  };
-
   const handleSpeedButtonClicked = (index: number, value: string) => {
     let playbackSpeed = 1;
 
@@ -233,13 +229,6 @@ export const App = () => {
   const handleProgressUpdate = (newProgress: number) =>
     setPlaybackProgress(newProgress);
 
-  const speedMarks = {
-    0.25: { style: null, label: "1/4" },
-    0.5: { style: null, label: "1/2" },
-    1: { style: null, label: "1" },
-    2: { style: null, label: "2" },
-    4: { style: null, label: "4" },
-  };
 
   return (
     <div className="app">
@@ -286,30 +275,12 @@ export const App = () => {
             </div>
             <div>
               <ButtonGroup
+                disabled={playing}
                 buttons={["\u00BDx", "1x", "2x"]}
                 selectedButtonLabel={speedLabelFromSpeed(playbackRate)}
                 onButtonClicked={handleSpeedButtonClicked}
                 />
             </div>
-          </div>
-        </div>
-        <div className="speed-controls">
-          <div className={`speed-label${(playing) ? " disabled" : ""}`}>
-            Speed
-          </div>
-          <div>
-            <Slider
-              className={playing ? "speed-slider disabled" : "speed-slider"}
-              defaultValue={1}
-              startPoint={1}
-              value={playbackRate}
-              min={0.25}
-              max={4}
-              step={null}
-              marks={speedMarks}
-              disabled={playing}
-              onChange={handleSpeedChange}
-            />
           </div>
         </div>
         <div className="sound-wave-container">

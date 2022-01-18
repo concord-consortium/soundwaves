@@ -34,6 +34,7 @@ export interface IZoomButtonsProps {
 export interface IButtonGroupProps {
   buttons: string[];
   selectedButtonLabel: string;
+  disabled?: boolean;
   onButtonClicked?: (buttonIndex: number, buttonLabel: string) => void;
 }
 

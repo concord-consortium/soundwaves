@@ -30,4 +30,13 @@ describe("ButtonGroup", () => {
     expect(mockCallback).toHaveBeenCalledWith(1, "b");
   });
 
+  it("disables its buttons, when disabled as a whole", () => {
+    const mockCallback = jest.fn();
+
+    render(<ButtonGroup buttons={["a", "b"]} selectedButtonLabel={"a"} disabled={true} onButtonClicked={mockCallback} />);
+    fireEvent.click(screen.getByText("a"));
+    fireEvent.click(screen.getByText("b"));
+    expect(mockCallback).not.toHaveBeenCalled();
+  });
+
 });
