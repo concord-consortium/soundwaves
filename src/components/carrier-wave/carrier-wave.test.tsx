@@ -11,6 +11,8 @@ describe("CarrierWave", () => {
         volume={1}
         interactive={false}
       />);
-    expect(screen.getByText("Choose . . .")).toBeDefined();
+    expect(screen.getByText("Modulation")).toBeDefined();
+    expect(screen.getByText("Carrier Frequency")).toBeDefined();
+    expect(screen.getByText("kHz")).toBeDefined();
   });
 });
