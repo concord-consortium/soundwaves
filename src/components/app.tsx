@@ -7,6 +7,7 @@ import { CarrierWave } from "./carrier-wave/carrier-wave";
 import { AppHeader } from "./application-header/application-header";
 import { SoundPicker, pureToneFrequencyFromSoundName } from "./sound-picker/sound-picker";
 import { useAutoWidth } from "../hooks/use-auto-width";
+import { ButtonGroup } from "./button-group/button-group";
 
 import "./app.scss";
 import "rc-slider/assets/index.css";
@@ -205,6 +206,30 @@ export const App = () => {
     setPlaybackSpeedTo(speed);
   };
 
+  const handleSpeedButtonClicked = (index: number, value: string) => {
+    let playbackSpeed = 1;
+
+    if (value === "\u00BDx") {
+      playbackSpeed = 0.5;
+    } else if (value === "2x") {
+      playbackSpeed = 2;
+    }
+
+    setPlaybackSpeedTo(playbackSpeed);
+  };
+
+  const speedLabelFromSpeed = (playbackSpeed: number): string => {
+    if (playbackSpeed === 0.5) {
+      return "\u00BDx";
+    }
+
+    if (playbackSpeed === 2) {
+      return "2x";
+    }
+
+    return "1x";
+  };
+
   const handleProgressUpdate = (newProgress: number) =>
     setPlaybackProgress(newProgress);
 
@@ -243,13 +268,28 @@ export const App = () => {
               <VolumeIcon className="volume-icon" />
             </div>
             <div className="volume-slider-container">
-              <Slider
-                className="volume-slider"
-                // Keep min volume > 0 so it's always possible to calculate amplitude and wave length markers
-                min={0.01} max={2} step={0.01}
-                value={volume}
-                onChange={handleVolumeChange}
-              />
+              <div className="volume-label">Volume</div>
+              <div>
+                <Slider
+                  className="volume-slider"
+                  // Keep min volume > 0 so it's always possible to calculate amplitude and wave length markers
+                  min={0.01} max={2} step={0.01}
+                  value={volume}
+                  onChange={handleVolumeChange}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="speed-control">
+            <div className={`speed-label${(playing) ? " disabled" : ""}`}>
+              Speed
+            </div>
+            <div>
+              <ButtonGroup
+                buttons={["\u00BDx", "1x", "2x"]}
+                selectedButtonLabel={speedLabelFromSpeed(playbackRate)}
+                onButtonClicked={handleSpeedButtonClicked}
+                />
             </div>
           </div>
         </div>

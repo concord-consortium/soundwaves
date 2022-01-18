@@ -36,7 +36,6 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
   const [carrierWaveSelection, setCarrierWaveSelection] = useState<string>("Choose . . .");
   const [carrierFrequency, setCarrierFrequency] = useState<number>(carrierWaves[carrierWaveSelection].frequency);
   const [modulation, setModulation] = useState<string>(carrierWaves[carrierWaveSelection].modulation);
-console.log({modulation}, {carrierFrequency});
 
   useEffect(() => {
     if (audioBuffer && carrierFrequency !== 0 && modulation !== "") {
@@ -55,8 +54,16 @@ console.log({modulation}, {carrierFrequency});
     setCarrierWaveSelection(value);
     setCarrierFrequency(carrierWaves[value].frequency);
     setModulation(carrierWaves[value].modulation);
-console.log({modulation}, {carrierFrequency});
   });
+
+  const handleFrequencyButtonClicked = (index: number, value: string) => {
+    const unscaledFrequency = parseInt(value, 10);
+    setCarrierFrequency(unscaledFrequency * 1e3);
+  };
+
+  const handleModulationButtonClicked = (index: number, value: string) => {
+    setModulation(value);
+  };
 
   const handleZoomIn = () => {
     setCarrierZoom(Math.min(2048, carrierZoom * 2));
@@ -87,7 +94,11 @@ console.log({modulation}, {carrierFrequency});
             Modulation
           </div>
           <div className="freq-mod-container">
-            <ButtonGroup buttons={["AM", "FM"]} selectedButtonLabel={ modulation } />
+            <ButtonGroup
+              buttons={["AM", "FM"]}
+              selectedButtonLabel={ modulation }
+              onButtonClicked={handleModulationButtonClicked}
+              />
           </div>
         </div>
 
@@ -96,8 +107,11 @@ console.log({modulation}, {carrierFrequency});
             Carrier Frequency
           </div>
           <div className="freq-mod-container">
-            <ButtonGroup buttons={["2", "4", "8"]}
-              selectedButtonLabel={ (carrierFrequency / 1000).toString() } />
+            <ButtonGroup
+              buttons={["2", "4", "8"]}
+              selectedButtonLabel={ (carrierFrequency / 1000).toString() }
+              onButtonClicked={handleFrequencyButtonClicked}
+              />
             &nbsp;&nbsp;kHz
           </div>
         </div>
