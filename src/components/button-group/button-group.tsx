@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import { IButtonGroupProps } from "../../types";
 
 import "./button-group.scss";
@@ -8,7 +8,9 @@ export const ButtonGroup = (props: IButtonGroupProps) => {
   const { buttons, selectedButtonLabel, onButtonClicked } = props;
 
   const handleClick = ( event: React.MouseEvent<HTMLButtonElement, MouseEvent>, i: number) => {
-    onButtonClicked && onButtonClicked(i, buttons[i]);
+    if (onButtonClicked) {
+      onButtonClicked(i, buttons[i]);
+    }
   };
 
   return (

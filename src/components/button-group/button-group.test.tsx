@@ -10,18 +10,16 @@ describe("ButtonGroup", () => {
     });
 
   it("renders the correct number of buttons; and the corresponding labels", () => {
-    const buttonLabels = ["first button label", "second"];
-    const labelsLength = buttonLabels.length;
+    const buttonLabels = ["first button label", "second", "3", "4th"];
 
     render(<ButtonGroup buttons={buttonLabels} selectedButtonLabel={""} />);
-    const foundButtons = screen.queryAllByRole('button');
-    const foundButtonLabels =
-      foundButtons.map( (button) => { return button.innerText; });
-    const foundLength = foundButtonLabels.length;
+    const foundButtons = screen.queryAllByRole("button");
 
-    expect(foundLength === labelsLength);
-    expect(foundButtonLabels[0] === buttonLabels[0]);
-    expect(foundButtonLabels[foundLength - 1] === buttonLabels[labelsLength - 1]);
+    expect(foundButtons.length).toEqual(buttonLabels.length);
+
+    buttonLabels.forEach((value) => {
+      expect(screen.getByText(value, {exact: true})).toBeDefined();
+    });
   });
 
   it("invokes the call-back function, when a (NON-selected) button is clicked", () => {
@@ -30,15 +28,6 @@ describe("ButtonGroup", () => {
     render(<ButtonGroup buttons={["a", "b"]} selectedButtonLabel={"a"} onButtonClicked={mockCallback} />);
     fireEvent.click(screen.getByText("b"));
     expect(mockCallback).toHaveBeenCalledWith(1, "b");
-  });
-
-  it("it has no selected item, by default", () => {
-    const mockCallback = jest.fn();
-
-    render(<ButtonGroup buttons={["a", "b"]} selectedButtonLabel={"NONE SUCH"} />);
-    fireEvent.click(screen.getByText("a"));
-    fireEvent.click(screen.getByText("b"));
-    expect(mockCallback).not.toHaveBeenCalled();
   });
 
 });

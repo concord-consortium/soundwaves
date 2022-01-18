@@ -98,7 +98,7 @@ console.log({modulation}, {carrierFrequency});
           <div className="freq-mod-container">
             <ButtonGroup buttons={["2", "4", "8"]}
               selectedButtonLabel={ (carrierFrequency / 1000).toString() } />
-            &nbsp;kHz
+            &nbsp;&nbsp;kHz
           </div>
         </div>
 
