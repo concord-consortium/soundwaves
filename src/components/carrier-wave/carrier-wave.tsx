@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modulation, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT } from "../../types";
+import { Modulation, ZOOMED_OUT_GRAPH_HEIGHT } from "../../types";
 import { getAMCarrierWave, getFMCarrierWave } from "../../utils/audio";
 import { ButtonGroup } from "../button-group/button-group";
 import { SoundWave } from "../sound-wave";
@@ -12,13 +12,14 @@ export interface ICarrierWaveProps {
   audioBuffer?: AudioBuffer; // This is the buffer for the user-chosen sound; and NOT the carrier wave
   playbackProgress: number; // normalized, [0, 1]
   graphWidth: number;
+  graphHeight: number;
   volume: number;
   onProgressUpdate?: (newProgress: number) => void;
   interactive: boolean;
 }
 
 export const CarrierWave = (props: ICarrierWaveProps) => {
-  const { audioBuffer, playbackProgress, graphWidth, volume,
+  const { audioBuffer, playbackProgress, graphWidth, graphHeight, volume,
     onProgressUpdate, interactive } = props;
 
   const [carrierBuffer, setCarrierBuffer] = useState<AudioBuffer>();
@@ -88,7 +89,7 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
         <div className="zoomed-in-view">
           <SoundWave
             width={graphWidth}
-            height={SOUND_WAVE_GRAPH_HEIGHT}
+            height={graphHeight}
             audioBuffer={carrierBuffer}
             volume={modulation === "AM" ? volume : 1}
             playbackProgress={playbackProgress}

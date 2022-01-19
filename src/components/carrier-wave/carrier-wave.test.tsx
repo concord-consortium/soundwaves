@@ -8,6 +8,7 @@ describe("CarrierWave", () => {
         audioBuffer={undefined}
         playbackProgress={0}
         graphWidth={200}
+        graphHeight={100}
         volume={1}
         interactive={false}
       />);
