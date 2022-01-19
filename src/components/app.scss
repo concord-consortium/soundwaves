@@ -23,20 +23,25 @@ BODY {
     flex-basis: auto;
   }
 
+  .non-header-container {
+    margin: 6px;
+    padding: 3px 3px 6px 3px;
+    border: 2px solid $darkBorderColor;
+    border-radius: $borderRadius;
+  }
+
   .main-controls-and-waves-container {
-    // FUTURE: consider making this be of variable height, based on the viewport
-    margin: 0 $margin;
+    margin: 5px $margin;
+    padding: 5px 8px 10px 8px;
+    border-radius: $borderRadius;
+    background-color: $controlsBackgroundColor;
   }
 
   .playback-and-volume-controls {
     margin: 0;
-    margin-bottom: -2px;
+    padding: 0;
     display: flex;
-    background-color: $controlsBackgroundColor;
-    border: $borderWidth solid $darkBorderColor;
-    border-top-left-radius: $borderRadius;
-    border-top-right-radius: $borderRadius;
-    padding: 4px 2px 0px 2px;
+    border-radius: $borderRadius;
 
     .play-pause {
       margin-right: 2px;

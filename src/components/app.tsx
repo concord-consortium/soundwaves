@@ -233,6 +233,7 @@ export const App = () => {
   return (
     <div className="app">
       <AppHeader />
+      <div className="non-header-container">
       <SoundPicker
         selectedSound={selectedSound}
         setSelectedSound={setSelectedSound}
@@ -320,6 +321,7 @@ export const App = () => {
         interactive={!playing}
         onProgressUpdate={handleProgressUpdate}
       />
+      </div>
     </div>
   );
 };

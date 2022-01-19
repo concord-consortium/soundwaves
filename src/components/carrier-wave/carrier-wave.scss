@@ -1,8 +1,8 @@
 @import "../vars.scss";
 
 .carrier-wave-container {
-  margin: 10px 8px 0 8px;
-  padding: 5px 0px 0px 0px;
+  margin: 15px $margin 0 $margin;
+  padding: 5px 8px 5px 8px;
   font-size: 80%;
   color: $controlsColor;
   border: 2px solid $darkBorderColor;

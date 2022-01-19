@@ -1,4 +1,4 @@
-const SIDE_MARGIN = 8; // Units: px. If changing; also change $margin, in vars.scss
+const SIDE_MARGIN = 24; // Units: px. If changing; also change $margin, in vars.scss
 const BORDER_WIDTH = 2; // Units: px; If changing; also change: $borderWidth, in vars.scss
 export const SIDE_MARGIN_PLUS_BORDER = SIDE_MARGIN + BORDER_WIDTH; // Units: px;
 export const SOUND_WAVE_GRAPH_HEIGHT = 105;
