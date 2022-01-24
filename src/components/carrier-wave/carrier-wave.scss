@@ -1,17 +1,16 @@
 @import "../vars.scss";
 
 .carrier-wave-container {
-  margin: 15px $margin 0 $margin;
-  padding: 5px 8px 5px 8px;
-  font-size: 80%;
-  color: $controlsColor;
-  border: 2px solid $darkBorderColor;
+  height: calc(50% - 30px - 15px);
+  margin: 10px $margin 0 $margin;
+  padding: 5px 8px 10px 8px;
   border-radius: $borderRadius;
   background-color: $controlsBackgroundColor;
 
   .carrier-picker-container {
     display: flex;
     justify-content: space-around;
+    color: $controlsColor;
 
     .modulation-container, .frequency-container {
       display: flex;
@@ -20,14 +19,18 @@
 
       .carrier-picker-caption {
         padding-bottom: 2px;
-        font-size: 14px;
+        font-size: $smallLabelFontSize;
+      }
+
+      .freq-mod-container {
+        font-size: $smallLabelFontSize;
       }
     }
 
   }
 
   .carrier-wave-graph-container {
-    margin: 5px 0 0 -2px;
+    margin: 10px 0 0 0;
   }
 }
 

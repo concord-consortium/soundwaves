@@ -111,8 +111,11 @@ export const App = () => {
     onWidthChange: useCallback( (containerWidth) => {
         const newWidth = containerWidth - (2 * SIDE_MARGIN_PLUS_BORDER);
         setGraphWidth(newWidth);
-        const newHeight = Math.round(newWidth / 2.375);
-        setGraphHeight(newHeight);
+        const graphContainer = document.querySelector(".main-controls-and-waves-container");
+        if (graphContainer) {
+          const graphContainerHeight = graphContainer.clientHeight;
+          setGraphHeight(graphContainerHeight - ( (graphContainerHeight > 475) ? 155 : 115));
+        }
       }
       , [])
   });
