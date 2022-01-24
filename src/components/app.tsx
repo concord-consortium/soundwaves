@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Slider from "rc-slider";
 
-import { SIDE_MARGIN_PLUS_BORDER, SoundName, SOUND_WAVE_GRAPH_HEIGHT, ZOOMED_OUT_GRAPH_HEIGHT } from "../types";
+import { SIDE_MARGIN_PLUS_BORDER, SoundName, ZOOMED_OUT_GRAPH_HEIGHT } from "../types";
 import { SoundWave } from "./sound-wave";
 import { CarrierWave } from "./carrier-wave/carrier-wave";
 import { AppHeader } from "./application-header/application-header";
 import { SoundPicker, pureToneFrequencyFromSoundName } from "./sound-picker/sound-picker";
 import { useAutoWidth } from "../hooks/use-auto-width";
+import { ButtonGroup } from "./button-group/button-group";
 
 import "./app.scss";
 import "rc-slider/assets/index.css";
@@ -99,6 +100,7 @@ export const App = () => {
   const [playbackProgress, setPlaybackProgress] = useState<number>(0);
   const [playbackRate, setPlaybackRate] = useState<number>(1);
   const [graphWidth, setGraphWidth] = useState<number>(100);
+  const [graphHeight, setGraphHeight] = useState<number>(105);
   const [audioBuffer, setAudioBuffer] = useState<AudioBuffer>();
   const [recordingAudioBuffer, setRecordingAudioBuffer] = useState<AudioBuffer>();
 
@@ -110,8 +112,15 @@ export const App = () => {
 
   useAutoWidth({
     container: document.body,
-    onWidthChange: useCallback(
-      (newWidth) => { setGraphWidth(newWidth - (2 * SIDE_MARGIN_PLUS_BORDER)); }
+    onWidthChange: useCallback( (containerWidth) => {
+        const newWidth = containerWidth - (2 * SIDE_MARGIN_PLUS_BORDER);
+        setGraphWidth(newWidth);
+        const graphContainer = document.querySelector(".main-controls-and-waves-container");
+        if (graphContainer) {
+          const graphContainerHeight = graphContainer.clientHeight;
+          setGraphHeight(graphContainerHeight - ( (graphContainerHeight > 475) ? 155 : 115));
+        }
+      }
       , [])
   });
 
@@ -205,24 +214,38 @@ export const App = () => {
     setPlaybackRate(boundedSpeed);
   };
 
-  const handleSpeedChange = (speed: number) => {
-    setPlaybackSpeedTo(speed);
+  const handleSpeedButtonClicked = (index: number, value: string) => {
+    let playbackSpeed = 1;
+
+    if (value === "\u00BDx") {
+      playbackSpeed = 0.5;
+    } else if (value === "2x") {
+      playbackSpeed = 2;
+    }
+
+    setPlaybackSpeedTo(playbackSpeed);
+  };
+
+  const speedLabelFromSpeed = (playbackSpeed: number): string => {
+    if (playbackSpeed === 0.5) {
+      return "\u00BDx";
+    }
+
+    if (playbackSpeed === 2) {
+      return "2x";
+    }
+
+    return "1x";
   };
 
   const handleProgressUpdate = (newProgress: number) =>
     setPlaybackProgress(newProgress);
 
-  const speedMarks = {
-    0.25: { style: null, label: "1/4" },
-    0.5: { style: null, label: "1/2" },
-    1: { style: null, label: "1" },
-    2: { style: null, label: "2" },
-    4: { style: null, label: "4" },
-  };
 
   return (
     <div className="app">
       <AppHeader />
+      <div className="non-header-container">
       <SoundPicker
         selectedSound={selectedSound}
         setSelectedSound={setSelectedSound}
@@ -247,39 +270,36 @@ export const App = () => {
               <VolumeIcon className="volume-icon" />
             </div>
             <div className="volume-slider-container">
-              <Slider
-                className="volume-slider"
-                // Keep min volume > 0 so it's always possible to calculate amplitude and wave length markers
-                min={0.01} max={2} step={0.01}
-                value={volume}
-                onChange={handleVolumeChange}
-              />
+              <div className="volume-label">Volume</div>
+              <div>
+                <Slider
+                  className="volume-slider"
+                  // Keep min volume > 0 so it's always possible to calculate amplitude and wave length markers
+                  min={0.01} max={2} step={0.01}
+                  value={volume}
+                  onChange={handleVolumeChange}
+                />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="speed-controls">
-          <div className={`speed-label${(playing) ? " disabled" : ""}`}>
-            Speed
-          </div>
-          <div>
-            <Slider
-              className={playing ? "speed-slider disabled" : "speed-slider"}
-              defaultValue={1}
-              startPoint={1}
-              value={playbackRate}
-              min={0.25}
-              max={4}
-              step={null}
-              marks={speedMarks}
-              disabled={playing}
-              onChange={handleSpeedChange}
-            />
+          <div className="speed-control">
+            <div className={`speed-label${(playing) ? " disabled" : ""}`}>
+              Speed
+            </div>
+            <div>
+              <ButtonGroup
+                disabled={playing}
+                buttons={["\u00BDx", "1x", "2x"]}
+                selectedButtonLabel={speedLabelFromSpeed(playbackRate)}
+                onButtonClicked={handleSpeedButtonClicked}
+                />
+            </div>
           </div>
         </div>
         <div className="sound-wave-container">
           <SoundWave
             width={graphWidth}
-            height={SOUND_WAVE_GRAPH_HEIGHT}
+            height={graphHeight}
             audioBuffer={audioBuffer}
             volume={volume}
             playbackProgress={playbackProgress}
@@ -309,10 +329,12 @@ export const App = () => {
         audioBuffer={audioBuffer}
         playbackProgress={playbackProgress}
         graphWidth={graphWidth}
+        graphHeight={graphHeight}
         volume={volume}
         interactive={!playing}
         onProgressUpdate={handleProgressUpdate}
       />
+      </div>
     </div>
   );
 };

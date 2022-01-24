@@ -11,9 +11,11 @@ BODY {
 
 #app { // This is actually the ROOT container!
   overflow: hidden;
+  height: 100%;
 }
 
 .app {
+  height: 100%;
   display: flex;
   flex-direction: column;
 
@@ -23,69 +25,31 @@ BODY {
     flex-basis: auto;
   }
 
+  .non-header-container {
+    height: 100%;
+    margin: 6px;
+    padding: 3px 3px 6px 3px;
+    border: 2px solid $darkBorderColor;
+    border-radius: $borderRadius;
+  }
+
   .main-controls-and-waves-container {
-    // FUTURE: consider making this be of variable height, based on the viewport
-    margin: 0 $margin;
-  }
-
-  .speed-controls {
-    margin-bottom: -2px;
-    height: 50px;
-    padding: 4px 15px 2px 15px;
+    height: calc(50% - 30px - 15px);
+    margin: 5px $margin;
+    padding: 5px 8px 10px 8px;
+    border-radius: $borderRadius;
     background-color: $controlsBackgroundColor;
-    border: $borderWidth solid $darkBorderColor;
-
-    .speed-label {
-      margin-bottom: 5px;
-      text-align: center;
-      font-size: $smallLabelFontSize;
-      color: $controlsColor;
-
-      &.disabled {
-        color: $disabledButtonColor;
-      }
-    }
-  }
-
-  .speed-slider {
-    width: 100%;
-    .rc-slider-track {
-      background-color: $controlsColor;
-      height: 6px;
-    }
-    .rc-slider-rail {
-      background-color: $controlsColor;
-      height: 6px;
-    }
-    .rc-slider-handle {
-      fill: $controlsColor;
-      height: 20px;
-      width: 20px;
-      margin-top: -7px;
-      border-color: $controlsColor;
-      background-color: $controlsColor;
-      &:active, &:hover {
-        box-shadow: none;
-      }
-    }
-  }
-
-  .speed-slider.disabled {
-    background-color: transparent;
   }
 
   .playback-and-volume-controls {
     margin: 0;
-    margin-bottom: -2px;
+    padding: 0;
     display: flex;
-    background-color: $controlsBackgroundColor;
-    border: $borderWidth solid $darkBorderColor;
-    border-top-left-radius: $borderRadius;
-    border-top-right-radius: $borderRadius;
-    padding: 4px 2px 0px 2px;
+    flex: 5;
+    border-radius: $borderRadius;
 
     .play-pause {
-      margin-right: 2px;
+      margin: 0;
 
       &.disabled > svg {
         fill: $disabledButtonColor;
@@ -109,8 +73,12 @@ BODY {
     }
 
     .volume-controls {
-      width: 100%;
-      margin-left: 10px;
+      max-width: calc(120px);
+      min-width: calc(80% - 120px);
+      width: calc(100% - 120px);
+
+      padding-right: 15px;
+      padding-left: 5px;
       display: flex;
 
       & > * {
@@ -124,12 +92,18 @@ BODY {
       }
 
       .volume-slider-container {
-        width: calc(100% - 50px);
-        margin-top: 16px;
+        width: 100%;
+      }
+
+      .volume-label {
+        margin-bottom: 5px;
+        text-align: center;
+        font-size: $smallLabelFontSize;
+        color: $controlsColor;
       }
 
       .volume-slider {
-        width: 60%;
+        width: 100%;
         .rc-slider-track {
           background-color: $controlsColor;
           height: 6px;
@@ -147,6 +121,25 @@ BODY {
           &:active, &:hover {
             box-shadow: none;
           }
+        }
+      }
+    }
+
+    .speed-control {
+      min-width: 105px;
+      margin-right: 5px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .speed-label {
+        margin-bottom: 5px;
+        text-align: center;
+        font-size: $smallLabelFontSize;
+        color: $controlsColor;
+
+        &.disabled {
+          color: $disabledButtonColor;
         }
       }
     }
