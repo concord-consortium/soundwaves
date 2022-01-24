@@ -8,13 +8,12 @@ describe("CarrierWave", () => {
         audioBuffer={undefined}
         playbackProgress={0}
         graphWidth={200}
+        graphHeight={100}
         volume={1}
         interactive={false}
       />);
-    expect(screen.getByText("Radio Carrier Wave:")).toBeDefined();
-    expect(screen.getByText("Choose . . .")).toBeDefined();
-    expect(screen.getByText("Wavelength:")).toBeDefined();
-    expect(screen.getByText("Modulation:")).toBeDefined();
-    expect(screen.getByText("Higher than human hearing range by:")).toBeDefined();
+    expect(screen.getByText("Modulation")).toBeDefined();
+    expect(screen.getByText("Carrier Frequency")).toBeDefined();
+    expect(screen.getByText("kHz")).toBeDefined();
   });
 });
