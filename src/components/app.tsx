@@ -96,7 +96,7 @@ export const App = () => {
   const [selectedSound, setSelectedSound] = useState<SoundName>("pick-sound");
   const [playing, setPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(1);
-  const [zoom, setZoom] = useState<number>(16);
+  const [zoom, setZoom] = useState<number>(4);
   const [playbackProgress, setPlaybackProgress] = useState<number>(0);
   const [playbackRate, setPlaybackRate] = useState<number>(1);
   const [graphWidth, setGraphWidth] = useState<number>(100);
