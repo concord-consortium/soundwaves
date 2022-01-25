@@ -49,8 +49,6 @@ const setupAudioContext = async (
   soundName: SoundName
   ) => {
   if (audioSource.current && audioContext.current) {
-    // const audioSourceGainNode = audioSource.current;
-    // audioSourceGainNode.stop();
     audioSource.current.stop();
     await audioContext.current.close();
     setPlaying(false);
@@ -69,8 +67,14 @@ const setupAudioContext = async (
   }
 
   if (soundName === "pick-sound") {
-    audioContext.current = new AudioContext();
-    gainNode.current = audioContext.current.createGain();
+    // This code path will be invoked on application start-up. Due to
+    // browser audio privacy restrictions, we don't try to create an
+    // audio context here; as a user needs to explicitly interact with
+    // the application before that would be successful. See:
+    // https://developer.chrome.com/blog/autoplay/#web-audio
+    // Note: previously we had code here that attempted to create a new
+    // AudioContext; that resulted in a run-time error in desktop Chrome on
+    // macOS (see: https://www.pivotaltracker.com/story/show/180792030).
     const emptyAudioBuffer = new AudioBuffer({length: 1, sampleRate: 8000});
     setAudioBuffer(emptyAudioBuffer);
     setPlaybackProgress(0);
@@ -105,6 +109,7 @@ export const App = () => {
   const gainNode = useRef<GainNode>();
   const playingRef = useRef<boolean>();
   playingRef.current = playing;
+  const restOfContentHeight = 115;
 
   useAutoWidth({
     container: document.body,
@@ -113,8 +118,8 @@ export const App = () => {
         setGraphWidth(newWidth);
         const graphContainer = document.querySelector(".main-controls-and-waves-container");
         if (graphContainer) {
-          const graphContainerHeight = graphContainer.clientHeight;
-          setGraphHeight(graphContainerHeight - ( (graphContainerHeight > 475) ? 155 : 115));
+          const graphContainerHeight = graphContainer.clientHeight - restOfContentHeight;
+          setGraphHeight(graphContainerHeight);
         }
       }
       , [])

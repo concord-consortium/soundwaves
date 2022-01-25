@@ -34,7 +34,7 @@ BODY {
   }
 
   .main-controls-and-waves-container {
-    height: calc(50% - 30px - 15px);
+    height: $zoomedInGraphHeight;
     margin: 5px $margin;
     padding: 5px 8px 10px 8px;
     border-radius: $borderRadius;
@@ -73,7 +73,7 @@ BODY {
     }
 
     .volume-controls {
-      max-width: calc(120px);
+      max-width: 120px;
       min-width: calc(80% - 120px);
       width: calc(100% - 120px);
 

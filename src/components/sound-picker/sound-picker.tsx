@@ -57,7 +57,14 @@ export const SoundPicker = (props: ISoundPickerProps) => {
     }
 
     const constraints: MediaStreamConstraints = { audio: true, video: false };
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    let stream = null;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia(constraints);
+    } catch(err) {
+      console.error("navigator.mediaDevices.getUserMedia() threw error:", err);
+      return;
+    }
+
     const recorder = new MediaRecorder(stream);
 
     recorder.ondataavailable = (event) => {
