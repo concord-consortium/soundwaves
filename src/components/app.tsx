@@ -109,6 +109,7 @@ export const App = () => {
   const gainNode = useRef<GainNode>();
   const playingRef = useRef<boolean>();
   playingRef.current = playing;
+  const restOfContentHeight = 115;
 
   useAutoWidth({
     container: document.body,
@@ -117,8 +118,8 @@ export const App = () => {
         setGraphWidth(newWidth);
         const graphContainer = document.querySelector(".main-controls-and-waves-container");
         if (graphContainer) {
-          const graphContainerHeight = graphContainer.clientHeight;
-          setGraphHeight(graphContainerHeight - ( (graphContainerHeight > 475) ? 155 : 115));
+          const graphContainerHeight = graphContainer.clientHeight - restOfContentHeight;
+          setGraphHeight(graphContainerHeight);
         }
       }
       , [])
