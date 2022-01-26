@@ -276,7 +276,7 @@ export const App = () => {
                 <Slider
                   className="volume-slider"
                   // Keep min volume > 0 so it's always possible to calculate amplitude and wave length markers
-                  min={0.01} max={2} step={0.01}
+                  min={0.01} max={2.5} step={0.01}
                   value={volume}
                   onChange={handleVolumeChange}
                 />
