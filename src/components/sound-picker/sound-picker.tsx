@@ -187,12 +187,13 @@ export const SoundPicker = (props: ISoundPickerProps) => {
 
       <div className="icons-container">
         <button disabled={playing} onClick={onMicIconClicked}>
-          <div>
+          <span>
             <MicIcon className={
               `icon button ${playing ? "disabled" : ""} ${isRecording ? "recording" : ""}`}
               />
-          </div>
-          <div>Record</div>
+          </span>
+          <span className="caption">Record&nbsp;&nbsp;</span>
+
         </button>
       </div>
 
