@@ -24,8 +24,8 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
 
   const [carrierBuffer, setCarrierBuffer] = useState<AudioBuffer>();
   const [carrierZoom, setCarrierZoom] = useState<number>(16);
-  const [carrierFrequency, setCarrierFrequency] = useState<number>(0);
-  const [modulation, setModulation] = useState<string>("");
+  const [carrierFrequency, setCarrierFrequency] = useState<number>(2e3);
+  const [modulation, setModulation] = useState<string>("AM");
 
   useEffect(() => {
     if (audioBuffer && carrierFrequency !== 0 && modulation !== "") {

@@ -96,7 +96,7 @@ export const App = () => {
   const [selectedSound, setSelectedSound] = useState<SoundName>("pick-sound");
   const [playing, setPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(1);
-  const [zoom, setZoom] = useState<number>(16);
+  const [zoom, setZoom] = useState<number>(4);
   const [playbackProgress, setPlaybackProgress] = useState<number>(0);
   const [playbackRate, setPlaybackRate] = useState<number>(1);
   const [graphWidth, setGraphWidth] = useState<number>(100);
@@ -276,7 +276,7 @@ export const App = () => {
                 <Slider
                   className="volume-slider"
                   // Keep min volume > 0 so it's always possible to calculate amplitude and wave length markers
-                  min={0.01} max={2} step={0.01}
+                  min={0.01} max={2.5} step={0.01}
                   value={volume}
                   onChange={handleVolumeChange}
                 />
