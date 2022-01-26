@@ -193,7 +193,6 @@ export const SoundPicker = (props: ISoundPickerProps) => {
               />
           </span>
           <span className="caption">Record&nbsp;&nbsp;</span>
-
         </button>
       </div>
 
