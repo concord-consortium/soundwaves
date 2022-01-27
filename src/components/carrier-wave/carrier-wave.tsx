@@ -18,6 +18,7 @@ export interface ICarrierWaveProps {
   interactive: boolean;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- false positive warning; CarrierWave is imported, and used in app.tsx
 export const CarrierWave = (props: ICarrierWaveProps) => {
   const { audioBuffer, playbackProgress, graphWidth, graphHeight, volume,
     onProgressUpdate, interactive } = props;
