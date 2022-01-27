@@ -25,14 +25,11 @@
   }
 
   .icons-container {
-    button {
-      width: 95px;
-      height: 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-direction: row;
+    height: 30px;
 
+    button {
+      min-width: 100px !important;
+      padding: 0;
       border-radius: 10px;
       line-height: 1;
       background-color: $controlsBackgroundColor;
@@ -41,16 +38,13 @@
       &[disabled] {
         color: $disabledButtonColor;
       }
-
-      div {
-        font-size: 110%;
-      }
     }
 
     .icon {
+      position: relative;
+      top: 2px;
       height: 24px;
       width: 24px;
-      margin-top: 4px;
       cursor: pointer;
       fill: red;
 
@@ -68,6 +62,11 @@
         fill: $disabledButtonColor;
         cursor: default;
       }
+    }
+
+    .caption {
+      position: relative;
+      top: -5px;
     }
   }
 }
