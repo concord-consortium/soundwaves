@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Modulation, ZOOMED_OUT_GRAPH_HEIGHT } from "../../types";
+import { ZOOMED_OUT_GRAPH_HEIGHT } from "../../types";
 import { getAMCarrierWave, getFMCarrierWave } from "../../utils/audio";
 import { ButtonGroup } from "../button-group/button-group";
 import { SoundWave } from "../sound-wave";
 
 import "./carrier-wave.scss";
 
-type CarrierWave = { modulation: Modulation, frequency: number };
 
 export interface ICarrierWaveProps {
   audioBuffer?: AudioBuffer; // This is the buffer for the user-chosen sound; and NOT the carrier wave
@@ -17,6 +16,7 @@ export interface ICarrierWaveProps {
   onProgressUpdate?: (newProgress: number) => void;
   interactive: boolean;
 }
+
 
 export const CarrierWave = (props: ICarrierWaveProps) => {
   const { audioBuffer, playbackProgress, graphWidth, graphHeight, volume,
