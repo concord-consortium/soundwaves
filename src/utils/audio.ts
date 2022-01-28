@@ -20,22 +20,7 @@ export const downsampleAudioBuffer = async (audioBuffer: AudioBuffer, newSamples
   audioSourceForDownsampling.connect(downsampleContext.destination);
   audioSourceForDownsampling.start(0);
   const downsampledAudioBuffer = await downsampleContext.startRendering();
-  const data = downsampledAudioBuffer.getChannelData(0);
-
-  if (newSampleRate >= MIN_SAMPLE_RATE) {
-    // Nothing to do, the web browser downsampling is enough as the requested sample rate was > 3000.
-    return data;
-  } else {
-    // Additional downsampling necessary. This is a naive version that takes every Nth sample.
-    // It's not perfect, but most likely it'll never have to be used if the sound files are shorter than 6.6 seconds.
-    // (6.6s * 3000 = 19800 samples and 198000 < 20000 that sound wave graphs uses as a limit of points).
-    const step = Math.ceil(MIN_SAMPLE_RATE / newSampleRate);
-    const finalData = new Float32Array(Math.round(data.length / step));
-    for (let i = 0; i < finalData.length; i += 1) {
-      finalData[i] = data[i * step];
-    }
-    return finalData;
-  }
+  return downsampledAudioBuffer.getChannelData(0);
 };
 
 // WebAudio API's (minimum required) maximum rate is 96kHz.
