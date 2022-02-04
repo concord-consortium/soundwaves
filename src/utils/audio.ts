@@ -8,7 +8,10 @@ export const getMinValue = (data: Float32Array) => {
   return min;
 };
 
-const MIN_SAMPLE_RATE = 8000; // limit defined by Web Audio API
+// WebAudio API's (maximum required) minimum rate is 8kHz.
+// However 8kHz interferes with AM / FM modulation that uses 2 / 4 / 8kHz as carrier wave.
+// This might result in flat sound wave. So, use frequency that isn't multitude of 2.
+const MIN_SAMPLE_RATE = 9000;
 
 export const downsampleAudioBuffer = async (audioBuffer: AudioBuffer, newSamplesCount: number): Promise<Float32Array> => {
   const ratio = newSamplesCount / audioBuffer.length;
