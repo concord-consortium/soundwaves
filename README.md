@@ -6,7 +6,8 @@
 
 1. Clone this repo and `cd` into it
 2. Run `npm install` to pull dependencies
-3. Run `npm start` to run `webpack-dev-server` in development mode with hot module replacement
+3. Run `npm start` to run `webpack-dev-server` (local server that automatically rebuilds the app)
+in development mode with hot module replacement
 
 #### Run using HTTPS
 
@@ -23,6 +24,8 @@ Alternately, you can run secure without certificates in Chrome:
 2. Change flag from disabled to enabled
 3. Run `npm run start:secure:no-certs` to run `webpack-dev-server` in development mode with hot module replacement
 
+Note that this is usually not necessary for local development.
+
 ### Building
 
 If you want to build a local version run `npm build`, it will create the files in the `dist` folder.
@@ -34,14 +37,50 @@ You *do not* need to build to deploy the code, that is automatic.  See more info
    To ensure that you are open a TypeScript file in VSC and then click on the version number next to
    `TypeScript React` in the status bar and select 'Use Workspace Version' in the popup menu.
 
-## Deployment
+## Deployment to Concord Consortium AWS S3 bucket (https://soundwaves.concord.org)
 
 Production releases to S3 are based on the contents of the /dist folder and are built automatically by GitHub Actions
 for each branch pushed to GitHub and each merge into production.
 
-Merges into production are deployed to http://soundwaves.concord.org.
+Merges into production are deployed to https://soundwaves.concord.org.
 
-Other branches are deployed to http://soundwaves.concord.org/branch/<name>.
+Other branches are deployed to `https://soundwaves.concord.org/branch/<name>/index.html`, for example: https://soundwaves.concord.org/branch/master/index.html.
+
+## Deployment to custom location
+
+Build the project using `npm build` script to update files in the `dist` folder.
+It should include all the assets and the entry-point `index.html` file.
+It's a static web page that can be hosted by pretty much any web server
+and/or hosting provider.
+
+## Updating sound files
+
+All the sound files are stored at `src/assets/sounds`. If sound file is updated, but its name
+isn't changed, it's enough to rebuild the project.
+
+If new sounds are added or file names are updated, two TypeScript files
+might need to be adjusted:
+  - `src/components/app.tsx`
+  - `src/components/sound-picker/sound-picker.tsx`
+
+## Web Audio API
+
+This app uses native Web Audio API. It takes care of the sound playback,
+recording, downsampling for graphing needs, and even AM and FM modulation.
+
+MDN provides a great documentation and tutorials:
+https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
+
+Most of the custom audio-related helper are implemented in `src/utils/audio.ts`.
+
+AM and FM modulation is implemented using `OfflineAudioContext`, `OscillatorNode`, and `GainNode`.
+
+## Know issues
+
+1. Recording might not work on Safari browser on MacOS (Desktop Safari). The problem appears to be caused
+by a bug in the underlying browser engine ("Webkit"), and not in the code for our SoundWaves app.
+Please note that we have a related PT ticket, [#181016147](https://www.pivotaltracker.com/story/show/181016147),
+to track the resolution of that Webkit defect; the scope of this ticket is just for the documentation of the current issue.
 
 ### Testing
 
