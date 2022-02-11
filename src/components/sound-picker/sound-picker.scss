@@ -34,6 +34,7 @@
       line-height: 1;
       background-color: $controlsBackgroundColor;
       color: $graphBackgroundColor;
+      white-space: nowrap;
 
       &[disabled] {
         color: $disabledButtonColor;
@@ -46,9 +47,10 @@
       height: 24px;
       width: 24px;
       cursor: pointer;
-      fill: red;
+      fill: white;
 
       &.recording {
+        fill: red;
         animation-name: pulse;
         animation-duration: 1.5s;
         animation-iteration-count: infinite;

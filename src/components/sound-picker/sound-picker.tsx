@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useRef, useState } from "react";
-
 import { SoundName } from "../../types";
+
 import MicIcon from "../../assets/icons/mic_black_48dp.svg";
 
 import "./sound-picker.scss";
@@ -184,20 +184,6 @@ export const SoundPicker = (props: ISoundPickerProps) => {
 
   return (
     <div className="sound-picker-container">
-
-      <div className="icons-container">
-        <button disabled={playing} onClick={onMicIconClicked}>
-          <span>
-            <MicIcon className={
-              `icon button ${playing ? "disabled" : ""} ${isRecording ? "recording" : ""}`}
-              />
-          </span>
-          <span className="caption">Record&nbsp;&nbsp;</span>
-        </button>
-      </div>
-
-      <div className="sound-picker-mid-label">OR</div>
-
       <div className="sound-picker-select-container">
         <select className="sound-picker"
           disabled={isRecording}
@@ -215,6 +201,15 @@ export const SoundPicker = (props: ISoundPickerProps) => {
           <option value="scratch-sample">Scratch Sample</option>
           <option value="record-my-own" disabled={!hasRecording}>(My Recording)</option>
         </select>
+      </div>
+
+      <div className="sound-picker-mid-label">OR</div>
+
+      <div className="icons-container">
+        <button disabled={playing} onClick={onMicIconClicked}>
+          <MicIcon className={`icon button ${playing ? "disabled" : ""} ${isRecording ? "recording" : ""}`}/>
+          <span className="caption">Record&nbsp;&nbsp;</span>
+        </button>
       </div>
     </div>
   );
