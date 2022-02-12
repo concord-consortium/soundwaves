@@ -68,7 +68,7 @@ might need to be adjusted:
 This app uses native Web Audio API. It takes care of the sound playback,
 recording, downsampling for graphing needs, and even AM and FM modulation.
 
-MDN provides a great documentation and tutorials:
+MDN provides great documentation and tutorials:
 https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
 
 Most of the custom audio-related helper are implemented in `src/utils/audio.ts`.
