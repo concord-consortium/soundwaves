@@ -44,7 +44,7 @@ for each branch pushed to GitHub and each merge into production.
 
 Merges into production are deployed to https://soundwaves.concord.org.
 
-Other branches are deployed to `https://soundwaves.concord.org/branch/<name>/index.html`, for example: https://soundwaves.concord.org/branch/master/index.html.
+Other branches are deployed to `https://soundwaves.concord.org/branch/<name>/`, for example: https://soundwaves.concord.org/branch/master/ (note the trailing slash).
 
 ## Deployment to custom location
 
