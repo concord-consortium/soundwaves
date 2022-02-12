@@ -75,7 +75,7 @@ Most of the custom audio-related helpers are implemented in `src/utils/audio.ts`
 
 AM and FM modulation is implemented using `OfflineAudioContext`, `OscillatorNode`, and `GainNode`.
 
-## Know issues
+## Known issues
 
 1. Recording might not work on Safari browser on MacOS (Desktop Safari). The problem appears to be caused
 by a bug in the underlying browser engine ("Webkit"), and not in the code for our SoundWaves app.
