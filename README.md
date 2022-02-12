@@ -80,7 +80,13 @@ AM and FM modulation is implemented using `OfflineAudioContext`, `OscillatorNode
 1. Recording might not work on Safari browser on MacOS (Desktop Safari). The problem appears to be caused
 by a bug in the underlying browser engine ("Webkit"), and not in the code for our SoundWaves app.
 Please note that we have a related PT ticket, [#181016147](https://www.pivotaltracker.com/story/show/181016147),
-to track the resolution of that Webkit defect; the scope of this ticket is just for the documentation of the current issue.
+to track the resolution of that Webkit defect.
+
+Tracker for Webkit issue:
+https://bugs.webkit.org/show_bug.cgi?id=233473
+
+More content-full tracking of that issue, from the (Webkit-consuming) Twilio Video project:
+https://github.com/twilio/twilio-video.js/issues/1671
 
 ### Testing
 
