@@ -71,7 +71,7 @@ recording, downsampling for graphing needs, and even AM and FM modulation.
 MDN provides great documentation and tutorials:
 https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
 
-Most of the custom audio-related helper are implemented in `src/utils/audio.ts`.
+Most of the custom audio-related helpers are implemented in `src/utils/audio.ts`.
 
 AM and FM modulation is implemented using `OfflineAudioContext`, `OscillatorNode`, and `GainNode`.
 
