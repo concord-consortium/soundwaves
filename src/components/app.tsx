@@ -192,7 +192,7 @@ export const App = () => {
 
       const measureProgress = () => {
         if (playingRef.current && audioContext.current && audioBuffer) {
-          setPlaybackProgress(playbackRate * (audioContext.current.currentTime - startTime + offset) / audioBuffer.duration);
+          setPlaybackProgress((playbackRate * (audioContext.current.currentTime - startTime) + offset) / audioBuffer.duration);
           requestAnimationFrame(measureProgress);
         }
       };
