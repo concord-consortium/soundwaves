@@ -13,12 +13,12 @@ const drawBackground = (props: IDrawHelperProps) => {
 };
 
 const drawTimeCaptions = (props: IDrawHelperProps) => {
-  const { ctx, width, height, audioBuffer, data } = props;
+  const { ctx, width, height, playbackRate, audioBuffer, data } = props;
 
   // Need the audioBuffer to calculate
   if (!audioBuffer) { return; }
 
-  const timePerSample = audioBuffer.duration / data.length;
+  const timePerSample = audioBuffer.duration / (data.length * playbackRate);
   const currentDataPointIdx = getCurrentSampleIdx(props);
   const zoomedInViewPointsCount = getZoomedInViewPointsCount(props);
   const leftRightOffsetInSamples = (zoomedInViewPointsCount / 2);
@@ -101,7 +101,7 @@ const drawZoomAreaMarker = (props: IDrawHelperProps) => {
 
 
 export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, data: Float32Array, props: ISoundWaveProps) => {
-  const { width, height, audioBuffer, volume, playbackProgress, zoom, zoomedInView, shouldDrawProgressMarker, pureToneFrequency } = props;
+  const { width, height, audioBuffer, volume, playbackProgress, playbackRate, zoom, zoomedInView, shouldDrawProgressMarker, pureToneFrequency } = props;
 
   useEffect(() => {
     if (!canvasRef.current) {
@@ -116,7 +116,7 @@ export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, d
     }
     // Just to keep things simple, provide one props object to all the helpers.
     const drawHelperProps: IDrawHelperProps = {
-      ctx, width, height, audioBuffer, data, volume, playbackProgress, zoom, zoomedInView, pureToneFrequency
+      ctx, width, height, audioBuffer, data, volume, playbackProgress, zoom, zoomedInView, pureToneFrequency, playbackRate
     };
 
     drawBackground(drawHelperProps);
@@ -129,5 +129,5 @@ export const useSoundWaveRendering = (canvasRef: RefObject<HTMLCanvasElement>, d
     } else {
       drawZoomAreaMarker(drawHelperProps);
     }
-  }, [canvasRef, width, height, audioBuffer, data, volume, playbackProgress, zoom, zoomedInView, pureToneFrequency, shouldDrawProgressMarker]);
+  }, [canvasRef, width, height, audioBuffer, data, volume, playbackProgress, playbackRate, zoom, zoomedInView, pureToneFrequency, shouldDrawProgressMarker]);
 };

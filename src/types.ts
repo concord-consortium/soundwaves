@@ -14,6 +14,7 @@ export interface ISoundWaveProps {
   height: number;
   audioBuffer?: AudioBuffer;
   volume: number; // [0, 2], 1 is the default volume
+  playbackRate: number;
   playbackProgress: number; // normalized, [0, 1]
   zoom: number;
   zoomedInView: boolean;
