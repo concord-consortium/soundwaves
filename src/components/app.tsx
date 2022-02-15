@@ -303,6 +303,7 @@ export const App = () => {
             height={graphHeight}
             audioBuffer={audioBuffer}
             volume={volume}
+            playbackRate={playbackRate}
             playbackProgress={playbackProgress}
             zoom={zoom}
             zoomedInView={true}
@@ -317,6 +318,7 @@ export const App = () => {
               height={ZOOMED_OUT_GRAPH_HEIGHT}
               audioBuffer={audioBuffer}
               volume={volume}
+              playbackRate={playbackRate}
               playbackProgress={playbackProgress}
               zoom={zoom}
               zoomedInView={false}
@@ -328,6 +330,7 @@ export const App = () => {
       </div>
       <CarrierWave
         audioBuffer={audioBuffer}
+        playbackRate={playbackRate}
         playbackProgress={playbackProgress}
         graphWidth={graphWidth}
         graphHeight={graphHeight}

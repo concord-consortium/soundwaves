@@ -36,6 +36,6 @@ export const getCurrentSampleX = (props: ISoundWavePropsWithData) => {
 };
 
 export const getZoomedInViewPointsCount = (props: ISoundWavePropsWithData) => {
-  const { data, zoom } = props;
-  return Math.round(data.length / zoom);
+  const { data, zoom, playbackRate } = props;
+  return Math.round(playbackRate * data.length / zoom);
 };

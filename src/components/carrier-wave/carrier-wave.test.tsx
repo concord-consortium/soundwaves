@@ -6,6 +6,7 @@ describe("CarrierWave", () => {
   it("shows the elements and text", () => {
     render(<CarrierWave
         audioBuffer={undefined}
+        playbackRate={1}
         playbackProgress={0}
         graphWidth={200}
         graphHeight={100}

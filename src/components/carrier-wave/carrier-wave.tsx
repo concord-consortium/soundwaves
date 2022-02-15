@@ -9,6 +9,7 @@ import "./carrier-wave.scss";
 
 export interface ICarrierWaveProps {
   audioBuffer?: AudioBuffer; // This is the buffer for the user-chosen sound; and NOT the carrier wave
+  playbackRate: number;
   playbackProgress: number; // normalized, [0, 1]
   graphWidth: number;
   graphHeight: number;
@@ -19,7 +20,7 @@ export interface ICarrierWaveProps {
 
 
 export const CarrierWave = (props: ICarrierWaveProps) => {
-  const { audioBuffer, playbackProgress, graphWidth, graphHeight, volume,
+  const { audioBuffer, playbackProgress, playbackRate, graphWidth, graphHeight, volume,
     onProgressUpdate, interactive } = props;
 
   const [carrierBuffer, setCarrierBuffer] = useState<AudioBuffer>();
@@ -92,6 +93,7 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
             height={graphHeight}
             audioBuffer={carrierBuffer}
             volume={modulation === "AM" ? volume : 1}
+            playbackRate={playbackRate}
             playbackProgress={playbackProgress}
             zoom={carrierZoom}
             zoomedInView={true}
@@ -108,6 +110,7 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
             height={ZOOMED_OUT_GRAPH_HEIGHT}
             audioBuffer={carrierBuffer}
             volume={modulation === "AM" ? volume : 1}
+            playbackRate={playbackRate}
             playbackProgress={playbackProgress}
             zoom={carrierZoom}
             zoomedInView={false}
