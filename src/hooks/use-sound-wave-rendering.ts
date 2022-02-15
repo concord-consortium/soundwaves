@@ -13,12 +13,12 @@ const drawBackground = (props: IDrawHelperProps) => {
 };
 
 const drawTimeCaptions = (props: IDrawHelperProps) => {
-  const { ctx, width, height, audioBuffer } = props;
+  const { ctx, width, height, audioBuffer, data } = props;
 
   // Need the audioBuffer to calculate
   if (!audioBuffer) { return; }
 
-  const timePerSample = 1 / audioBuffer.sampleRate;
+  const timePerSample = audioBuffer.duration / data.length;
   const currentDataPointIdx = getCurrentSampleIdx(props);
   const zoomedInViewPointsCount = getZoomedInViewPointsCount(props);
   const leftRightOffsetInSamples = (zoomedInViewPointsCount / 2);
