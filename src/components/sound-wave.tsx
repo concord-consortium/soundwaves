@@ -24,6 +24,7 @@ export const SoundWave = (props: ISoundWaveProps) => {
 
   useEffect(() => {
     if (!audioBuffer) {
+      setData(new Float32Array(0));
       return;
     }
     const actualZoom = zoomedInView ? zoom : 1;

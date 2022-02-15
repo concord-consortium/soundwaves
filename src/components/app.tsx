@@ -51,6 +51,7 @@ const setupAudioContext = async (
   if (audioSource.current && audioContext.current) {
     audioSource.current.stop();
     await audioContext.current.close();
+    audioContext.current = undefined;
     setPlaying(false);
   }
 
@@ -75,8 +76,7 @@ const setupAudioContext = async (
     // Note: previously we had code here that attempted to create a new
     // AudioContext; that resulted in a run-time error in desktop Chrome on
     // macOS (see: https://www.pivotaltracker.com/story/show/180792030).
-    const emptyAudioBuffer = new AudioBuffer({length: 1, sampleRate: 8000});
-    setAudioBuffer(emptyAudioBuffer);
+    setAudioBuffer(undefined);
     setPlaybackProgress(0);
     return;
   }
