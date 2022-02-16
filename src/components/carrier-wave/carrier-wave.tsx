@@ -37,6 +37,8 @@ export const CarrierWave = (props: ICarrierWaveProps) => {
         setCarrierBuffer(buffer);
       };
       updateCarrierBuffer();
+    } else {
+      setCarrierBuffer(undefined);
     }
   }, [audioBuffer, carrierFrequency, volume, modulation]);
 
